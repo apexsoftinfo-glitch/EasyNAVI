@@ -1,0 +1,4 @@
+[mcp_servers.supabase]
+enabled = true
+url = "https://mcp.supabase.com/mcp?project_ref=SUPABASE_PROJECT_ID"
+http_headers = { Authorization = "Bearer SUPABASE_ACCOUNT_ACCESS_TOKEN" }
