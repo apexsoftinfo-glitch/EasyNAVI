@@ -57,6 +57,7 @@ android/build/reports/
 # Custom
 config/api-keys.json
 android/key.properties
+upload-keystore.p12
 .mcp.json
 opencode.json
 devtools_options.yaml
