@@ -4,9 +4,7 @@ To jest projekt Flutter na `iOS` i `Android`.
 
 ## App Context
 
-<app_description>
-Ta sekcja będzie uzupełniana później, w kroku `docs/commands/01_start/09_start-agents-md.md`.
-</app_description>
+EasyNAVI to prosta aplikacja dla osób jeżdżących służbowo po stałych punktach, takich jak klienci, serwisy albo adresy dostaw. Pozwala zapisać własną bazę adresów i szybko uruchomić dojazd z podglądem utrudnień na trasie. Pełny opis produktu znajduje się w pliku docs/IDEA.md.
 
 # Critical Rules
 
@@ -88,7 +86,7 @@ Form screens mają być mobilne i bezpieczne: scroll, dismiss keyboard, poprawne
 # Supabase
 
 Projekt współdzieli Supabase z innymi aplikacjami.
-Wszystkie zasoby specyficzne dla tej apki (tabele, buckety, RPC, triggery, Edge Functions) muszą mieć prefix `<supabase_table_prefix>_`, np. `<supabase_table_prefix>_tasks`.
+Wszystkie zasoby specyficzne dla tej apki (tabele, buckety, RPC, triggery, Edge Functions) muszą mieć prefix `easynavi_`, np. `easynavi_tasks`.
 Tabele współdzielone (np. `shared_users`) — bez prefixu.
 Nazwy kolumn w bazie zawsze zapisuj w `snake_case`.
 Logika `Supabase` ma być w `Data Source`; wyjątek: bootstrap aplikacji i DI mogą inicjalizować klienta.
