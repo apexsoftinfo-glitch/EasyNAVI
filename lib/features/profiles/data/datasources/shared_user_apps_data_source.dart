@@ -24,8 +24,8 @@ class SupabaseSharedUserAppsDataSource implements SharedUserAppsDataSource {
   final SupabaseClient _supabaseClient;
 
   // Provided during setup.
-  static const _appId = '<app_id>';
-  static const _appName = '<app_name>';
+  static const _appId = 'easynavi_';
+  static const _appName = 'EasyNAVI';
 
   @override
   bool get isConfigured => _appId != '<app_id>' && _appName != '<app_name>';
