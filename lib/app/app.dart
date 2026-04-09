@@ -31,7 +31,7 @@ class App extends StatelessWidget {
       child: BlocBuilder<AppLocaleCubit, AppLocaleState>(
         builder: (context, state) {
           return MaterialApp(
-            title: 'XII',
+            title: 'EasyNAVI',
             debugShowCheckedModeBanner: false,
             locale: state.localeOrNull,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
