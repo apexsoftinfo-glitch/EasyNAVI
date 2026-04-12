@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'variants/home_variant_a.dart';
+import 'variants/home_variant_d.dart';
+import 'variants/home_variant_e.dart';
+import 'variants/home_variant_f.dart';
 import 'home_variant_switcher.dart';
 
 const _homeVariantLabels = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -21,9 +24,9 @@ class _HomePreviewShellState extends State<HomePreviewShell> {
       HomeVariantAScreen(),
       HomeVariantAScreen(),
       HomeVariantAScreen(),
-      HomeVariantAScreen(),
-      HomeVariantAScreen(),
-      HomeVariantAScreen(),
+      HomeVariantDScreen(),
+      HomeVariantEScreen(),
+      HomeVariantFScreen(),
     ];
 
     return Column(
