@@ -79,7 +79,7 @@ class HomeVariantGScreen extends StatelessWidget {
                                   child: _BentoTile(
                                     label: 'ADRESY',
                                     icon: Icons.map_outlined,
-                                    color: Colors.white.withValues(alpha: 0.6),
+                                    color: Colors.white.withValues(alpha: 0.35),
                                     onTap: () {
                                       HapticFeedback.selectionClick();
                                       _showStub(context, 'Baza adresów');
@@ -91,7 +91,7 @@ class HomeVariantGScreen extends StatelessWidget {
                                   child: _BentoTile(
                                     label: 'USTAWIENIA',
                                     icon: Icons.settings_outlined,
-                                    color: Colors.white.withValues(alpha: 0.6),
+                                    color: Colors.white.withValues(alpha: 0.35),
                                     onTap: () {
                                       HapticFeedback.selectionClick();
                                       Navigator.of(context).push(
@@ -106,13 +106,13 @@ class HomeVariantGScreen extends StatelessWidget {
                           
                           const SizedBox(width: 16),
                           
-                          // Right Side: Large JEDZIEMY Button (Thumb zone)
+                          // Right Side: Large JEDZIEMY Button
                           Expanded(
                             flex: 1,
                             child: _BentoTile(
                               label: 'JEDZIEMY',
                               icon: Icons.navigation_rounded,
-                              color: const Color(0xFFC6FF00), // Electric Lime
+                              color: const Color(0xFFC6FF00).withValues(alpha: 0.85),
                               iconColor: Colors.black,
                               isLarge: true,
                               onTap: () {
@@ -305,15 +305,6 @@ class _Footer extends StatelessWidget {
               border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
             ),
             child: const Icon(Icons.developer_mode, size: 16, color: Colors.black26),
-          ),
-        ),
-        Text(
-          'EASYNAVI // ALPHA VERSION',
-          style: GoogleFonts.inter(
-            fontSize: 9,
-            fontWeight: FontWeight.w700,
-            color: Colors.black.withValues(alpha: 0.3),
-            letterSpacing: 2,
           ),
         ),
       ],
