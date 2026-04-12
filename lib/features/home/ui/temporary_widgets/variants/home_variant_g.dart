@@ -51,27 +51,31 @@ class HomeVariantGScreen extends StatelessWidget {
                       Expanded(
                         child: Row(
                           children: [
-                            _BentoTile(
-                              label: 'ADRESY',
-                              icon: Icons.map_outlined,
-                              color: Colors.white,
-                              onTap: () {
-                                HapticFeedback.selectionClick();
-                                _showStub(context, 'Twoje adresy');
-                              },
-                            ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
+                            Expanded(
+                              child: _BentoTile(
+                                label: 'ADRESY',
+                                icon: Icons.map_outlined,
+                                color: Colors.white,
+                                onTap: () {
+                                  HapticFeedback.selectionClick();
+                                  _showStub(context, 'Twoje adresy');
+                                },
+                              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
+                            ),
                             const SizedBox(width: 16),
-                            _BentoTile(
-                              label: 'USTAWIENIA',
-                              icon: Icons.settings_outlined,
-                              color: Colors.white,
-                              onTap: () {
-                                HapticFeedback.selectionClick();
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (_) => const ProfileScreen()),
-                                );
-                              },
-                            ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1),
+                            Expanded(
+                              child: _BentoTile(
+                                label: 'USTAWIENIA',
+                                icon: Icons.settings_outlined,
+                                color: Colors.white,
+                                onTap: () {
+                                  HapticFeedback.selectionClick();
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                                  );
+                                },
+                              ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1),
+                            ),
                           ],
                         ),
                       ),
@@ -160,87 +164,84 @@ class _BentoTileState extends State<_BentoTile> {
     final isDark = widget.color.computeLuminance() < 0.5;
     final textColor = isDark ? Colors.white : Colors.black;
 
-    return Expanded(
-      flex: widget.isLarge ? 0 : 1,
-      child: GestureDetector(
-        onTapDown: (_) => setState(() => _isPressed = true),
-        onTapUp: (_) {
-          setState(() => _isPressed = false);
-          widget.onTap();
-        },
-        onTapCancel: () => setState(() => _isPressed = false),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          width: double.infinity,
-          height: widget.isLarge ? 180 : double.infinity,
-          decoration: BoxDecoration(
-            color: widget.color,
-            borderRadius: BorderRadius.circular(32),
-            border: Border.all(
-              color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
-              width: 0.5,
-            ),
-            boxShadow: [
-              if (!_isPressed)
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-            ],
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        widget.onTap();
+      },
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        width: double.infinity,
+        height: widget.isLarge ? 180 : double.infinity,
+        decoration: BoxDecoration(
+          color: widget.color,
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(
+            color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
+            width: 0.5,
           ),
-          child: Column(
-            mainAxisAlignment: widget.isLarge ? MainAxisAlignment.center : MainAxisAlignment.start,
-            crossAxisAlignment: widget.isLarge ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-            children: [
-              if (!widget.isLarge) const SizedBox(height: 24),
-              if (!widget.isLarge) const SizedBox(width: 24),
-              Padding(
-                padding: EdgeInsets.all(widget.isLarge ? 0 : 24.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: (widget.iconColor ?? textColor).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Icon(
-                        widget.icon,
-                        size: widget.isLarge ? 40 : 28,
-                        color: widget.iconColor ?? textColor,
-                      ),
-                    ),
-                    if (widget.isLarge) const SizedBox(width: 20),
-                    if (widget.isLarge)
-                      Text(
-                        widget.label,
-                        style: GoogleFonts.inter(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w900,
-                          color: textColor,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                  ],
-                ),
+          boxShadow: [
+            if (!_isPressed)
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
               ),
-              if (!widget.isLarge) const Spacer(),
-              if (!widget.isLarge)
-                Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Text(
-                    widget.label,
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w800,
-                      color: textColor.withValues(alpha: 0.7),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: widget.isLarge ? MainAxisAlignment.center : MainAxisAlignment.start,
+          crossAxisAlignment: widget.isLarge ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+          children: [
+            if (!widget.isLarge) const SizedBox(height: 24),
+            if (!widget.isLarge) const SizedBox(width: 24),
+            Padding(
+              padding: EdgeInsets.all(widget.isLarge ? 0 : 24.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: (widget.iconColor ?? textColor).withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Icon(
+                      widget.icon,
+                      size: widget.isLarge ? 40 : 28,
+                      color: widget.iconColor ?? textColor,
                     ),
                   ),
+                  if (widget.isLarge) const SizedBox(width: 20),
+                  if (widget.isLarge)
+                    Text(
+                      widget.label,
+                      style: GoogleFonts.inter(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        color: textColor,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (!widget.isLarge) const Spacer(),
+            if (!widget.isLarge)
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Text(
+                  widget.label,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    color: textColor.withValues(alpha: 0.7),
+                  ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );
