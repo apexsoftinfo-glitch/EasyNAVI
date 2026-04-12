@@ -1,6 +1,17 @@
 # ZADANIE: 03_design_build_d
 
 ## PLAN IMPLEMENTACJI
+
+1. Skonfiguruj lokalny `ThemeData` wewnątrz widgetu VariantD:
+   - Primary: Slate (#2C3E50), Accent: Safety Orange (#FF8C00).
+   - Fonty: `Oswald` (nagłówki), `Inter` (body).
+2. Tło: Ciemny grafitowy gradient.
+3. Implementacja "Industrial Button":
+   - Grube obramowanie (bevel effect).
+   - Cienie symulujące fizyczne wciśnięcie.
+   - Kolor pomarańczowy tylko dla JEDZIEMY, reszta slate/white.
+4. Gesty: `HapticFeedback.heavyImpact()` przy każdym dotknięciu przycisku.
+5. Animacja: "Mechanical entrance" – elementy wjeżdżają pionowo z dużą bezwładnością.
 <!-- Ten plan zostanie wypełniony przez krok 02_design-prepare -->
 
 ## CEL

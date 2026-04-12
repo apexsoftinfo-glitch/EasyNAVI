@@ -1,7 +1,17 @@
 # ZADANIE: 05_design_build_f
 
 ## PLAN IMPLEMENTACJI
-<!-- Ten plan zostanie wypełniony przez krok 02_design-prepare -->
+
+1. Skonfiguruj lokalny `ThemeData` wewnątrz widgetu VariantF:
+   - Paleta: Pure Monochrome (Black #000000, White #FFFFFF) + Action Red (#E63946).
+   - Fonty: `Montserrat` (Extra Bold).
+2. Tło: Czysta biel.
+3. Implementacja "Editorial Button":
+   - Brak zaokrągleń (radius 0).
+   - Grube obramowania (outline 2-3px).
+   - Typografia jako główny element wizualny (bardzo duże napisy).
+4. Gesty: Natychmiastowa reakcja wizualna (Invert colors on press).
+5. Animacja: "Staggered reveal" – szybkie pojawianie się elementów jeden po drugim (delay 40ms).
 
 ## CEL
 Zaimplementuj wariant wizualny F w pliku `lib/features/home/ui/temporary_widgets/variants/home_variant_f.dart`.
