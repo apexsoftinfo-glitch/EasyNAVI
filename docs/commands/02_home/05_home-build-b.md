@@ -1,7 +1,15 @@
 # ZADANIE: 05_home_build_b
 
 ## PLAN IMPLEMENTACJI
-<!-- Ten plan zostanie wypełniony przez krok 03_home-prepare -->
+
+1. Skonfiguruj `Scaffold` z `BottomNavigationBar` (2 zakładki: Częste i Wszystkie).
+2. Przygotuj dane testowe z informacją o statusie trasy (np. "Czas: 15min", "Urudnienia: Brak").
+3. Zaimplementuj `GridView.count` (2 kolumny) dla zakładki "Częste".
+4. Stwórz widget kafelka: duża ikona, tekst, kolorowy wskaźnik statusu (kropka: zielona/żółta/czerwona).
+5. Dodaj feedback haptyczny przy stuknięciu w kafelek.
+6. Zaimplementuj symulację trybu edycji (wiggle effect) po przytrzymaniu kafelka (`LongPress`).
+7. Przygotuj prosty widok listy dla zakładki "Wszystkie".
+8. Podepnij nawigację do profilu i ekranu deweloperskiego.
 
 ## CEL
 Zaimplementuj wariant B ekranu startowego w pliku `lib/features/home/ui/temporary_widgets/variants/home_variant_b.dart`.

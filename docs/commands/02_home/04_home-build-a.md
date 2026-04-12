@@ -1,6 +1,15 @@
 # ZADANIE: 04_home_build_a
 
 ## PLAN IMPLEMENTACJI
+
+1. Skonfiguruj `Scaffold` z `AppBar` ("EasyNAVI") oraz `FloatingActionButton`.
+2. Przygotuj listę testowych danych adresowych (np. "Serwis Klimatyzacji", "Klient: Kowalski", "Magazyn Centralny").
+3. Zaimplementuj górną sekcję "Ostatnio używane" jako horyzontalną listę małych kafelków.
+4. Zaimplementuj główną listę (`ListView.separated`) z kartami adresów.
+5. Każda karta powinna zawierać: `Leading` (ikona typu miejsca), `Title` (nazwa), `Subtitle` (adres) oraz `Trailing` (duży, niebieski przycisk akcji "JEDŹ").
+6. Dodaj `Dismissible` do każdego elementu listy, aby pokazać gest usuwania.
+7. Dodaj efekt "squish" (naciśnięcie zmniejsza skalę do 0.95) za pomocą `GestureDetector` i `TweenAnimationBuilder`.
+8. Podepnij nawigację do profilu i ekranu deweloperskiego.
 <!-- Ten plan zostanie wypełniony przez krok 03_home-prepare -->
 
 ## CEL
