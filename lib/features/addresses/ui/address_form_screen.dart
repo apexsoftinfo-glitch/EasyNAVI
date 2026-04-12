@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/di/injection.dart';
 import '../presentation/cubit/address_form_cubit.dart';
+import '../presentation/cubit/maps_search_cubit.dart';
 import '../data/models/address_model.dart';
 
 class AddressFormScreen extends StatelessWidget {
@@ -11,8 +12,11 @@ class AddressFormScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<AddressFormCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => getIt<AddressFormCubit>()),
+        BlocProvider(create: (context) => getIt<MapsSearchCubit>()),
+      ],
       child: AddressFormView(address: address),
     );
   }
@@ -65,15 +69,30 @@ class _AddressFormViewState extends State<AddressFormView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AddressFormCubit, AddressFormState>(
-      listener: (context, state) {
-        if (state is Success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Zapisano pomyślnie!'), backgroundColor: Colors.green),
-          );
-          Navigator.of(context).pop();
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AddressFormCubit, AddressFormState>(
+          listener: (context, state) {
+            if (state is Success) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Zapisano pomyślnie!'), backgroundColor: Colors.green),
+              );
+              Navigator.of(context).pop();
+            }
+          },
+        ),
+        BlocListener<MapsSearchCubit, MapsSearchState>(
+          listener: (context, state) {
+            if (state is Selected) {
+              setState(() {
+                _streetController.text = state.details['street'] ?? '';
+                _cityController.text = state.details['city'] ?? '';
+                _zipController.text = state.details['zipCode'] ?? '';
+              });
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -112,13 +131,53 @@ class _AddressFormViewState extends State<AddressFormView> {
                       validator: (val) => val?.isEmpty ?? true ? 'Podaj nazwę' : null,
                     ),
                     const SizedBox(height: 24),
-                    _buildFieldLabel('ULICA I NUMER'),
+                    _buildFieldLabel('ULICA I NUMER (SZUKAJ)'),
                     _buildTextField(
                       controller: _streetController,
-                      hint: 'np. Marszałkowska 10',
+                      hint: 'Zacznij wpisywać adres...',
                       enabled: !isLoading,
+                      onChanged: (val) => context.read<MapsSearchCubit>().onInputChanged(val),
                       validator: (val) => val?.isEmpty ?? true ? 'Podaj ulicę' : null,
                     ),
+                    
+                    // Suggestions List
+                    BlocBuilder<MapsSearchCubit, MapsSearchState>(
+                      builder: (context, mapsState) {
+                        if (mapsState is LoadingPredictions) {
+                          return const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: LinearProgressIndicator(color: Colors.black, minHeight: 1),
+                          );
+                        }
+                        if (mapsState is LoadedPredictions) {
+                          return Container(
+                            margin: const EdgeInsets.only(top: 8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF9F9F9),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: ListView.separated(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: mapsState.predictions.length,
+                              separatorBuilder: (context, index) => const Divider(height: 1, indent: 20, endIndent: 20),
+                              itemBuilder: (context, index) {
+                                final p = mapsState.predictions[index];
+                                return ListTile(
+                                  title: Text(
+                                    p.description,
+                                    style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500),
+                                  ),
+                                  onTap: () => context.read<MapsSearchCubit>().selectPrediction(p),
+                                );
+                              },
+                            ),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+
                     const SizedBox(height: 24),
                     Row(
                       children: [
@@ -217,12 +276,14 @@ class _AddressFormViewState extends State<AddressFormView> {
     required TextEditingController controller,
     required String hint,
     required bool enabled,
+    ValueChanged<String>? onChanged,
     String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
       enabled: enabled,
       validator: validator,
+      onChanged: onChanged,
       style: GoogleFonts.inter(fontWeight: FontWeight.w600),
       decoration: InputDecoration(
         hintText: hint,

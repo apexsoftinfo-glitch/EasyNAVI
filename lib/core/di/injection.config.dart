@@ -9,6 +9,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart'
@@ -32,10 +33,14 @@ import 'package:myapp/features/addresses/data/datasources/addresses_data_source.
     as _i174;
 import 'package:myapp/features/addresses/domain/repositories/addresses_repository.dart'
     as _i19;
+import 'package:myapp/features/addresses/domain/repositories/maps_repository.dart'
+    as _i906;
 import 'package:myapp/features/addresses/presentation/cubit/address_form_cubit.dart'
     as _i30;
 import 'package:myapp/features/addresses/presentation/cubit/addresses_cubit.dart'
     as _i1042;
+import 'package:myapp/features/addresses/presentation/cubit/maps_search_cubit.dart'
+    as _i435;
 import 'package:myapp/features/auth/data/datasources/auth_data_source.dart'
     as _i538;
 import 'package:myapp/features/auth/data/repositories/auth_repository.dart'
@@ -88,12 +93,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i138.SubscriptionDataSource>(
       () => appModule.subscriptionDataSource,
     );
+    gh.lazySingleton<_i361.Dio>(() => appModule.dio);
     gh.lazySingleton<_i174.AddressesDataSource>(
       () => _i174.AddressesDataSourceImpl(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i894.SubscriptionRepository>(
       () =>
           _i894.SubscriptionRepositoryImpl(gh<_i138.SubscriptionDataSource>()),
+    );
+    gh.lazySingleton<_i906.MapsRepository>(
+      () => _i906.MapsRepositoryImpl(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i634.AppLocaleDataSource>(
       () => _i634.SharedPreferencesAppLocaleDataSource(
@@ -134,6 +143,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i463.ProfileCubit>(
       () => _i463.ProfileCubit(gh<_i636.SharedUserRepository>()),
+    );
+    gh.factory<_i435.MapsSearchCubit>(
+      () => _i435.MapsSearchCubit(gh<_i906.MapsRepository>()),
     );
     gh.lazySingleton<_i686.AppLocaleCubit>(
       () => _i686.AppLocaleCubit(gh<_i910.AppLocaleRepository>()),

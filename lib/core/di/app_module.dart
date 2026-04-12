@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:dio/dio.dart';
 
 import '../../features/subscription/data/datasources/revenuecat_subscription_data_source.dart';
 import '../../features/subscription/data/datasources/subscription_data_source.dart';
@@ -26,4 +27,7 @@ abstract class AppModule {
       RevenueCatConfig.isEnabled
           ? RevenueCatSubscriptionDataSource()
           : FakeSubscriptionDataSource();
+
+  @lazySingleton
+  Dio get dio => Dio();
 }
