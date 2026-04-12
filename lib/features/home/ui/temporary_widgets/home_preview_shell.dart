@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'variants/home_variant_a.dart';
-import 'variants/home_variant_b.dart';
-import 'variants/home_variant_c.dart';
-import 'variants/home_variant_d.dart';
-import 'variants/home_variant_e.dart';
-import 'variants/home_variant_f.dart';
 import 'home_variant_switcher.dart';
 
 const _homeVariantLabels = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -24,11 +19,11 @@ class _HomePreviewShellState extends State<HomePreviewShell> {
   Widget build(BuildContext context) {
     const variants = [
       HomeVariantAScreen(),
-      HomeVariantBScreen(),
-      HomeVariantCScreen(),
-      HomeVariantDScreen(),
-      HomeVariantEScreen(),
-      HomeVariantFScreen(),
+      HomeVariantAScreen(),
+      HomeVariantAScreen(),
+      HomeVariantAScreen(),
+      HomeVariantAScreen(),
+      HomeVariantAScreen(),
     ];
 
     return Column(

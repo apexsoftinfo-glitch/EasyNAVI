@@ -1,208 +1,139 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../app/developer/ui/developer_screen.dart';
 import '../../../../../features/profiles/presentation/ui/profile_screen.dart';
-import '../../../../../l10n/l10n.dart';
 
 class HomeVariantAScreen extends StatelessWidget {
   const HomeVariantAScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final recentPoints = [
-      _AddressPoint(name: 'Dom', address: 'ul. Sezamkowa 1, Warszawa', icon: Icons.home),
-      _AddressPoint(name: 'Biuro', address: 'ul. Domaniewska 44, Warszawa', icon: Icons.work),
-    ];
-
-    final allPoints = [
-      _AddressPoint(name: 'Serwis Klimatyzacji', address: 'ul. Poznańska 12, Warszawa', icon: Icons.build),
-      _AddressPoint(name: 'Klient: Jan Kowalski', address: 'ul. Wiejska 3, Konstancin', icon: Icons.person),
-      _AddressPoint(name: 'Magazyn Centralny', address: 'ul. Przemysłowa 8, Piaseczno', icon: Icons.warehouse),
-      _AddressPoint(name: 'Paczkomat WAW12', address: 'ul. Puławska 100, Warszawa', icon: Icons.local_post_office),
-      _AddressPoint(name: 'Serwis Techniczny', address: 'ul. Postępu 1, Warszawa', icon: Icons.settings),
-    ];
-
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text('EasyNAVI'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_circle_outlined),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ProfileScreen()),
-            ),
-          ),
-        ],
+        title: const Text('EasyNAVI', style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Dodawanie adresu (Placeholder)')),
-          );
-        },
-        child: const Icon(Icons.add_location_alt_outlined),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        children: [
-          const _SectionHeader(title: 'Ostatnio odwiedzane'),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 100,
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              scrollDirection: Axis.horizontal,
-              itemCount: recentPoints.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
-              itemBuilder: (context, index) => _RecentCard(point: recentPoints[index]),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          children: [
+            const Spacer(),
+            _MenuButton(
+              label: 'JEDZIEMY',
+              icon: Icons.navigation_rounded,
+              color: Colors.blue[700]!,
+              onTap: () => _showAddressSelection(context),
             ),
-          ),
-          const SizedBox(height: 24),
-          const _SectionHeader(title: 'Twoje punkty'),
-          const SizedBox(height: 12),
-          ...allPoints.map((point) => _AddressTile(point: point)),
-          if (kDebugMode) ...[
-            const SizedBox(height: 32),
-            Center(
-              child: TextButton.icon(
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const DeveloperScreen()),
-                ),
-                icon: const Icon(Icons.developer_mode, size: 16),
-                label: Text(context.l10n.developerToolsTitle),
+            const SizedBox(height: 20),
+            _MenuButton(
+              label: 'ADRESY',
+              icon: Icons.map_rounded,
+              color: Colors.green[600]!,
+              onTap: () => _showAddressManagement(context),
+            ),
+            const SizedBox(height: 20),
+            _MenuButton(
+              label: 'USTAWIENIA',
+              icon: Icons.settings_rounded,
+              color: Colors.grey[700]!,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              ),
+            ),
+            const Spacer(),
+            // Small dev link for convenience
+            TextButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const DeveloperScreen()),
+              ),
+              child: const Text('Narzędzia deweloperskie', style: TextStyle(color: Colors.grey)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showAddressSelection(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) => Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                'Wybierz cel podróży',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Expanded(
+              child: ListView.separated(
+                controller: scrollController,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: 5,
+                separatorBuilder: (context, index) => const Divider(),
+                itemBuilder: (context, index) {
+                  final labels = ['Dom', 'Biuro', 'Klient: Kowalski', 'Magazyn', 'Serwis'];
+                  return ListTile(
+                    leading: const Icon(Icons.location_on, color: Colors.blue),
+                    title: Text(labels[index]),
+                    subtitle: Text('ul. Przykładowa ${index + 1}, Warszawa'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Uruchamiam nawigację do: ${labels[index]}')),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],
-        ],
-      ),
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title});
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Text(
-        title.toUpperCase(),
-        style: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: Colors.grey,
-          letterSpacing: 1.1,
         ),
       ),
     );
   }
-}
 
-class _RecentCard extends StatelessWidget {
-  const _RecentCard({required this.point});
-  final _AddressPoint point;
-
-  @override
-  Widget build(BuildContext context) {
-    return _SquishButton(
-      onTap: () {},
-      child: Container(
-        width: 140,
-        decoration: BoxDecoration(
-          color: Colors.blue.shade50,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.blue.shade100),
-        ),
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(point.icon, color: Colors.blue, size: 20),
-            const SizedBox(height: 8),
-            Text(
-              point.name,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            Text(
-              point.address,
-              style: TextStyle(fontSize: 11, color: Colors.blue.shade900),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _AddressTile extends StatelessWidget {
-  const _AddressTile({required this.point});
-  final _AddressPoint point;
-
-  @override
-  Widget build(BuildContext context) {
-    return Dismissible(
-      key: Key(point.name),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        color: Colors.red,
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        child: const Icon(Icons.delete, color: Colors.white),
-      ),
-      onDismissed: (_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Usunięto: ${point.name}')),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          leading: CircleAvatar(
-            backgroundColor: Colors.grey.shade100,
-            child: Icon(point.icon, color: Colors.grey.shade700),
-          ),
-          title: Text(point.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-          subtitle: Text(point.address),
-          trailing: _SquishButton(
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Uruchamiam nawigację do: ${point.name}'),
-                  behavior: SnackBarBehavior.floating,
+  void _showAddressManagement(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(title: const Text('Baza Adresów')),
+          body: ListView.separated(
+            padding: const EdgeInsets.all(16),
+            itemCount: 5,
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              final labels = ['Dom', 'Biuro', 'Klient: Kowalski', 'Magazyn', 'Serwis'];
+              return Card(
+                child: ListTile(
+                  title: Text(labels[index]),
+                  subtitle: const Text('ul. Przykładowa 123'),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(icon: const Icon(Icons.edit_outlined), onPressed: () {}),
+                      IconButton(icon: const Icon(Icons.delete_outline, color: Colors.red), onPressed: () {}),
+                    ],
+                  ),
                 ),
               );
             },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Text(
-                'JEDŹ',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {},
+            child: const Icon(Icons.add),
           ),
         ),
       ),
@@ -210,16 +141,69 @@ class _AddressTile extends StatelessWidget {
   }
 }
 
-class _SquishButton extends StatefulWidget {
-  const _SquishButton({required this.child, required this.onTap});
+class _MenuButton extends StatelessWidget {
+  const _MenuButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return _SquishEffect(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        height: 100,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.15),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
+            ),
+          ],
+          border: Border.all(color: color.withValues(alpha: 0.1), width: 2),
+        ),
+        child: Row(
+          children: [
+            const SizedBox(width: 24),
+            Icon(icon, size: 40, color: color),
+            const SizedBox(width: 24),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                color: color,
+                letterSpacing: 2,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SquishEffect extends StatefulWidget {
+  const _SquishEffect({required this.child, required this.onTap});
   final Widget child;
   final VoidCallback onTap;
 
   @override
-  State<_SquishButton> createState() => _SquishButtonState();
+  State<_SquishEffect> createState() => _SquishEffectState();
 }
 
-class _SquishButtonState extends State<_SquishButton> with SingleTickerProviderStateMixin {
+class _SquishEffectState extends State<_SquishEffect> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -228,7 +212,7 @@ class _SquishButtonState extends State<_SquishButton> with SingleTickerProviderS
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 100),
-      lowerBound: 0.92,
+      lowerBound: 0.94,
       upperBound: 1.0,
       value: 1.0,
     );
@@ -255,11 +239,4 @@ class _SquishButtonState extends State<_SquishButton> with SingleTickerProviderS
       ),
     );
   }
-}
-
-class _AddressPoint {
-  _AddressPoint({required this.name, required this.address, required this.icon});
-  final String name;
-  final String address;
-  final IconData icon;
 }
