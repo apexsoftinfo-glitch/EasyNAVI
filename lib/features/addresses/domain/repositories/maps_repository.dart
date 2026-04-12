@@ -6,6 +6,7 @@ import '../../../../core/exceptions/app_exception.dart';
 abstract class MapsRepository {
   Future<List<PredictionModel>> getPredictions(String input, String sessionToken);
   Future<Map<String, String>> getPlaceDetails(String placeId);
+  Future<Map<String, double>?> geocodeAddress(String address);
 }
 
 @LazySingleton(as: MapsRepository)
@@ -86,6 +87,30 @@ class MapsRepositoryImpl implements MapsRepository {
       throw const AppException('failed-to-fetch-details');
     } catch (e) {
       throw const AppException('failed-to-fetch-details');
+    }
+  }
+
+  @override
+  Future<Map<String, double>?> geocodeAddress(String address) async {
+    try {
+      final response = await _dio.get(
+        'https://maps.googleapis.com/maps/api/geocode/json',
+        queryParameters: {
+          'address': address,
+          'key': _apiKey,
+        },
+      );
+
+      if (response.data['status'] == 'OK' && (response.data['results'] as List).isNotEmpty) {
+        final location = response.data['results'][0]['geometry']['location'];
+        return {
+          'lat': location['lat'] as double,
+          'lng': location['lng'] as double,
+        };
+      }
+      return null;
+    } catch (e) {
+      return null;
     }
   }
 }

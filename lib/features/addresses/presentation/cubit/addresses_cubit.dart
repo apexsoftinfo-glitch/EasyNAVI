@@ -4,6 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import '../../data/models/address_model.dart';
 import '../../domain/repositories/addresses_repository.dart';
+import '../../domain/repositories/maps_repository.dart';
 
 part 'addresses_state.dart';
 part 'addresses_cubit.freezed.dart';
@@ -11,10 +12,34 @@ part 'addresses_cubit.freezed.dart';
 @injectable
 class AddressesCubit extends Cubit<AddressesState> {
   final AddressesRepository _repository;
+  final MapsRepository _mapsRepository;
   StreamSubscription? _subscription;
 
-  AddressesCubit(this._repository) : super(const AddressesState.initial()) {
+  AddressesCubit(this._repository, this._mapsRepository) : super(const AddressesState.initial()) {
     _init();
+  }
+
+  // ... (previous methods)
+
+  Future<AddressModel?> resolveCoordinates(AddressModel address) async {
+    if (address.latitude != null && address.longitude != null) return address;
+
+    try {
+      final query = '${address.street}, ${address.city}, ${address.zipCode}';
+      final coords = await _mapsRepository.geocodeAddress(query);
+
+      if (coords != null) {
+        final updated = address.copyWith(
+          latitude: coords['lat'],
+          longitude: coords['lng'],
+        );
+        await _repository.updateAddress(updated);
+        return updated;
+      }
+    } catch (e) {
+      // Ignorujemy błędy, po prostu zwrócimy null lub oryginał
+    }
+    return null;
   }
 
   void _init() {

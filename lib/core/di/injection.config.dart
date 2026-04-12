@@ -166,7 +166,10 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.factory<_i1042.AddressesCubit>(
-      () => _i1042.AddressesCubit(gh<_i19.AddressesRepository>()),
+      () => _i1042.AddressesCubit(
+        gh<_i19.AddressesRepository>(),
+        gh<_i906.MapsRepository>(),
+      ),
     );
     gh.lazySingleton<_i37.AuthRepository>(
       () => _i37.AuthRepositoryImpl(

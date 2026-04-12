@@ -122,22 +122,38 @@ class AddressesView extends StatelessWidget {
     );
   }
 
-  void _openDriveView(BuildContext context, AddressModel address) {
+  Future<void> _openDriveView(BuildContext context, AddressModel address) async {
+    AddressModel? resolved = address;
+    
     if (address.latitude == null || address.longitude == null) {
+      // Show loading indicator
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ten adres nie ma współrzędnych. Edytuj go.')),
+        const SnackBar(content: Text('Pobieranie lokalizacji adresu...'), duration: Duration(seconds: 1)),
       );
+      
+      resolved = await context.read<AddressesCubit>().resolveCoordinates(address);
+    }
+
+    final finalAddress = resolved;
+    if (finalAddress == null || finalAddress.latitude == null || finalAddress.longitude == null) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Nie udało się znaleźć lokalizacji dla tego adresu. Edytuj go ręcznie.')),
+        );
+      }
       return;
     }
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => DriveScreen(
-          destination: LatLng(address.latitude!, address.longitude!),
-          destinationName: address.name,
+    if (context.mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => DriveScreen(
+            destination: LatLng(finalAddress.latitude!, finalAddress.longitude!),
+            destinationName: finalAddress.name,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
 
