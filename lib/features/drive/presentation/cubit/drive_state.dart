@@ -9,5 +9,5 @@ sealed class DriveState with _$DriveState {
     required LatLng destination,
     required DirectionsModel directions,
   }) = Loaded;
-  const factory DriveState.error(String errorKey) = Error;
+  const factory DriveState.error(String errorKey) = DriveError;
 }

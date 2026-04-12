@@ -17,13 +17,21 @@ class DriveScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => getIt<DriveCubit>()..initDrive(destination: destination),
-      child: DriveView(destinationName: destinationName),
+      child: DriveView(
+        destination: destination,
+        destinationName: destinationName,
+      ),
     );
   }
 }
 
 class DriveView extends StatefulWidget {
-  const DriveView({super.key, required this.destinationName});
+  const DriveView({
+    super.key,
+    required this.destination,
+    required this.destinationName,
+  });
+  final LatLng destination;
   final String destinationName;
 
   @override
@@ -61,7 +69,7 @@ class _DriveViewState extends State<DriveView> {
                 Initial() || Loading() => const Center(
                     child: CircularProgressIndicator(color: Colors.black),
                   ),
-                Error(errorKey: final key) => Center(
+                DriveError(errorKey: final key) => Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -69,7 +77,7 @@ class _DriveViewState extends State<DriveView> {
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: () {
-                            context.read<DriveCubit>().initDrive(destination: (state as dynamic).destination);
+                            context.read<DriveCubit>().initDrive(destination: widget.destination);
                           },
                           child: const Text('Ponów'),
                         ),

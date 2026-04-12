@@ -55,13 +55,13 @@ extension DriveStatePatterns on DriveState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Initial value)?  initial,TResult Function( Loading value)?  loading,TResult Function( Loaded value)?  loaded,TResult Function( Error value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Initial value)?  initial,TResult Function( Loading value)?  loading,TResult Function( Loaded value)?  loaded,TResult Function( DriveError value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial(_that);case Loading() when loading != null:
 return loading(_that);case Loaded() when loaded != null:
-return loaded(_that);case Error() when error != null:
+return loaded(_that);case DriveError() when error != null:
 return error(_that);case _:
   return orElse();
 
@@ -80,13 +80,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Initial value)  initial,required TResult Function( Loading value)  loading,required TResult Function( Loaded value)  loaded,required TResult Function( Error value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Initial value)  initial,required TResult Function( Loading value)  loading,required TResult Function( Loaded value)  loaded,required TResult Function( DriveError value)  error,}){
 final _that = this;
 switch (_that) {
 case Initial():
 return initial(_that);case Loading():
 return loading(_that);case Loaded():
-return loaded(_that);case Error():
+return loaded(_that);case DriveError():
 return error(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -101,13 +101,13 @@ return error(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Initial value)?  initial,TResult? Function( Loading value)?  loading,TResult? Function( Loaded value)?  loaded,TResult? Function( Error value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Initial value)?  initial,TResult? Function( Loading value)?  loading,TResult? Function( Loaded value)?  loaded,TResult? Function( DriveError value)?  error,}){
 final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial(_that);case Loading() when loading != null:
 return loading(_that);case Loaded() when loaded != null:
-return loaded(_that);case Error() when error != null:
+return loaded(_that);case DriveError() when error != null:
 return error(_that);case _:
   return null;
 
@@ -130,7 +130,7 @@ switch (_that) {
 case Initial() when initial != null:
 return initial();case Loading() when loading != null:
 return loading();case Loaded() when loaded != null:
-return loaded(_that.origin,_that.destination,_that.directions);case Error() when error != null:
+return loaded(_that.origin,_that.destination,_that.directions);case DriveError() when error != null:
 return error(_that.errorKey);case _:
   return orElse();
 
@@ -154,7 +154,7 @@ switch (_that) {
 case Initial():
 return initial();case Loading():
 return loading();case Loaded():
-return loaded(_that.origin,_that.destination,_that.directions);case Error():
+return loaded(_that.origin,_that.destination,_that.directions);case DriveError():
 return error(_that.errorKey);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -174,7 +174,7 @@ switch (_that) {
 case Initial() when initial != null:
 return initial();case Loading() when loading != null:
 return loading();case Loaded() when loaded != null:
-return loaded(_that.origin,_that.destination,_that.directions);case Error() when error != null:
+return loaded(_that.origin,_that.destination,_that.directions);case DriveError() when error != null:
 return error(_that.errorKey);case _:
   return null;
 
@@ -329,8 +329,8 @@ $DirectionsModelCopyWith<$Res> get directions {
 /// @nodoc
 
 
-class Error implements DriveState {
-  const Error(this.errorKey);
+class DriveError implements DriveState {
+  const DriveError(this.errorKey);
   
 
  final  String errorKey;
@@ -339,13 +339,13 @@ class Error implements DriveState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$ErrorCopyWith<Error> get copyWith => _$ErrorCopyWithImpl<Error>(this, _$identity);
+$DriveErrorCopyWith<DriveError> get copyWith => _$DriveErrorCopyWithImpl<DriveError>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Error&&(identical(other.errorKey, errorKey) || other.errorKey == errorKey));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DriveError&&(identical(other.errorKey, errorKey) || other.errorKey == errorKey));
 }
 
 
@@ -361,8 +361,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class $ErrorCopyWith<$Res> implements $DriveStateCopyWith<$Res> {
-  factory $ErrorCopyWith(Error value, $Res Function(Error) _then) = _$ErrorCopyWithImpl;
+abstract mixin class $DriveErrorCopyWith<$Res> implements $DriveStateCopyWith<$Res> {
+  factory $DriveErrorCopyWith(DriveError value, $Res Function(DriveError) _then) = _$DriveErrorCopyWithImpl;
 @useResult
 $Res call({
  String errorKey
@@ -373,17 +373,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$ErrorCopyWithImpl<$Res>
-    implements $ErrorCopyWith<$Res> {
-  _$ErrorCopyWithImpl(this._self, this._then);
+class _$DriveErrorCopyWithImpl<$Res>
+    implements $DriveErrorCopyWith<$Res> {
+  _$DriveErrorCopyWithImpl(this._self, this._then);
 
-  final Error _self;
-  final $Res Function(Error) _then;
+  final DriveError _self;
+  final $Res Function(DriveError) _then;
 
 /// Create a copy of DriveState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? errorKey = null,}) {
-  return _then(Error(
+  return _then(DriveError(
 null == errorKey ? _self.errorKey : errorKey // ignore: cast_nullable_to_non_nullable
 as String,
   ));
