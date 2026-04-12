@@ -154,29 +154,49 @@ class HomeVariantGScreen extends StatelessWidget {
 class _HeaderLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Text(
-          'EASY',
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 4,
-            color: Colors.black.withValues(alpha: 0.5),
-          ),
-        ),
-        Text(
-          'NAVI',
-          style: GoogleFonts.inter(
-            fontSize: 40,
-            fontWeight: FontWeight.w900,
-            letterSpacing: -2,
-            color: Colors.black,
-            shadows: [
-              const Shadow(color: Colors.white54, offset: Offset(0, 2), blurRadius: 4),
+        Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            image: const DecorationImage(
+              image: AssetImage('assets/images/icon/icon.png'),
+              fit: BoxFit.cover,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
             ],
           ),
+        ),
+        const SizedBox(width: 16),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'EASY',
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 4,
+                color: Colors.black.withValues(alpha: 0.5),
+              ),
+            ),
+            Text(
+              'NAVI',
+              style: GoogleFonts.inter(
+                fontSize: 32,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -2,
+                color: Colors.black,
+              ),
+            ),
+          ],
         ),
       ],
     );
