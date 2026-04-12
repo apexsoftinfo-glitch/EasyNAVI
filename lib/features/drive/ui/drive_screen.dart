@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/di/injection.dart';
 import '../presentation/cubit/drive_cubit.dart';
 
@@ -41,29 +39,29 @@ class DriveView extends StatefulWidget {
 class _DriveViewState extends State<DriveView> {
 
 
-  Future<void> _startNavigation(LatLng destination) async {
-    Uri url;
-    if (Platform.isIOS) {
-      url = Uri.parse('maps://?q=${destination.latitude},${destination.longitude}');
-    } else {
-      url = Uri.parse('google.navigation:q=${destination.latitude},${destination.longitude}');
-    }
 
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      // Fallback to browser
-      final browserUrl = Uri.parse('https://www.google.com/maps/dir/?api=1&destination=${destination.latitude},${destination.longitude}');
-      await launchUrl(browserUrl, mode: LaunchMode.externalApplication);
-    }
-  }
+  GoogleMapController? _mapController;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          BlocBuilder<DriveCubit, DriveState>(
+          BlocConsumer<DriveCubit, DriveState>(
+            listener: (context, state) {
+              if (state is Loaded && state.isNavigating && state.userPosition != null && _mapController != null) {
+                _mapController!.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(
+                      target: state.userPosition!,
+                      zoom: 18,
+                      tilt: 45,
+                      bearing: 0, // In real app we would calculate bearing from movement
+                    ),
+                  ),
+                );
+              }
+            },
             builder: (context, state) {
               return switch (state) {
                 Initial() || Loading() => const Center(
@@ -87,15 +85,18 @@ class _DriveViewState extends State<DriveView> {
                 Loaded(origin: final origin, destination: final destination, directions: final directions) =>
                   GoogleMap(
                     onMapCreated: (controller) {
-                      controller.animateCamera(
-                        CameraUpdate.newLatLngBounds(
-                          LatLngBounds(
-                            southwest: directions.boundsSw,
-                            northeast: directions.boundsNe,
+                      _mapController = controller;
+                      if (!state.isNavigating) {
+                        controller.animateCamera(
+                          CameraUpdate.newLatLngBounds(
+                            LatLngBounds(
+                              southwest: directions.boundsSw,
+                              northeast: directions.boundsNe,
+                            ),
+                            50,
                           ),
-                          50,
-                        ),
-                      );
+                        );
+                      }
                     },
                     initialCameraPosition: CameraPosition(
                       target: origin,
@@ -125,25 +126,65 @@ class _DriveViewState extends State<DriveView> {
               };
             },
           ),
-          
-          // Back Button
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 16,
-            left: 16,
-            child: GestureDetector(
-              onTap: () => Navigator.of(context).pop(),
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10),
-                  ],
+
+          // Navigation Instruction Panel
+          BlocBuilder<DriveCubit, DriveState>(
+            builder: (context, state) {
+              if (state is! Loaded || !state.isNavigating) return const SizedBox.shrink();
+              
+              final currentStepIndex = state.currentStepIndex;
+              final steps = state.directions.steps;
+              
+              if (currentStepIndex >= steps.length) {
+                return Positioned(
+                  top: MediaQuery.of(context).padding.top + 16,
+                  left: 16,
+                  right: 16,
+                  child: _InstructionCard(
+                    instruction: 'Jesteś u celu!',
+                    distance: '',
+                    isArrival: true,
+                  ),
+                );
+              }
+
+              final step = steps[currentStepIndex];
+
+              return Positioned(
+                top: MediaQuery.of(context).padding.top + 16,
+                left: 16,
+                right: 16,
+                child: _InstructionCard(
+                  instruction: step.instruction,
+                  distance: step.distance,
                 ),
-                child: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-              ),
-            ),
+              );
+            },
+          ),
+          
+          // Back Button (hidden during navigation)
+          BlocBuilder<DriveCubit, DriveState>(
+            builder: (context, state) {
+              if (state is Loaded && state.isNavigating) return const SizedBox.shrink();
+              return Positioned(
+                top: MediaQuery.of(context).padding.top + 16,
+                left: 16,
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10),
+                      ],
+                    ),
+                    child: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+                  ),
+                ),
+              );
+            },
           ),
 
           // Bottom Info Panel
@@ -151,14 +192,16 @@ class _DriveViewState extends State<DriveView> {
             builder: (context, state) {
               if (state is! Loaded) return const SizedBox.shrink();
               
+              final isNavigating = state.isNavigating;
               final directions = state.directions;
 
               return Positioned(
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: Container(
-                  padding: const EdgeInsets.all(24),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  padding: EdgeInsets.fromLTRB(24, 24, 24, isNavigating ? 16 : 24),
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
@@ -169,83 +212,73 @@ class _DriveViewState extends State<DriveView> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        width: 40,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.destinationName,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    Icon(Icons.directions_car_rounded, size: 14, color: Colors.grey.shade400),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '${directions.totalDistance} • ${directions.totalDuration}',
-                                      style: GoogleFonts.inter(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey.shade500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                      if (!isNavigating) ...[
+                        Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(2),
                           ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: Colors.green.shade50,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              'PODGLĄD KORKÓW',
-                              style: GoogleFonts.inter(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.green.shade700,
-                                letterSpacing: 0.5,
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.destinationName,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.directions_car_rounded, size: 14, color: Colors.grey.shade400),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '${directions.totalDistance} • ${directions.totalDuration}',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey.shade500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 32),
+                          ],
+                        ),
+                        const SizedBox(height: 32),
+                      ],
                       SizedBox(
                         width: double.infinity,
                         height: 64,
                         child: ElevatedButton(
                           onPressed: () {
                             HapticFeedback.mediumImpact();
-                            _startNavigation(state.destination);
+                            if (isNavigating) {
+                              context.read<DriveCubit>().stopNavigation();
+                            } else {
+                              context.read<DriveCubit>().startNavigation();
+                            }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
+                            backgroundColor: isNavigating ? Colors.red.shade600 : Colors.black,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                             elevation: 0,
                           ),
                           child: Text(
-                            'START NAWIGACJI',
+                            isNavigating ? 'ZAKOŃCZ' : 'START NAWIGACJI',
                             style: GoogleFonts.inter(
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
@@ -254,12 +287,75 @@ class _DriveViewState extends State<DriveView> {
                           ),
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).padding.bottom),
+                      SizedBox(height: isNavigating ? 16 : MediaQuery.of(context).padding.bottom),
                     ],
                   ),
                 ),
               );
             },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InstructionCard extends StatelessWidget {
+  const _InstructionCard({
+    required this.instruction,
+    required this.distance,
+    this.isArrival = false,
+  });
+
+  final String instruction;
+  final String distance;
+  final bool isArrival;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: isArrival ? Colors.green.shade700 : Colors.black.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(color: Colors.black26, blurRadius: 15, offset: Offset(0, 5)),
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(
+            isArrival ? Icons.check_circle_rounded : Icons.directions_rounded,
+            color: Colors.white,
+            size: 32,
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  instruction,
+                  style: GoogleFonts.inter(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                if (distance.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    distance,
+                    style: GoogleFonts.inter(
+                      color: Colors.white60,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ),
         ],
       ),

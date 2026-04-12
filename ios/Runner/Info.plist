@@ -63,5 +63,14 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Aplikacja EasyNAVI potrzebuje dostępu do Twojej lokalizacji, aby pokazać Twoją pozycję na mapie i wyznaczyć trasę do celu.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Aplikacja EasyNAVI potrzebuje dostępu do Twojej lokalizacji, aby nawigacja działała poprawnie.</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>googlemaps</string>
+		<string>maps</string>
+	</array>
 </dict>
 </plist>

@@ -8,6 +8,9 @@ sealed class DriveState with _$DriveState {
     required LatLng origin,
     required LatLng destination,
     required DirectionsModel directions,
+    @Default(false) bool isNavigating,
+    @Default(0) int currentStepIndex,
+    LatLng? userPosition,
   }) = Loaded;
   const factory DriveState.error(String errorKey) = DriveError;
 }

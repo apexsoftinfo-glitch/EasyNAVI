@@ -12,11 +12,17 @@ part of 'drive_cubit.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$DriveState {
+mixin _$DriveState implements DiagnosticableTreeMixin {
 
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'DriveState'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -28,7 +34,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'DriveState()';
 }
 
@@ -125,12 +131,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( LatLng origin,  LatLng destination,  DirectionsModel directions)?  loaded,TResult Function( String errorKey)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( LatLng origin,  LatLng destination,  DirectionsModel directions,  bool isNavigating,  int currentStepIndex,  LatLng? userPosition)?  loaded,TResult Function( String errorKey)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial();case Loading() when loading != null:
 return loading();case Loaded() when loaded != null:
-return loaded(_that.origin,_that.destination,_that.directions);case DriveError() when error != null:
+return loaded(_that.origin,_that.destination,_that.directions,_that.isNavigating,_that.currentStepIndex,_that.userPosition);case DriveError() when error != null:
 return error(_that.errorKey);case _:
   return orElse();
 
@@ -149,12 +155,12 @@ return error(_that.errorKey);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( LatLng origin,  LatLng destination,  DirectionsModel directions)  loaded,required TResult Function( String errorKey)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( LatLng origin,  LatLng destination,  DirectionsModel directions,  bool isNavigating,  int currentStepIndex,  LatLng? userPosition)  loaded,required TResult Function( String errorKey)  error,}) {final _that = this;
 switch (_that) {
 case Initial():
 return initial();case Loading():
 return loading();case Loaded():
-return loaded(_that.origin,_that.destination,_that.directions);case DriveError():
+return loaded(_that.origin,_that.destination,_that.directions,_that.isNavigating,_that.currentStepIndex,_that.userPosition);case DriveError():
 return error(_that.errorKey);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -169,12 +175,12 @@ return error(_that.errorKey);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( LatLng origin,  LatLng destination,  DirectionsModel directions)?  loaded,TResult? Function( String errorKey)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( LatLng origin,  LatLng destination,  DirectionsModel directions,  bool isNavigating,  int currentStepIndex,  LatLng? userPosition)?  loaded,TResult? Function( String errorKey)?  error,}) {final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial();case Loading() when loading != null:
 return loading();case Loaded() when loaded != null:
-return loaded(_that.origin,_that.destination,_that.directions);case DriveError() when error != null:
+return loaded(_that.origin,_that.destination,_that.directions,_that.isNavigating,_that.currentStepIndex,_that.userPosition);case DriveError() when error != null:
 return error(_that.errorKey);case _:
   return null;
 
@@ -186,7 +192,7 @@ return error(_that.errorKey);case _:
 /// @nodoc
 
 
-class Initial implements DriveState {
+class Initial with DiagnosticableTreeMixin implements DriveState {
   const Initial();
   
 
@@ -194,6 +200,12 @@ class Initial implements DriveState {
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'DriveState.initial'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -205,7 +217,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'DriveState.initial()';
 }
 
@@ -218,7 +230,7 @@ String toString() {
 /// @nodoc
 
 
-class Loading implements DriveState {
+class Loading with DiagnosticableTreeMixin implements DriveState {
   const Loading();
   
 
@@ -226,6 +238,12 @@ class Loading implements DriveState {
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'DriveState.loading'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -237,7 +255,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'DriveState.loading()';
 }
 
@@ -250,13 +268,16 @@ String toString() {
 /// @nodoc
 
 
-class Loaded implements DriveState {
-  const Loaded({required this.origin, required this.destination, required this.directions});
+class Loaded with DiagnosticableTreeMixin implements DriveState {
+  const Loaded({required this.origin, required this.destination, required this.directions, this.isNavigating = false, this.currentStepIndex = 0, this.userPosition});
   
 
  final  LatLng origin;
  final  LatLng destination;
  final  DirectionsModel directions;
+@JsonKey() final  bool isNavigating;
+@JsonKey() final  int currentStepIndex;
+ final  LatLng? userPosition;
 
 /// Create a copy of DriveState
 /// with the given fields replaced by the non-null parameter values.
@@ -265,19 +286,25 @@ class Loaded implements DriveState {
 $LoadedCopyWith<Loaded> get copyWith => _$LoadedCopyWithImpl<Loaded>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'DriveState.loaded'))
+    ..add(DiagnosticsProperty('origin', origin))..add(DiagnosticsProperty('destination', destination))..add(DiagnosticsProperty('directions', directions))..add(DiagnosticsProperty('isNavigating', isNavigating))..add(DiagnosticsProperty('currentStepIndex', currentStepIndex))..add(DiagnosticsProperty('userPosition', userPosition));
+}
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Loaded&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.destination, destination) || other.destination == destination)&&(identical(other.directions, directions) || other.directions == directions));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Loaded&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.destination, destination) || other.destination == destination)&&(identical(other.directions, directions) || other.directions == directions)&&(identical(other.isNavigating, isNavigating) || other.isNavigating == isNavigating)&&(identical(other.currentStepIndex, currentStepIndex) || other.currentStepIndex == currentStepIndex)&&(identical(other.userPosition, userPosition) || other.userPosition == userPosition));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,origin,destination,directions);
+int get hashCode => Object.hash(runtimeType,origin,destination,directions,isNavigating,currentStepIndex,userPosition);
 
 @override
-String toString() {
-  return 'DriveState.loaded(origin: $origin, destination: $destination, directions: $directions)';
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'DriveState.loaded(origin: $origin, destination: $destination, directions: $directions, isNavigating: $isNavigating, currentStepIndex: $currentStepIndex, userPosition: $userPosition)';
 }
 
 
@@ -288,7 +315,7 @@ abstract mixin class $LoadedCopyWith<$Res> implements $DriveStateCopyWith<$Res> 
   factory $LoadedCopyWith(Loaded value, $Res Function(Loaded) _then) = _$LoadedCopyWithImpl;
 @useResult
 $Res call({
- LatLng origin, LatLng destination, DirectionsModel directions
+ LatLng origin, LatLng destination, DirectionsModel directions, bool isNavigating, int currentStepIndex, LatLng? userPosition
 });
 
 
@@ -305,12 +332,15 @@ class _$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of DriveState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? origin = null,Object? destination = null,Object? directions = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? origin = null,Object? destination = null,Object? directions = null,Object? isNavigating = null,Object? currentStepIndex = null,Object? userPosition = freezed,}) {
   return _then(Loaded(
 origin: null == origin ? _self.origin : origin // ignore: cast_nullable_to_non_nullable
 as LatLng,destination: null == destination ? _self.destination : destination // ignore: cast_nullable_to_non_nullable
 as LatLng,directions: null == directions ? _self.directions : directions // ignore: cast_nullable_to_non_nullable
-as DirectionsModel,
+as DirectionsModel,isNavigating: null == isNavigating ? _self.isNavigating : isNavigating // ignore: cast_nullable_to_non_nullable
+as bool,currentStepIndex: null == currentStepIndex ? _self.currentStepIndex : currentStepIndex // ignore: cast_nullable_to_non_nullable
+as int,userPosition: freezed == userPosition ? _self.userPosition : userPosition // ignore: cast_nullable_to_non_nullable
+as LatLng?,
   ));
 }
 
@@ -329,7 +359,7 @@ $DirectionsModelCopyWith<$Res> get directions {
 /// @nodoc
 
 
-class DriveError implements DriveState {
+class DriveError with DiagnosticableTreeMixin implements DriveState {
   const DriveError(this.errorKey);
   
 
@@ -342,6 +372,12 @@ class DriveError implements DriveState {
 $DriveErrorCopyWith<DriveError> get copyWith => _$DriveErrorCopyWithImpl<DriveError>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'DriveState.error'))
+    ..add(DiagnosticsProperty('errorKey', errorKey));
+}
 
 @override
 bool operator ==(Object other) {
@@ -353,7 +389,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,errorKey);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'DriveState.error(errorKey: $errorKey)';
 }
 
