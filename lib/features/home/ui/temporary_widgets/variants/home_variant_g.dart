@@ -15,13 +15,13 @@ class HomeVariantGScreen extends StatelessWidget {
     return Theme(
       data: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: Colors.black,
+        scaffoldBackgroundColor: Colors.white,
         textTheme: GoogleFonts.interTextTheme(),
       ),
       child: Scaffold(
         body: Stack(
           children: [
-            // Background Image with distance
+            // Bright Background Image
             Positioned.fill(
               child: Image.asset(
                 'assets/images/home_bg.png',
@@ -29,7 +29,7 @@ class HomeVariantGScreen extends StatelessWidget {
               ),
             ),
             
-            // Dark Overlay for readability
+            // Light Overlay to make it less gloomy and ensure text readability
             Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
@@ -37,19 +37,19 @@ class HomeVariantGScreen extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Colors.black.withValues(alpha: 0.3),
-                      Colors.black.withValues(alpha: 0.6),
-                      Colors.black.withValues(alpha: 0.8),
+                      Colors.white.withValues(alpha: 0.1),
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.2),
                     ],
                   ),
                 ),
               ),
             ),
             
-            // Blur effect for extra polish
+            // Subtle blur for focus
             Positioned.fill(
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
                 child: Container(color: Colors.transparent),
               ),
             ),
@@ -70,7 +70,7 @@ class HomeVariantGScreen extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // Left Side: Column with Address and Settings
+                          // Left Side: Column with Address and Settings (Equal Sizes)
                           Expanded(
                             flex: 1,
                             child: Column(
@@ -79,7 +79,7 @@ class HomeVariantGScreen extends StatelessWidget {
                                   child: _BentoTile(
                                     label: 'ADRESY',
                                     icon: Icons.map_outlined,
-                                    color: Colors.white.withValues(alpha: 0.1),
+                                    color: Colors.white.withValues(alpha: 0.6),
                                     onTap: () {
                                       HapticFeedback.selectionClick();
                                       _showStub(context, 'Baza adresów');
@@ -91,7 +91,7 @@ class HomeVariantGScreen extends StatelessWidget {
                                   child: _BentoTile(
                                     label: 'USTAWIENIA',
                                     icon: Icons.settings_outlined,
-                                    color: Colors.white.withValues(alpha: 0.1),
+                                    color: Colors.white.withValues(alpha: 0.6),
                                     onTap: () {
                                       HapticFeedback.selectionClick();
                                       Navigator.of(context).push(
@@ -141,7 +141,7 @@ class HomeVariantGScreen extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -163,7 +163,7 @@ class _HeaderLabel extends StatelessWidget {
             fontSize: 12,
             fontWeight: FontWeight.w900,
             letterSpacing: 4,
-            color: Colors.white.withValues(alpha: 0.4),
+            color: Colors.black.withValues(alpha: 0.5),
           ),
         ),
         Text(
@@ -172,7 +172,10 @@ class _HeaderLabel extends StatelessWidget {
             fontSize: 40,
             fontWeight: FontWeight.w900,
             letterSpacing: -2,
-            color: Colors.white,
+            color: Colors.black,
+            shadows: [
+              const Shadow(color: Colors.white54, offset: Offset(0, 2), blurRadius: 4),
+            ],
           ),
         ),
       ],
@@ -222,22 +225,22 @@ class _BentoTileState extends State<_BentoTile> {
           color: widget.color,
           borderRadius: BorderRadius.circular(32),
           border: Border.all(
-            color: Colors.white.withValues(alpha: 0.1),
-            width: 1,
+            color: Colors.white.withValues(alpha: 0.4),
+            width: 1.5,
           ),
           boxShadow: [
-            if (!_isPressed && widget.isLarge)
+            if (!_isPressed)
               BoxShadow(
-                color: widget.color.withValues(alpha: 0.3),
-                blurRadius: 30,
-                offset: const Offset(0, 10),
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
               ),
           ],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(32),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Column(
               mainAxisAlignment: widget.isLarge ? MainAxisAlignment.center : MainAxisAlignment.start,
               crossAxisAlignment: widget.isLarge ? CrossAxisAlignment.center : CrossAxisAlignment.start,
@@ -251,7 +254,7 @@ class _BentoTileState extends State<_BentoTile> {
                       Container(
                         padding: EdgeInsets.all(widget.isLarge ? 20 : 12),
                         decoration: BoxDecoration(
-                          color: (widget.iconColor ?? textColor).withValues(alpha: 0.15),
+                          color: (widget.iconColor ?? textColor).withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -297,11 +300,11 @@ class _Footer extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+              border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
             ),
-            child: const Icon(Icons.developer_mode, size: 16, color: Colors.white38),
+            child: const Icon(Icons.developer_mode, size: 16, color: Colors.black26),
           ),
         ),
         Text(
@@ -309,7 +312,7 @@ class _Footer extends StatelessWidget {
           style: GoogleFonts.inter(
             fontSize: 9,
             fontWeight: FontWeight.w700,
-            color: Colors.white.withValues(alpha: 0.2),
+            color: Colors.black.withValues(alpha: 0.3),
             letterSpacing: 2,
           ),
         ),
