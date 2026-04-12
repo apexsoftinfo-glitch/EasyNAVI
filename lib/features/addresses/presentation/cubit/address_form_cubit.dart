@@ -20,6 +20,8 @@ class AddressFormCubit extends Cubit<AddressFormState> {
     required String street,
     required String city,
     required String zipCode,
+    double? latitude,
+    double? longitude,
     String? id,
   }) async {
     emit(const AddressFormState.loading());
@@ -37,6 +39,8 @@ class AddressFormCubit extends Cubit<AddressFormState> {
       street: street,
       city: city,
       zipCode: zipCode,
+      latitude: latitude,
+      longitude: longitude,
     );
 
     try {

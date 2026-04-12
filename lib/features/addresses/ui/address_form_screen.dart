@@ -36,6 +36,8 @@ class _AddressFormViewState extends State<AddressFormView> {
   late final TextEditingController _streetController;
   late final TextEditingController _cityController;
   late final TextEditingController _zipController;
+  double? _latitude;
+  double? _longitude;
 
   @override
   void initState() {
@@ -44,6 +46,8 @@ class _AddressFormViewState extends State<AddressFormView> {
     _streetController = TextEditingController(text: widget.address?.street);
     _cityController = TextEditingController(text: widget.address?.city);
     _zipController = TextEditingController(text: widget.address?.zipCode);
+    _latitude = widget.address?.latitude;
+    _longitude = widget.address?.longitude;
   }
 
   @override
@@ -62,6 +66,8 @@ class _AddressFormViewState extends State<AddressFormView> {
             street: _streetController.text,
             city: _cityController.text,
             zipCode: _zipController.text,
+            latitude: _latitude,
+            longitude: _longitude,
             id: widget.address?.id,
           );
     }
@@ -88,6 +94,8 @@ class _AddressFormViewState extends State<AddressFormView> {
                 _streetController.text = state.details['street'] ?? '';
                 _cityController.text = state.details['city'] ?? '';
                 _zipController.text = state.details['zipCode'] ?? '';
+                _latitude = double.tryParse(state.details['latitude'] ?? '');
+                _longitude = double.tryParse(state.details['longitude'] ?? '');
               });
             }
           },

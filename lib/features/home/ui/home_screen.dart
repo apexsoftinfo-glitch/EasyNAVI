@@ -120,7 +120,9 @@ class HomeScreen extends StatelessWidget {
                               isLarge: true,
                               onTap: () {
                                 HapticFeedback.heavyImpact();
-                                _showStub(context, 'Gdzie jedziemy?');
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (_) => const AddressesScreen()),
+                                );
                               },
                             ).animate().fadeIn(delay: 100.ms).scale(begin: const Offset(0.9, 0.9)),
                           ),
@@ -136,19 +138,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  void _showStub(BuildContext context, String title) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
-        backgroundColor: Colors.black,
-        duration: const Duration(seconds: 1),
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
     );
   }

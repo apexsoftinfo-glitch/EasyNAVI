@@ -57,6 +57,10 @@ import 'package:myapp/features/connectivity/data/repositories/connectivity_repos
     as _i220;
 import 'package:myapp/features/connectivity/presentation/cubit/connectivity_cubit.dart'
     as _i165;
+import 'package:myapp/features/drive/domain/repositories/directions_repository.dart'
+    as _i675;
+import 'package:myapp/features/drive/presentation/cubit/drive_cubit.dart'
+    as _i636;
 import 'package:myapp/features/profiles/data/datasources/shared_user_apps_data_source.dart'
     as _i842;
 import 'package:myapp/features/profiles/data/datasources/shared_user_data_source.dart'
@@ -97,6 +101,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i174.AddressesDataSource>(
       () => _i174.AddressesDataSourceImpl(gh<_i454.SupabaseClient>()),
     );
+    gh.lazySingleton<_i675.DirectionsRepository>(
+      () => _i675.DirectionsRepositoryImpl(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i894.SubscriptionRepository>(
       () =>
           _i894.SubscriptionRepositoryImpl(gh<_i138.SubscriptionDataSource>()),
@@ -123,6 +130,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i19.AddressesRepository>(
       () => _i19.AddressesRepositoryImpl(gh<_i174.AddressesDataSource>()),
+    );
+    gh.factory<_i636.DriveCubit>(
+      () => _i636.DriveCubit(gh<_i675.DirectionsRepository>()),
     );
     gh.lazySingleton<_i842.SharedUserAppsDataSource>(
       () => _i842.SupabaseSharedUserAppsDataSource(gh<_i454.SupabaseClient>()),

@@ -5,6 +5,8 @@ import '../../../../core/di/injection.dart';
 import '../presentation/cubit/addresses_cubit.dart';
 import 'address_form_screen.dart';
 import '../data/models/address_model.dart';
+import '../../drive/ui/drive_screen.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AddressesScreen extends StatelessWidget {
   const AddressesScreen({super.key});
@@ -100,7 +102,8 @@ class AddressesView extends StatelessWidget {
                         },
                         child: _AddressCard(
                           address: item,
-                          onTap: () => _openAddressForm(context, address: item),
+                          onTap: () => _openDriveView(context, item),
+                          onEdit: () => _openAddressForm(context, address: item),
                         ),
                       );
                     },
@@ -118,12 +121,31 @@ class AddressesView extends StatelessWidget {
       ),
     );
   }
+
+  void _openDriveView(BuildContext context, AddressModel address) {
+    if (address.latitude == null || address.longitude == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ten adres nie ma współrzędnych. Edytuj go.')),
+      );
+      return;
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => DriveScreen(
+          destination: LatLng(address.latitude!, address.longitude!),
+          destinationName: address.name,
+        ),
+      ),
+    );
+  }
 }
 
 class _AddressCard extends StatelessWidget {
-  const _AddressCard({required this.address, required this.onTap});
+  const _AddressCard({required this.address, required this.onTap, required this.onEdit});
   final AddressModel address;
   final VoidCallback onTap;
+  final VoidCallback onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -178,6 +200,11 @@ class _AddressCard extends StatelessWidget {
                 ],
               ),
             ),
+            IconButton(
+              icon: Icon(Icons.edit_outlined, size: 20, color: Colors.grey.shade400),
+              onPressed: onEdit,
+            ),
+            const SizedBox(width: 8),
             Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey.shade300),
           ],
         ),
