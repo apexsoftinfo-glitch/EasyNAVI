@@ -28,6 +28,14 @@ import 'package:myapp/app/session/data/repositories/session_repository.dart'
 import 'package:myapp/app/session/presentation/cubit/session_cubit.dart'
     as _i934;
 import 'package:myapp/core/di/app_module.dart' as _i832;
+import 'package:myapp/features/addresses/data/datasources/addresses_data_source.dart'
+    as _i174;
+import 'package:myapp/features/addresses/domain/repositories/addresses_repository.dart'
+    as _i19;
+import 'package:myapp/features/addresses/presentation/cubit/address_form_cubit.dart'
+    as _i30;
+import 'package:myapp/features/addresses/presentation/cubit/addresses_cubit.dart'
+    as _i1042;
 import 'package:myapp/features/auth/data/datasources/auth_data_source.dart'
     as _i538;
 import 'package:myapp/features/auth/data/repositories/auth_repository.dart'
@@ -80,6 +88,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i138.SubscriptionDataSource>(
       () => appModule.subscriptionDataSource,
     );
+    gh.lazySingleton<_i174.AddressesDataSource>(
+      () => _i174.AddressesDataSourceImpl(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i894.SubscriptionRepository>(
       () =>
           _i894.SubscriptionRepositoryImpl(gh<_i138.SubscriptionDataSource>()),
@@ -101,8 +112,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i910.AppLocaleRepository>(
       () => _i910.AppLocaleRepositoryImpl(gh<_i634.AppLocaleDataSource>()),
     );
+    gh.lazySingleton<_i19.AddressesRepository>(
+      () => _i19.AddressesRepositoryImpl(gh<_i174.AddressesDataSource>()),
+    );
     gh.lazySingleton<_i842.SharedUserAppsDataSource>(
       () => _i842.SupabaseSharedUserAppsDataSource(gh<_i454.SupabaseClient>()),
+    );
+    gh.factory<_i30.AddressFormCubit>(
+      () => _i30.AddressFormCubit(
+        gh<_i19.AddressesRepository>(),
+        gh<_i454.SupabaseClient>(),
+      ),
     );
     gh.lazySingleton<_i220.ConnectivityRepository>(
       () =>
@@ -122,6 +142,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i504.SharedUserAppsRepositoryImpl(
         gh<_i842.SharedUserAppsDataSource>(),
       ),
+    );
+    gh.factory<_i1042.AddressesCubit>(
+      () => _i1042.AddressesCubit(gh<_i19.AddressesRepository>()),
     );
     gh.lazySingleton<_i37.AuthRepository>(
       () => _i37.AuthRepositoryImpl(

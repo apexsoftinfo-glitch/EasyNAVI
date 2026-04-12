@@ -1,0 +1,240 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/di/injection.dart';
+import '../presentation/cubit/address_form_cubit.dart';
+import '../data/models/address_model.dart';
+
+class AddressFormScreen extends StatelessWidget {
+  const AddressFormScreen({super.key, this.address});
+  final AddressModel? address;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => getIt<AddressFormCubit>(),
+      child: AddressFormView(address: address),
+    );
+  }
+}
+
+class AddressFormView extends StatefulWidget {
+  const AddressFormView({super.key, this.address});
+  final AddressModel? address;
+
+  @override
+  State<AddressFormView> createState() => _AddressFormViewState();
+}
+
+class _AddressFormViewState extends State<AddressFormView> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _nameController;
+  late final TextEditingController _streetController;
+  late final TextEditingController _cityController;
+  late final TextEditingController _zipController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.address?.name);
+    _streetController = TextEditingController(text: widget.address?.street);
+    _cityController = TextEditingController(text: widget.address?.city);
+    _zipController = TextEditingController(text: widget.address?.zipCode);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _streetController.dispose();
+    _cityController.dispose();
+    _zipController.dispose();
+    super.dispose();
+  }
+
+  void _onSave() {
+    if (_formKey.currentState?.validate() ?? false) {
+      context.read<AddressFormCubit>().saveAddress(
+            name: _nameController.text,
+            street: _streetController.text,
+            city: _cityController.text,
+            zipCode: _zipController.text,
+            id: widget.address?.id,
+          );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<AddressFormCubit, AddressFormState>(
+      listener: (context, state) {
+        if (state is Success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Zapisano pomyślnie!'), backgroundColor: Colors.green),
+          );
+          Navigator.of(context).pop();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: Text(
+            (widget.address == null ? 'Nowy Adres' : 'Edytuj Adres').toUpperCase(),
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 2,
+              color: Colors.black,
+            ),
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.close_rounded, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+        body: BlocBuilder<AddressFormCubit, AddressFormState>(
+          builder: (context, state) {
+            final isLoading = state is Loading;
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildFieldLabel('NAZWA MIEJSCA'),
+                    _buildTextField(
+                      controller: _nameController,
+                      hint: 'np. Biuro / Serwerownia',
+                      enabled: !isLoading,
+                      validator: (val) => val?.isEmpty ?? true ? 'Podaj nazwę' : null,
+                    ),
+                    const SizedBox(height: 24),
+                    _buildFieldLabel('ULICA I NUMER'),
+                    _buildTextField(
+                      controller: _streetController,
+                      hint: 'np. Marszałkowska 10',
+                      enabled: !isLoading,
+                      validator: (val) => val?.isEmpty ?? true ? 'Podaj ulicę' : null,
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildFieldLabel('MIASTO'),
+                              _buildTextField(
+                                controller: _cityController,
+                                hint: 'np. Warszawa',
+                                enabled: !isLoading,
+                                validator: (val) => val?.isEmpty ?? true ? 'Podaj miasto' : null,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildFieldLabel('KOD'),
+                              _buildTextField(
+                                controller: _zipController,
+                                hint: '00-001',
+                                enabled: !isLoading,
+                                validator: (val) => val?.isEmpty ?? true ? 'Podaj kod' : null,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 48),
+                    if (state is Error)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Text(
+                          state.errorKey,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 64,
+                      child: ElevatedButton(
+                        onPressed: isLoading ? null : _onSave,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: isLoading
+                            ? const CircularProgressIndicator(color: Colors.white)
+                            : Text(
+                                'ZAPISZ',
+                                style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 2,
+                                ),
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFieldLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: 8),
+      child: Text(
+        text,
+        style: GoogleFonts.inter(
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+          color: Colors.grey.shade400,
+          letterSpacing: 1,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hint,
+    required bool enabled,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      enabled: enabled,
+      validator: validator,
+      style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: TextStyle(color: Colors.grey.shade300, fontWeight: FontWeight.w400),
+        filled: true,
+        fillColor: const Color(0xFFF9F9F9),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: const EdgeInsets.all(20),
+      ),
+    );
+  }
+}

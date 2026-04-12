@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../app/developer/ui/developer_screen.dart';
+import '../../addresses/ui/addresses_screen.dart';
 import '../../profiles/presentation/ui/profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -82,7 +83,9 @@ class HomeScreen extends StatelessWidget {
                                     color: Colors.white.withValues(alpha: 0.15),
                                     onTap: () {
                                       HapticFeedback.selectionClick();
-                                      _showStub(context, 'Baza adresów');
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (_) => const AddressesScreen()),
+                                      );
                                     },
                                   ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.2),
                                 ),
