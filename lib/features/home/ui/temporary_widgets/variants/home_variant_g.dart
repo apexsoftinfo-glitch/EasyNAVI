@@ -181,10 +181,10 @@ class _HeaderLabel extends StatelessWidget {
             Text(
               'EASY',
               style: GoogleFonts.inter(
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 4,
-                color: Colors.black.withValues(alpha: 0.5),
+                color: const Color(0xFFC6FF00),
               ),
             ),
             Text(
