@@ -180,7 +180,7 @@ class _BottomMenu extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 10),
           ),
           InkWell(
-            onPressed: () => Navigator.of(context).push(
+            onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const DeveloperScreen()),
             ),
             child: const Text(

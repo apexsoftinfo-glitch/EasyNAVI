@@ -16,14 +16,13 @@ class HomeVariantDScreen extends StatelessWidget {
         useMaterial3: true,
         textTheme: GoogleFonts.interTextTheme(),
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(2975824), // Slate
+          seedColor: const Color(0xFF2C3E50), // Slate
           primary: const Color(0xFF2C3E50),
           secondary: const Color(0xFFFF8C00), // Orange
         ),
       ),
       child: Builder(
         builder: (context) {
-          final theme = Theme.of(context);
           return Scaffold(
             backgroundColor: const Color(0xFF1A1A1A),
             appBar: AppBar(

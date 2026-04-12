@@ -189,7 +189,6 @@ class _GlassButtonState extends State<_GlassButton> with SingleTickerProviderSta
   void initState() {
     super.initState();
     _controller = AnimationController(
-whenever: this,
       vsync: this,
       duration: const Duration(milliseconds: 100),
       lowerBound: 0.96,
