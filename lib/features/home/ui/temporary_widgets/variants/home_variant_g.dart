@@ -79,7 +79,7 @@ class HomeVariantGScreen extends StatelessWidget {
                                   child: _BentoTile(
                                     label: 'ADRESY',
                                     icon: Icons.map_outlined,
-                                    color: Colors.white.withValues(alpha: 0.35),
+                                    color: Colors.white.withValues(alpha: 0.15),
                                     onTap: () {
                                       HapticFeedback.selectionClick();
                                       _showStub(context, 'Baza adresów');
@@ -91,7 +91,7 @@ class HomeVariantGScreen extends StatelessWidget {
                                   child: _BentoTile(
                                     label: 'USTAWIENIA',
                                     icon: Icons.settings_outlined,
-                                    color: Colors.white.withValues(alpha: 0.35),
+                                    color: Colors.white.withValues(alpha: 0.15),
                                     onTap: () {
                                       HapticFeedback.selectionClick();
                                       Navigator.of(context).push(
@@ -112,7 +112,7 @@ class HomeVariantGScreen extends StatelessWidget {
                             child: _BentoTile(
                               label: 'JEDZIEMY',
                               icon: Icons.navigation_rounded,
-                              color: const Color(0xFFC6FF00).withValues(alpha: 0.85),
+                              color: const Color(0xFFC6FF00).withValues(alpha: 0.65),
                               iconColor: Colors.black,
                               isLarge: true,
                               onTap: () {
@@ -221,6 +221,7 @@ class _BentoTileState extends State<_BentoTile> {
       onTapCancel: () => setState(() => _isPressed = false),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 100),
+        width: double.infinity,
         decoration: BoxDecoration(
           color: widget.color,
           borderRadius: BorderRadius.circular(32),
