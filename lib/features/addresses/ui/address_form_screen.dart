@@ -5,6 +5,7 @@ import '../../../../core/di/injection.dart';
 import '../presentation/cubit/address_form_cubit.dart';
 import '../presentation/cubit/maps_search_cubit.dart';
 import '../data/models/address_model.dart';
+import '../../../../l10n/l10n.dart';
 
 class AddressFormScreen extends StatelessWidget {
   const AddressFormScreen({super.key, this.address});
@@ -81,7 +82,7 @@ class _AddressFormViewState extends State<AddressFormView> {
           listener: (context, state) {
             if (state is Success) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Zapisano pomyślnie!'), backgroundColor: Colors.green),
+                SnackBar(content: Text(context.l10n.profileSavedSnackbar), backgroundColor: Colors.green),
               );
               Navigator.of(context).pop();
             }
@@ -107,7 +108,7 @@ class _AddressFormViewState extends State<AddressFormView> {
           backgroundColor: Colors.white,
           elevation: 0,
           title: Text(
-            (widget.address == null ? 'Nowy Adres' : 'Edytuj Adres').toUpperCase(),
+            (widget.address == null ? context.l10n.addressesTitle : context.l10n.editLabel).toUpperCase(),
             style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: FontWeight.w900,
@@ -131,21 +132,21 @@ class _AddressFormViewState extends State<AddressFormView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildFieldLabel('NAZWA MIEJSCA'),
+                    _buildFieldLabel(context.l10n.nameField.toUpperCase()),
                     _buildTextField(
                       controller: _nameController,
-                      hint: 'np. Biuro / Serwerownia',
+                      hint: '...',
                       enabled: !isLoading,
-                      validator: (val) => val?.isEmpty ?? true ? 'Podaj nazwę' : null,
+                      validator: (val) => val?.isEmpty ?? true ? context.l10n.errorUnknown : null,
                     ),
                     const SizedBox(height: 24),
-                    _buildFieldLabel('ULICA I NUMER (SZUKAJ)'),
+                    _buildFieldLabel(context.l10n.streetField.toUpperCase()),
                     _buildTextField(
                       controller: _streetController,
-                      hint: 'Zacznij wpisywać adres...',
+                      hint: context.l10n.searchAddressesHint,
                       enabled: !isLoading,
                       onChanged: (val) => context.read<MapsSearchCubit>().onInputChanged(val),
-                      validator: (val) => val?.isEmpty ?? true ? 'Podaj ulicę' : null,
+                      validator: (val) => val?.isEmpty ?? true ? context.l10n.errorUnknown : null,
                     ),
                     
                     // Suggestions List
@@ -194,12 +195,12 @@ class _AddressFormViewState extends State<AddressFormView> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildFieldLabel('MIASTO'),
+                              _buildFieldLabel(context.l10n.cityField.toUpperCase()),
                               _buildTextField(
                                 controller: _cityController,
-                                hint: 'np. Warszawa',
+                                hint: '...',
                                 enabled: !isLoading,
-                                validator: (val) => val?.isEmpty ?? true ? 'Podaj miasto' : null,
+                                validator: (val) => val?.isEmpty ?? true ? context.l10n.errorUnknown : null,
                               ),
                             ],
                           ),
@@ -209,12 +210,12 @@ class _AddressFormViewState extends State<AddressFormView> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildFieldLabel('KOD'),
+                              _buildFieldLabel(context.l10n.zipCodeField.toUpperCase()),
                               _buildTextField(
                                 controller: _zipController,
-                                hint: '00-001',
+                                hint: '...',
                                 enabled: !isLoading,
-                                validator: (val) => val?.isEmpty ?? true ? 'Podaj kod' : null,
+                                validator: (val) => val?.isEmpty ?? true ? context.l10n.errorUnknown : null,
                               ),
                             ],
                           ),
@@ -246,7 +247,7 @@ class _AddressFormViewState extends State<AddressFormView> {
                         child: isLoading
                             ? const CircularProgressIndicator(color: Colors.white)
                             : Text(
-                                'ZAPISZ',
+                                context.l10n.saveAddressButton.toUpperCase(),
                                 style: GoogleFonts.inter(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w900,

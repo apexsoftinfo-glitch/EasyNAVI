@@ -6,6 +6,7 @@ part 'sync_state.freezed.dart';
 abstract class SyncState with _$SyncState {
   const factory SyncState.initial() = Initial;
   const factory SyncState.loading() = Loading;
-  const factory SyncState.success(String message) = Success;
+  const factory SyncState.importSuccess(int count) = ImportSuccess;
+  const factory SyncState.exportSuccess() = ExportSuccess;
   const factory SyncState.error(String errorKey) = Error;
 }

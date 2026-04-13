@@ -25,6 +25,7 @@ class DriveCubit extends Cubit<DriveState> {
   LatLng? _lastSpeedLimitPosition;
   bool _isRerouting = false;
   DateTime? _lastRerouteCheck;
+  String _language = 'en';
 
   DriveCubit(
     this._repository, 
@@ -41,7 +42,8 @@ class DriveCubit extends Cubit<DriveState> {
     return super.close();
   }
 
-  Future<void> initDrive({required LatLng destination}) async {
+  Future<void> initDrive({required LatLng destination, String language = 'en'}) async {
+    _language = language;
     emit(const DriveState.loading());
 
     try {
@@ -66,6 +68,7 @@ class DriveCubit extends Cubit<DriveState> {
       final directions = await _repository.getDirections(
         origin: origin,
         destination: destination,
+        language: _language,
       );
 
       if (directions != null) {
@@ -225,7 +228,10 @@ class DriveCubit extends Cubit<DriveState> {
       );
 
       if (distToRadar < 300) {
-        _voiceService.speak("Uwaga, fotoradar za trzysta metrów!");
+        final alert = _language == 'pl' 
+            ? "Uwaga, fotoradar za trzysta metrów!" 
+            : "Caution, speed camera in three hundred meters!";
+        _voiceService.speak(alert);
         final updatedState = state as Loaded;
         emit(updatedState.copyWith(
           announcedRadarIds: [...updatedState.announcedRadarIds, radarId],
@@ -273,10 +279,12 @@ class DriveCubit extends Cubit<DriveState> {
       final directions = await _repository.getDirections(
         origin: userLatLng,
         destination: currentState.destination,
+        language: _language,
       );
 
       if (directions != null && !isClosed) {
-        _voiceService.speak("Przeliczam trasę");
+        final alert = _language == 'pl' ? "Przeliczam trasę" : "Recalculating route";
+        _voiceService.speak(alert);
         emit(currentState.copyWith(
           directions: directions,
           currentStepIndex: 0,

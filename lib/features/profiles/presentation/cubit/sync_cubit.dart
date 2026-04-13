@@ -38,7 +38,7 @@ class SyncCubit extends Cubit<SyncState> {
         ),
       );
 
-      emit(const SyncState.initial());
+      emit(const SyncState.exportSuccess());
     } catch (e) {
       emit(const SyncState.error('export-failed'));
     }
@@ -81,7 +81,7 @@ class SyncCubit extends Cubit<SyncState> {
         }
       }
 
-      emit(SyncState.success('Zaimportowano $importedCount adresów'));
+      emit(SyncState.importSuccess(importedCount));
     } catch (e) {
       emit(const SyncState.error('import-failed'));
     }

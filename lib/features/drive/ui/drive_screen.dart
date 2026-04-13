@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../l10n/l10n.dart';
 import '../presentation/cubit/drive_cubit.dart';
 import '../../../app/appearance/presentation/cubit/app_appearance_cubit.dart';
 import '../../../app/appearance/models/car_icon_model.dart';
@@ -17,7 +18,10 @@ class DriveScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<DriveCubit>()..initDrive(destination: destination),
+      create: (context) => getIt<DriveCubit>()..initDrive(
+        destination: destination,
+        language: Localizations.localeOf(context).languageCode,
+      ),
       child: DriveView(
         destination: destination,
         destinationName: destinationName,
@@ -155,7 +159,7 @@ class _DriveViewState extends State<DriveView> {
                           onPressed: () {
                             context.read<DriveCubit>().initDrive(destination: widget.destination);
                           },
-                          child: const Text('Ponów'),
+                          child: Text(context.l10n.retryButtonLabel),
                         ),
                       ],
                     ),
@@ -243,7 +247,7 @@ class _DriveViewState extends State<DriveView> {
                   left: 16,
                   right: 16,
                   child: _InstructionCard(
-                    instruction: 'Jesteś u celu!',
+                    instruction: context.l10n.destinationReached,
                     distance: '',
                     isArrival: true,
                   ),
@@ -374,7 +378,7 @@ class _DriveViewState extends State<DriveView> {
                               elevation: 0,
                             ),
                             child: Text(
-                              'START NAWIGACJI',
+                              context.l10n.startNavigation.toUpperCase(),
                               style: GoogleFonts.inter(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w900,
@@ -397,7 +401,7 @@ class _DriveViewState extends State<DriveView> {
                               ),
                             ),
                             child: Text(
-                              'MENU GŁÓWNE',
+                              context.l10n.mainMenu.toUpperCase(),
                               style: GoogleFonts.inter(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,
@@ -479,7 +483,7 @@ class _DriveViewState extends State<DriveView> {
                                 Row(
                                   children: [
                                     Text(
-                                      'Już za tobą: ${_formatElapsedTime(elapsedTime)} • ${_formatDistance(state.traveledDistance)}',
+                                      '${context.l10n.alreadyBehindYou}: ${_formatElapsedTime(elapsedTime)} • ${_formatDistance(state.traveledDistance)}',
                                       style: GoogleFonts.inter(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w600,

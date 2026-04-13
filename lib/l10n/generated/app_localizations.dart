@@ -859,6 +859,360 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Brak połączenia z internetem'**
   String get connectivityOfflineBanner;
+
+  /// No description provided for @addressesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Adresy'**
+  String get addressesTitle;
+
+  /// No description provided for @searchAddressesHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szukaj adresu...'**
+  String get searchAddressesHint;
+
+  /// No description provided for @noAddressesFound.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak szukanych adresów'**
+  String get noAddressesFound;
+
+  /// No description provided for @addressDetails.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły adresu'**
+  String get addressDetails;
+
+  /// No description provided for @saveAddressButton.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz adres'**
+  String get saveAddressButton;
+
+  /// No description provided for @streetField.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ulica i numer'**
+  String get streetField;
+
+  /// No description provided for @cityField.
+  ///
+  /// In pl, this message translates to:
+  /// **'Miasto'**
+  String get cityField;
+
+  /// No description provided for @zipCodeField.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kod pocztowy'**
+  String get zipCodeField;
+
+  /// No description provided for @nameField.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa'**
+  String get nameField;
+
+  /// No description provided for @editLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj'**
+  String get editLabel;
+
+  /// No description provided for @deleteLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń'**
+  String get deleteLabel;
+
+  /// No description provided for @startNavigation.
+  ///
+  /// In pl, this message translates to:
+  /// **'Start nawigacji'**
+  String get startNavigation;
+
+  /// No description provided for @mainMenu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Menu główne'**
+  String get mainMenu;
+
+  /// No description provided for @alreadyBehindYou.
+  ///
+  /// In pl, this message translates to:
+  /// **'Już za tobą'**
+  String get alreadyBehindYou;
+
+  /// No description provided for @recalculatingRoute.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przeliczam trasę'**
+  String get recalculatingRoute;
+
+  /// No description provided for @speedCameraAlert.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uwaga, fotoradar za trzysta metrów!'**
+  String get speedCameraAlert;
+
+  /// No description provided for @destinationReached.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jesteś u celu!'**
+  String get destinationReached;
+
+  /// No description provided for @homeAddressesTile.
+  ///
+  /// In pl, this message translates to:
+  /// **'ADRESY'**
+  String get homeAddressesTile;
+
+  /// No description provided for @homeSettingsTile.
+  ///
+  /// In pl, this message translates to:
+  /// **'USTAWIENIA'**
+  String get homeSettingsTile;
+
+  /// No description provided for @homeGoTile.
+  ///
+  /// In pl, this message translates to:
+  /// **'JEDZIEMY'**
+  String get homeGoTile;
+
+  /// No description provided for @settingsProfile.
+  ///
+  /// In pl, this message translates to:
+  /// **'Profil'**
+  String get settingsProfile;
+
+  /// No description provided for @settingsAppearance.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wygląd'**
+  String get settingsAppearance;
+
+  /// No description provided for @settingsSync.
+  ///
+  /// In pl, this message translates to:
+  /// **'Synchronizacja'**
+  String get settingsSync;
+
+  /// No description provided for @settingsAbout.
+  ///
+  /// In pl, this message translates to:
+  /// **'O programie'**
+  String get settingsAbout;
+
+  /// No description provided for @settingsVoice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Głos'**
+  String get settingsVoice;
+
+  /// No description provided for @guestStatusTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zalogowany jako Gość'**
+  String get guestStatusTitle;
+
+  /// No description provided for @guestStatusSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Twoje dane nie są jeszcze w pełni zabezpieczone.'**
+  String get guestStatusSubtitle;
+
+  /// No description provided for @guestRegisterPrompt.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zarejestruj się, aby zapisać swoje adresy w chmurze. Gwarantujemy brak reklam i 100% prywatności – nie przekazujemy Twojego e-maila nikomu.'**
+  String get guestRegisterPrompt;
+
+  /// No description provided for @registerUpper.
+  ///
+  /// In pl, this message translates to:
+  /// **'ZAREJESTRUJ SIĘ'**
+  String get registerUpper;
+
+  /// No description provided for @loginUpper.
+  ///
+  /// In pl, this message translates to:
+  /// **'ZALOGUJ'**
+  String get loginUpper;
+
+  /// No description provided for @logoutTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyloguj się'**
+  String get logoutTitle;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń konto'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @confirmTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy na pewno?'**
+  String get confirmTitle;
+
+  /// No description provided for @confirmDeleteBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Twoje konto oraz WSZYSTKIE zapisane adresy zostaną nieodwracalnie usunięte. Czy chcesz kontynuować?'**
+  String get confirmDeleteBody;
+
+  /// No description provided for @cancelUpper.
+  ///
+  /// In pl, this message translates to:
+  /// **'ANULUJ'**
+  String get cancelUpper;
+
+  /// No description provided for @deleteEverythingUpper.
+  ///
+  /// In pl, this message translates to:
+  /// **'USUŃ WSZYSTKO'**
+  String get deleteEverythingUpper;
+
+  /// No description provided for @accountDeletedTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Konto usunięte'**
+  String get accountDeletedTitle;
+
+  /// No description provided for @accountDeletedBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie Twoje dane zostały pomyślnie usunięte z naszego systemu.'**
+  String get accountDeletedBody;
+
+  /// No description provided for @aboutDescription1.
+  ///
+  /// In pl, this message translates to:
+  /// **'EasyNAVI to prosta aplikacja stworzona z myślą o osobach poruszających się służbowo po stałych punktach – klientach, serwisach czy adresach dostaw.'**
+  String get aboutDescription1;
+
+  /// No description provided for @aboutDescription2.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pozwala ona na błyskawiczne zapisanie własnej bazy adresów i natychmiastowe uruchomienie nawigacji z podglądem aktualnych utrudnień na drodze, bez konieczności każdorazowego wpisywania celu.'**
+  String get aboutDescription2;
+
+  /// No description provided for @aboutAuthorLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Program napisany przez'**
+  String get aboutAuthorLabel;
+
+  /// No description provided for @syncBackupTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Lokalna Kopia Zapasowa'**
+  String get syncBackupTitle;
+
+  /// No description provided for @syncBackupSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz wszystkie adresy do jednego pliku lub wczytaj je z powrotem.'**
+  String get syncBackupSubtitle;
+
+  /// No description provided for @syncExportButton.
+  ///
+  /// In pl, this message translates to:
+  /// **'UTWÓRZ KOPIĘ PLIKOWĄ'**
+  String get syncExportButton;
+
+  /// No description provided for @syncImportButton.
+  ///
+  /// In pl, this message translates to:
+  /// **'WCZYTAJ Z PLIKU'**
+  String get syncImportButton;
+
+  /// No description provided for @appearanceBrightnessTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jasność ekranu'**
+  String get appearanceBrightnessTitle;
+
+  /// No description provided for @appearanceBrightnessSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Reguluj poziom podświetlenia, aby dopasować widoczność do warunków na drodze.'**
+  String get appearanceBrightnessSubtitle;
+
+  /// No description provided for @appearanceVehicleTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Twój pojazd'**
+  String get appearanceVehicleTitle;
+
+  /// No description provided for @appearanceVehicleSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz model, który będzie Cię reprezentował podczas nawigacji.'**
+  String get appearanceVehicleSubtitle;
+
+  /// No description provided for @soonLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostępne wkrótce...'**
+  String get soonLabel;
+
+  /// No description provided for @voiceSpeedTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szybkość mowy'**
+  String get voiceSpeedTitle;
+
+  /// No description provided for @voiceSpeedSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Reguluj tempo, w jakim asystent podaje wskazówki nawigacyjne.'**
+  String get voiceSpeedSubtitle;
+
+  /// No description provided for @voicePitchTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Barwa głosu'**
+  String get voicePitchTitle;
+
+  /// No description provided for @voicePitchSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień ton mowy asystenta – od niskiego po wysoki.'**
+  String get voicePitchSubtitle;
+
+  /// No description provided for @voiceTestButton.
+  ///
+  /// In pl, this message translates to:
+  /// **'TEST GŁOSU'**
+  String get voiceTestButton;
+
+  /// No description provided for @voiceTestGreeting.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dzień dobry! Asystent EasyNAVI jest gotowy do drogi.'**
+  String get voiceTestGreeting;
+
+  /// No description provided for @syncImportSuccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaimportowano {count} adresów'**
+  String syncImportSuccess(int count);
+
+  /// No description provided for @syncExportSuccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomyślnie utworzono kopię zapasową'**
+  String get syncExportSuccess;
+
+  /// No description provided for @appearanceLocaleSystem.
+  ///
+  /// In pl, this message translates to:
+  /// **'Automatyczny'**
+  String get appearanceLocaleSystem;
 }
 
 class _AppLocalizationsDelegate

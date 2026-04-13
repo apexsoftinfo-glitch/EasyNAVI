@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../app/developer/ui/developer_screen.dart';
+import '../../../l10n/l10n.dart';
 import '../../addresses/ui/addresses_screen.dart';
 import '../../profiles/presentation/ui/profile_screen.dart';
 
@@ -78,7 +79,7 @@ class HomeScreen extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: _BentoTile(
-                                    label: 'ADRESY',
+                                    label: context.l10n.homeAddressesTile,
                                     icon: Icons.map_outlined,
                                     color: Colors.white.withValues(alpha: 0.15),
                                     onTap: () {
@@ -92,7 +93,7 @@ class HomeScreen extends StatelessWidget {
                                 const SizedBox(height: 16),
                                 Expanded(
                                   child: _BentoTile(
-                                    label: 'USTAWIENIA',
+                                    label: context.l10n.homeSettingsTile,
                                     icon: Icons.settings_outlined,
                                     color: Colors.white.withValues(alpha: 0.15),
                                     onTap: () {
@@ -113,7 +114,7 @@ class HomeScreen extends StatelessWidget {
                           Expanded(
                             flex: 1,
                             child: _BentoTile(
-                              label: 'JEDZIEMY',
+                              label: context.l10n.homeGoTile,
                               icon: Icons.navigation_rounded,
                               color: const Color(0xFFC6FF00).withValues(alpha: 0.65),
                               iconColor: Colors.black,

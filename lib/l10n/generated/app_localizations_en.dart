@@ -433,4 +433,195 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connectivityOfflineBanner => 'No internet connection';
+
+  @override
+  String get addressesTitle => 'Addresses';
+
+  @override
+  String get searchAddressesHint => 'Search addresses...';
+
+  @override
+  String get noAddressesFound => 'No addresses found';
+
+  @override
+  String get addressDetails => 'Address details';
+
+  @override
+  String get saveAddressButton => 'Save address';
+
+  @override
+  String get streetField => 'Street and number';
+
+  @override
+  String get cityField => 'City';
+
+  @override
+  String get zipCodeField => 'Zip code';
+
+  @override
+  String get nameField => 'Name';
+
+  @override
+  String get editLabel => 'Edit';
+
+  @override
+  String get deleteLabel => 'Delete';
+
+  @override
+  String get startNavigation => 'Start navigation';
+
+  @override
+  String get mainMenu => 'Main menu';
+
+  @override
+  String get alreadyBehindYou => 'Already behind you';
+
+  @override
+  String get recalculatingRoute => 'Recalculating route';
+
+  @override
+  String get speedCameraAlert =>
+      'Caution, speed camera in three hundred meters!';
+
+  @override
+  String get destinationReached => 'You have arrived!';
+
+  @override
+  String get homeAddressesTile => 'ADDRESSES';
+
+  @override
+  String get homeSettingsTile => 'SETTINGS';
+
+  @override
+  String get homeGoTile => 'GO';
+
+  @override
+  String get settingsProfile => 'Profile';
+
+  @override
+  String get settingsAppearance => 'Appearance';
+
+  @override
+  String get settingsSync => 'Synchronization';
+
+  @override
+  String get settingsAbout => 'About';
+
+  @override
+  String get settingsVoice => 'Voice';
+
+  @override
+  String get guestStatusTitle => 'Logged in as Guest';
+
+  @override
+  String get guestStatusSubtitle => 'Your data is not yet fully secured.';
+
+  @override
+  String get guestRegisterPrompt =>
+      'Sign up to save your addresses in the cloud. We guarantee no ads and 100% privacy – we don\'t pass your email to anyone.';
+
+  @override
+  String get registerUpper => 'SIGN UP';
+
+  @override
+  String get loginUpper => 'LOG IN';
+
+  @override
+  String get logoutTitle => 'Log out';
+
+  @override
+  String get deleteAccountTitle => 'Delete account';
+
+  @override
+  String get confirmTitle => 'Are you sure?';
+
+  @override
+  String get confirmDeleteBody =>
+      'Your account and ALL saved addresses will be permanently deleted. Do you want to continue?';
+
+  @override
+  String get cancelUpper => 'CANCEL';
+
+  @override
+  String get deleteEverythingUpper => 'DELETE EVERYTHING';
+
+  @override
+  String get accountDeletedTitle => 'Account deleted';
+
+  @override
+  String get accountDeletedBody =>
+      'All your data has been successfully removed from our system.';
+
+  @override
+  String get aboutDescription1 =>
+      'EasyNAVI is a simple app designed for people who travel for work between fixed points – clients, service centers, or delivery addresses.';
+
+  @override
+  String get aboutDescription2 =>
+      'It allows you to instantly save your own address base and immediately start navigation with a preview of current road changes, without having to type the destination every time.';
+
+  @override
+  String get aboutAuthorLabel => 'App written by';
+
+  @override
+  String get syncBackupTitle => 'Local Backup';
+
+  @override
+  String get syncBackupSubtitle =>
+      'Save all addresses to a single file or load them back.';
+
+  @override
+  String get syncExportButton => 'CREATE FILE BACKUP';
+
+  @override
+  String get syncImportButton => 'LOAD FROM FILE';
+
+  @override
+  String get appearanceBrightnessTitle => 'Screen brightness';
+
+  @override
+  String get appearanceBrightnessSubtitle =>
+      'Adjust the backlight level to match visibility to road conditions.';
+
+  @override
+  String get appearanceVehicleTitle => 'Your vehicle';
+
+  @override
+  String get appearanceVehicleSubtitle =>
+      'Choose the model that will represent you during navigation.';
+
+  @override
+  String get soonLabel => 'Available soon...';
+
+  @override
+  String get voiceSpeedTitle => 'Speech rate';
+
+  @override
+  String get voiceSpeedSubtitle =>
+      'Adjust the rate at which the assistant gives navigation directions.';
+
+  @override
+  String get voicePitchTitle => 'Voice pitch';
+
+  @override
+  String get voicePitchSubtitle =>
+      'Change the tone of the assistant\'s speech – from low to high.';
+
+  @override
+  String get voiceTestButton => 'TEST VOICE';
+
+  @override
+  String get voiceTestGreeting =>
+      'Hello! The EasyNAVI assistant is ready for the road.';
+
+  @override
+  String syncImportSuccess(int count) {
+    return 'Imported $count addresses';
+  }
+
+  @override
+  String get syncExportSuccess => 'Backup saved successfully';
+
+  @override
+  String get appearanceLocaleSystem => 'System';
 }

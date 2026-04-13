@@ -10,6 +10,7 @@ abstract class DirectionsRepository {
   Future<DirectionsModel?> getDirections({
     required LatLng origin,
     required LatLng destination,
+    String language = 'en',
   });
   Future<int?> getSpeedLimit(LatLng position);
   Future<List<LatLng>> getNearbyRadars(LatLng position);
@@ -27,6 +28,7 @@ class DirectionsRepositoryImpl implements DirectionsRepository {
   Future<DirectionsModel?> getDirections({
     required LatLng origin,
     required LatLng destination,
+    String language = 'en',
   }) async {
     try {
       debugPrint('[DirectionsRepository] Calculating route: ${origin.latitude},${origin.longitude} -> ${destination.latitude},${destination.longitude}');
@@ -37,7 +39,7 @@ class DirectionsRepositoryImpl implements DirectionsRepository {
           'destination': '${destination.latitude},${destination.longitude}',
           'key': _apiKey,
           'mode': 'driving',
-          'language': 'pl',
+          'language': language,
         },
       );
 

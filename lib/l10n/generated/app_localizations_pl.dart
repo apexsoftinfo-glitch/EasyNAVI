@@ -434,4 +434,195 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get connectivityOfflineBanner => 'Brak połączenia z internetem';
+
+  @override
+  String get addressesTitle => 'Adresy';
+
+  @override
+  String get searchAddressesHint => 'Szukaj adresu...';
+
+  @override
+  String get noAddressesFound => 'Brak szukanych adresów';
+
+  @override
+  String get addressDetails => 'Szczegóły adresu';
+
+  @override
+  String get saveAddressButton => 'Zapisz adres';
+
+  @override
+  String get streetField => 'Ulica i numer';
+
+  @override
+  String get cityField => 'Miasto';
+
+  @override
+  String get zipCodeField => 'Kod pocztowy';
+
+  @override
+  String get nameField => 'Nazwa';
+
+  @override
+  String get editLabel => 'Edytuj';
+
+  @override
+  String get deleteLabel => 'Usuń';
+
+  @override
+  String get startNavigation => 'Start nawigacji';
+
+  @override
+  String get mainMenu => 'Menu główne';
+
+  @override
+  String get alreadyBehindYou => 'Już za tobą';
+
+  @override
+  String get recalculatingRoute => 'Przeliczam trasę';
+
+  @override
+  String get speedCameraAlert => 'Uwaga, fotoradar za trzysta metrów!';
+
+  @override
+  String get destinationReached => 'Jesteś u celu!';
+
+  @override
+  String get homeAddressesTile => 'ADRESY';
+
+  @override
+  String get homeSettingsTile => 'USTAWIENIA';
+
+  @override
+  String get homeGoTile => 'JEDZIEMY';
+
+  @override
+  String get settingsProfile => 'Profil';
+
+  @override
+  String get settingsAppearance => 'Wygląd';
+
+  @override
+  String get settingsSync => 'Synchronizacja';
+
+  @override
+  String get settingsAbout => 'O programie';
+
+  @override
+  String get settingsVoice => 'Głos';
+
+  @override
+  String get guestStatusTitle => 'Zalogowany jako Gość';
+
+  @override
+  String get guestStatusSubtitle =>
+      'Twoje dane nie są jeszcze w pełni zabezpieczone.';
+
+  @override
+  String get guestRegisterPrompt =>
+      'Zarejestruj się, aby zapisać swoje adresy w chmurze. Gwarantujemy brak reklam i 100% prywatności – nie przekazujemy Twojego e-maila nikomu.';
+
+  @override
+  String get registerUpper => 'ZAREJESTRUJ SIĘ';
+
+  @override
+  String get loginUpper => 'ZALOGUJ';
+
+  @override
+  String get logoutTitle => 'Wyloguj się';
+
+  @override
+  String get deleteAccountTitle => 'Usuń konto';
+
+  @override
+  String get confirmTitle => 'Czy na pewno?';
+
+  @override
+  String get confirmDeleteBody =>
+      'Twoje konto oraz WSZYSTKIE zapisane adresy zostaną nieodwracalnie usunięte. Czy chcesz kontynuować?';
+
+  @override
+  String get cancelUpper => 'ANULUJ';
+
+  @override
+  String get deleteEverythingUpper => 'USUŃ WSZYSTKO';
+
+  @override
+  String get accountDeletedTitle => 'Konto usunięte';
+
+  @override
+  String get accountDeletedBody =>
+      'Wszystkie Twoje dane zostały pomyślnie usunięte z naszego systemu.';
+
+  @override
+  String get aboutDescription1 =>
+      'EasyNAVI to prosta aplikacja stworzona z myślą o osobach poruszających się służbowo po stałych punktach – klientach, serwisach czy adresach dostaw.';
+
+  @override
+  String get aboutDescription2 =>
+      'Pozwala ona na błyskawiczne zapisanie własnej bazy adresów i natychmiastowe uruchomienie nawigacji z podglądem aktualnych utrudnień na drodze, bez konieczności każdorazowego wpisywania celu.';
+
+  @override
+  String get aboutAuthorLabel => 'Program napisany przez';
+
+  @override
+  String get syncBackupTitle => 'Lokalna Kopia Zapasowa';
+
+  @override
+  String get syncBackupSubtitle =>
+      'Zapisz wszystkie adresy do jednego pliku lub wczytaj je z powrotem.';
+
+  @override
+  String get syncExportButton => 'UTWÓRZ KOPIĘ PLIKOWĄ';
+
+  @override
+  String get syncImportButton => 'WCZYTAJ Z PLIKU';
+
+  @override
+  String get appearanceBrightnessTitle => 'Jasność ekranu';
+
+  @override
+  String get appearanceBrightnessSubtitle =>
+      'Reguluj poziom podświetlenia, aby dopasować widoczność do warunków na drodze.';
+
+  @override
+  String get appearanceVehicleTitle => 'Twój pojazd';
+
+  @override
+  String get appearanceVehicleSubtitle =>
+      'Wybierz model, który będzie Cię reprezentował podczas nawigacji.';
+
+  @override
+  String get soonLabel => 'Dostępne wkrótce...';
+
+  @override
+  String get voiceSpeedTitle => 'Szybkość mowy';
+
+  @override
+  String get voiceSpeedSubtitle =>
+      'Reguluj tempo, w jakim asystent podaje wskazówki nawigacyjne.';
+
+  @override
+  String get voicePitchTitle => 'Barwa głosu';
+
+  @override
+  String get voicePitchSubtitle =>
+      'Zmień ton mowy asystenta – od niskiego po wysoki.';
+
+  @override
+  String get voiceTestButton => 'TEST GŁOSU';
+
+  @override
+  String get voiceTestGreeting =>
+      'Dzień dobry! Asystent EasyNAVI jest gotowy do drogi.';
+
+  @override
+  String syncImportSuccess(int count) {
+    return 'Zaimportowano $count adresów';
+  }
+
+  @override
+  String get syncExportSuccess => 'Pomyślnie utworzono kopię zapasową';
+
+  @override
+  String get appearanceLocaleSystem => 'Automatyczny';
 }

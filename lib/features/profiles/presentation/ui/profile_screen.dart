@@ -95,27 +95,27 @@ class _ProfileView extends StatelessWidget {
                       mainAxisSpacing: 20,
                       children: [
                         _SettingsTile(
-                          title: 'Profil',
+                          title: context.l10n.settingsProfile,
                           icon: Icons.account_circle_outlined,
                           onTap: () => _showProfileSettings(context),
                         ),
                         _SettingsTile(
-                          title: 'Wygląd',
+                          title: context.l10n.settingsAppearance,
                           icon: Icons.palette_outlined,
                           onTap: () => _showAppearanceSettings(context),
                         ),
                         _SettingsTile(
-                          title: 'Synchronizacja',
+                          title: context.l10n.settingsSync,
                           icon: Icons.cloud_sync_outlined,
                           onTap: () => _showSyncSettings(context),
                         ),
                         _SettingsTile(
-                          title: 'O programie',
+                          title: context.l10n.settingsAbout,
                           icon: Icons.info_outline_rounded,
                           onTap: () => _showAboutSettings(context),
                         ),
                         _SettingsTile(
-                          title: 'Głos',
+                          title: context.l10n.settingsVoice,
                           icon: Icons.record_voice_over_outlined,
                           onTap: () => _showVoiceSettings(context),
                         ),
@@ -142,7 +142,7 @@ class _ProfileView extends StatelessWidget {
           BlocProvider.value(value: context.read<ProfileCubit>()),
           BlocProvider.value(value: context.read<AccountActionsCubit>()),
         ],
-        child: const _ModernSettingsPanel(title: 'Profil'),
+        child: _ModernSettingsPanel(title: context.l10n.settingsProfile),
       ),
     );
   }
@@ -154,7 +154,7 @@ class _ProfileView extends StatelessWidget {
       isScrollControlled: true,
       builder: (_) => BlocProvider.value(
         value: context.read<AppAppearanceCubit>(),
-        child: const _ModernSettingsPanel(title: 'Wygląd'),
+        child: _ModernSettingsPanel(title: context.l10n.settingsAppearance),
       ),
     );
   }
@@ -166,7 +166,7 @@ class _ProfileView extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder: (modalContext) => BlocProvider<SyncCubit>(
         create: (_) => getIt<SyncCubit>(),
-        child: const _ModernSettingsPanel(title: 'Synchronizacja'),
+        child: _ModernSettingsPanel(title: context.l10n.settingsSync),
       ),
     );
   }
@@ -175,7 +175,7 @@ class _ProfileView extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => const _ModernSettingsPanel(title: 'O programie'),
+      builder: (_) => _ModernSettingsPanel(title: context.l10n.settingsAbout),
     );
   }
 
@@ -186,7 +186,7 @@ class _ProfileView extends StatelessWidget {
       isScrollControlled: true,
       builder: (_) => BlocProvider.value(
         value: context.read<AppVoiceCubit>(),
-        child: const _ModernSettingsPanel(title: 'Głos'),
+        child: _ModernSettingsPanel(title: context.l10n.settingsVoice),
       ),
     );
   }
@@ -288,15 +288,15 @@ class _ModernSettingsPanel extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  if (title == 'Profil') 
+                  if (title == context.l10n.settingsProfile) 
                     const _ProfileSettingsContent()
-                  else if (title == 'O programie')
+                  else if (title == context.l10n.settingsAbout)
                     const _AboutSettingsContent()
-                  else if (title == 'Synchronizacja')
+                  else if (title == context.l10n.settingsSync)
                     const _SyncSettingsContent()
-                  else if (title == 'Wygląd')
+                  else if (title == context.l10n.settingsAppearance)
                     const _AppearanceSettingsContent()
-                  else if (title == 'Głos')
+                  else if (title == context.l10n.settingsVoice)
                     const _VoiceSettingsContent()
                   else
                     const Center(
@@ -344,14 +344,14 @@ class _ProfileSettingsContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _InfoCard(
-            title: 'Zalogowany jako Gość',
-            subtitle: 'Twoje dane nie są jeszcze w pełni zabezpieczone.',
+            title: context.l10n.guestStatusTitle,
+            subtitle: context.l10n.guestStatusSubtitle,
             icon: Icons.no_accounts_rounded,
             color: Colors.orange.shade800,
           ),
           const SizedBox(height: 20),
           Text(
-            'Zarejestruj się, aby zapisać swoje adresy w chmurze. Gwarantujemy brak reklam i 100% prywatności – nie przekazujemy Twojego e-maila nikomu.',
+            context.l10n.guestRegisterPrompt,
             style: GoogleFonts.inter(color: Colors.white70, fontSize: 14, height: 1.5),
           ),
           const SizedBox(height: 32),
@@ -365,7 +365,7 @@ class _ProfileSettingsContent extends StatelessWidget {
               minimumSize: const Size(double.infinity, 56),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             ),
-            child: const Text('ZAREJESTRUJ SIĘ', style: TextStyle(fontWeight: FontWeight.w800)),
+            child: Text(context.l10n.registerUpper, style: const TextStyle(fontWeight: FontWeight.w800)),
           ),
           const SizedBox(height: 12),
           OutlinedButton(
@@ -378,7 +378,7 @@ class _ProfileSettingsContent extends StatelessWidget {
               minimumSize: const Size(double.infinity, 56),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             ),
-            child: const Text('ZALOGUJ', style: TextStyle(fontWeight: FontWeight.w800)),
+            child: Text(context.l10n.loginUpper, style: const TextStyle(fontWeight: FontWeight.w800)),
           ),
         ],
       );
@@ -400,7 +400,7 @@ class _ProfileSettingsContent extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    sharedUser?.firstName ?? 'Użytkownik',
+                    sharedUser?.firstName ?? context.l10n.registeredUserDisplayName,
                     style: GoogleFonts.inter(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
                   ),
                   Text(
@@ -414,13 +414,13 @@ class _ProfileSettingsContent extends StatelessWidget {
         ),
         const SizedBox(height: 40),
         _ActionTile(
-          title: 'Wyloguj się',
+          title: context.l10n.logoutTitle,
           icon: Icons.logout_rounded,
           onTap: () => context.read<AccountActionsCubit>().signOut(),
         ),
         const SizedBox(height: 12),
         _ActionTile(
-          title: 'Usuń konto',
+          title: context.l10n.deleteAccountTitle,
           icon: Icons.delete_forever_rounded,
           color: Colors.red.shade400,
           onTap: () => _confirmAccountDeletion(context),
@@ -434,20 +434,20 @@ class _ProfileSettingsContent extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.grey.shade900,
-        title: const Text('Czy na pewno?', style: TextStyle(color: Colors.white)),
-        content: const Text(
-          'Twoje konto oraz WSZYSTKIE zapisane adresy zostaną nieodwracalnie usunięte. Czy chcesz kontynuować?',
-          style: TextStyle(color: Colors.white70),
+        title: Text(context.l10n.confirmTitle, style: const TextStyle(color: Colors.white)),
+        content: Text(
+          context.l10n.confirmDeleteBody,
+          style: const TextStyle(color: Colors.white70),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('ANULUJ', style: TextStyle(color: Colors.white54)),
+            child: Text(context.l10n.cancelUpper, style: const TextStyle(color: Colors.white54)),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('USUŃ WSZYSTKO'),
+            child: Text(context.l10n.deleteEverythingUpper),
           ),
         ],
       ),
@@ -462,10 +462,10 @@ class _ProfileSettingsContent extends StatelessWidget {
           barrierDismissible: false,
           builder: (context) => AlertDialog(
             backgroundColor: Colors.grey.shade900,
-            title: const Text('Konto usunięte', style: TextStyle(color: Colors.white)),
-            content: const Text(
-              'Wszystkie Twoje dane zostały pomyślnie usunięte z naszego systemu.',
-              style: TextStyle(color: Colors.white70),
+            title: Text(context.l10n.accountDeletedTitle, style: const TextStyle(color: Colors.white)),
+            content: Text(
+              context.l10n.accountDeletedBody,
+              style: const TextStyle(color: Colors.white70),
             ),
             actions: [
               FilledButton(
@@ -561,12 +561,12 @@ class _AboutSettingsContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'EasyNAVI to prosta aplikacja stworzona z myślą o osobach poruszających się służbowo po stałych punktach – klientach, serwisach czy adresach dostaw.',
+          context.l10n.aboutDescription1,
           style: GoogleFonts.inter(color: Colors.white, fontSize: 16, height: 1.6, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 16),
         Text(
-          'Pozwala ona na błyskawiczne zapisanie własnej bazy adresów i natychmiastowe uruchomienie nawigacji z podglądem aktualnych utrudnień na drodze, bez konieczności każdorazowego wpisywania celu.',
+          context.l10n.aboutDescription2,
           style: GoogleFonts.inter(color: Colors.white70, fontSize: 14, height: 1.5),
         ),
         const SizedBox(height: 48),
@@ -580,7 +580,7 @@ class _AboutSettingsContent extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                'Program napisany przez',
+                context.l10n.aboutAuthorLabel,
                 style: GoogleFonts.inter(color: Colors.white54, fontSize: 13),
               ),
               const SizedBox(height: 8),
@@ -613,14 +613,25 @@ class _SyncSettingsContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<SyncCubit, sync.SyncState>(
       listener: (context, state) {
-        if (state is sync.Success) {
+        if (state is sync.ImportSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message), backgroundColor: Colors.green.shade700),
+            SnackBar(
+              content: Text(context.l10n.syncImportSuccess(state.count)),
+              backgroundColor: Colors.green.shade700,
+            ),
+          );
+          context.read<SyncCubit>().reset();
+        } else if (state is sync.ExportSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(context.l10n.syncExportSuccess),
+              backgroundColor: Colors.green.shade700,
+            ),
           );
           context.read<SyncCubit>().reset();
         } else if (state is sync.Error) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Błąd: ${state.errorKey}'), backgroundColor: Colors.red.shade700),
+            SnackBar(content: Text('${context.l10n.errorUnknown}: ${state.errorKey}'), backgroundColor: Colors.red.shade700),
           );
         }
       },
@@ -631,20 +642,20 @@ class _SyncSettingsContent extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _InfoCard(
-              title: 'Lokalna Kopia Zapasowa',
-              subtitle: 'Zapisz wszystkie adresy do jednego pliku lub wczytaj je z powrotem.',
+              title: context.l10n.syncBackupTitle,
+              subtitle: context.l10n.syncBackupSubtitle,
               icon: Icons.storage_rounded,
               color: Colors.blue.shade400,
             ),
             const SizedBox(height: 32),
             _ActionTile(
-              title: 'UTWÓRZ KOPIĘ PLIKOWĄ',
+              title: context.l10n.syncExportButton,
               icon: Icons.save_alt_rounded,
               onTap: isLoading ? () {} : () => context.read<SyncCubit>().exportBackup(),
             ),
             const SizedBox(height: 12),
             _ActionTile(
-              title: 'WCZYTAJ Z PLIKU',
+              title: context.l10n.syncImportButton,
               icon: Icons.file_open_rounded,
               onTap: isLoading ? () {} : () => context.read<SyncCubit>().importBackup(),
             ),
@@ -673,8 +684,8 @@ class _AppearanceSettingsContent extends StatelessWidget {
           children: [
             // Brightness Section
             _InfoCard(
-              title: 'Jasność ekranu',
-              subtitle: 'Reguluj poziom podświetlenia, aby dopasować widoczność do warunków na drodze.',
+              title: context.l10n.appearanceBrightnessTitle,
+              subtitle: context.l10n.appearanceBrightnessSubtitle,
               icon: Icons.brightness_6_rounded,
               color: Colors.orange.shade400,
             ),
@@ -695,8 +706,8 @@ class _AppearanceSettingsContent extends StatelessWidget {
 
             // Car Icon Section
             _InfoCard(
-              title: 'Twój pojazd',
-              subtitle: 'Wybierz model, który będzie Cię reprezentował podczas nawigacji.',
+              title: context.l10n.appearanceVehicleTitle,
+              subtitle: context.l10n.appearanceVehicleSubtitle,
               icon: Icons.directions_car_rounded,
               color: Colors.blue.shade400,
             ),
@@ -823,7 +834,7 @@ class _LanguageOptionTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    option == AppLocaleOptionModel.system ? 'Automatyczny' : (option == AppLocaleOptionModel.polish ? 'Polski' : 'English'),
+                    option == AppLocaleOptionModel.system ? context.l10n.appearanceLocaleSystem : (option == AppLocaleOptionModel.polish ? 'Polski' : 'English'),
                     style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 15),
                   ),
                 ],
@@ -852,8 +863,8 @@ class _VoiceSettingsContent extends StatelessWidget {
           children: [
             // Speech Rate
             _InfoCard(
-              title: 'Szybkość mowy',
-              subtitle: 'Reguluj tempo, w jakim asystent podaje wskazówki nawigacyjne.',
+              title: context.l10n.voiceSpeedTitle,
+              subtitle: context.l10n.voiceSpeedSubtitle,
               icon: Icons.speed_rounded,
               color: Colors.blue.shade400,
             ),
@@ -876,8 +887,8 @@ class _VoiceSettingsContent extends StatelessWidget {
 
             // Speech Pitch
             _InfoCard(
-              title: 'Barwa głosu',
-              subtitle: 'Zmień ton mowy asystenta – od niskiego po wysoki.',
+              title: context.l10n.voicePitchTitle,
+              subtitle: context.l10n.voicePitchSubtitle,
               icon: Icons.graphic_eq_rounded,
               color: Colors.purple.shade400,
             ),
@@ -900,9 +911,9 @@ class _VoiceSettingsContent extends StatelessWidget {
 
             // Test Button
             FilledButton.icon(
-              onPressed: () => getIt<NavigationVoiceService>().speak('Dzień dobry! Asystent EasyNAVI jest gotowy do drogi.'),
+              onPressed: () => getIt<NavigationVoiceService>().speak(context.l10n.voiceTestGreeting),
               icon: const Icon(Icons.play_arrow_rounded),
-              label: const Text('TESTUJ USTAWIENIA'),
+              label: Text(context.l10n.voiceTestButton),
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.white10,
                 foregroundColor: Colors.white,

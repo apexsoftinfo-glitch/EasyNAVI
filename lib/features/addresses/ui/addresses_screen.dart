@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../l10n/l10n.dart';
 import '../presentation/cubit/addresses_cubit.dart';
 import 'address_form_screen.dart';
 import '../data/models/address_model.dart';
@@ -76,7 +77,7 @@ class _AddressesViewState extends State<AddressesView> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          'Adresy'.toUpperCase(),
+          context.l10n.addressesTitle.toUpperCase(),
           style: GoogleFonts.inter(
             fontSize: 16,
             fontWeight: FontWeight.w900,
@@ -160,7 +161,7 @@ class _AddressesViewState extends State<AddressesView> {
                           controller: _searchController,
                           onChanged: (val) => context.read<AddressesCubit>().setSearchQuery(val),
                           decoration: InputDecoration(
-                            hintText: 'Szukaj adresu...',
+                            hintText: context.l10n.searchAddressesHint,
                             hintStyle: GoogleFonts.inter(fontSize: 14, color: Colors.grey.shade400),
                             prefixIcon: const Icon(Icons.search_rounded, color: Colors.black54),
                             suffixIcon: state.searchQuery.isNotEmpty
@@ -234,7 +235,7 @@ class _AddressesViewState extends State<AddressesView> {
 
     if (address.latitude == null || address.longitude == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pobieranie lokalizacji adresu...'), duration: Duration(seconds: 1)),
+        SnackBar(content: Text(context.l10n.loadingLabel), duration: const Duration(seconds: 1)),
       );
 
       resolved = await context.read<AddressesCubit>().resolveCoordinates(address);
@@ -244,7 +245,7 @@ class _AddressesViewState extends State<AddressesView> {
     if (finalAddress == null || finalAddress.latitude == null || finalAddress.longitude == null) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Nie udało się znaleźć lokalizacji dla tego adresu. Edytuj go ręcznie.')),
+          SnackBar(content: Text(context.l10n.errorUnknown)),
         );
       }
       return;
@@ -352,7 +353,7 @@ class _EmptyView extends StatelessWidget {
           Icon(Icons.map_outlined, size: 60, color: Colors.grey.shade200),
           const SizedBox(height: 20),
           Text(
-            'Brak szukanych adresów',
+            context.l10n.noAddressesFound,
             style: GoogleFonts.inter(
               fontSize: 15,
               fontWeight: FontWeight.w700,
