@@ -9,13 +9,13 @@ Dane wykorzystywane na obu platformach.
 
 - **App Name (Robocza)**: EasyNAVI
 - **Bundle ID**: com.anatolkaramanyan.easynavi
-- **Support Email**: 🛑 [TODO: UZUPEŁNIJ]
-- **Privacy Policy URL**: 🛑 [TODO: UZUPEŁNIJ]
-- **Delete Account URL**: 🛑 [TODO: UZUPEŁNIJ]
+- **Support Email**: apex.soft.info@gmail.com
+- **Privacy Policy URL**: https://twelveappschallenge-platform.web.app/legal/ddae8f0d-2090-4fe6-8b83-4c89592a801f/privacy-policy
+- **Delete Account URL**: https://twelveappschallenge-platform.web.app/legal/ddae8f0d-2090-4fe6-8b83-4c89592a801f/delete-account
 - **Konto Testowe (dla recenzentów)**:
-  - **Email**: 🛑 [TODO: UZUPEŁNIJ]
-  - **Hasło**: 🛑 [TODO: UZUPEŁNIJ]
-  - **Notes**: Log in with these credentials to access all features, including the address book and route previews.
+  - **Email**: N/A
+  - **Hasło**: N/A
+  - **Notes**: Please use "Continue as guest" on the Welcome Screen to access all features without credentials.
 
 ---
 
@@ -162,7 +162,7 @@ Metody tworzenia konta:
 - [x] Nazwa użytkownika i hasło
 - [x] Inne (Anonymous login/Google/Apple)
 
-Umożliwiasz prośby o usunięcie części danych? Tak. URL: 🛑 [TODO: UZUPEŁNIJ]
+Umożliwiasz prośby o usunięcie części danych? Tak. URL: https://twelveappschallenge-platform.web.app/legal/ddae8f0d-2090-4fe6-8b83-4c89592a801f/delete-account
 
 **Typ Danych: Dokładna lokalizacja**
 - Zbierane / Udostępniane: Zbierane
