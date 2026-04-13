@@ -199,3 +199,29 @@ Umożliwiasz prośby o usunięcie części danych? Tak. URL: https://twelveappsc
 
 ### Zdrowie (Aplikacje do dbania o zdrowie)
 - [x] W mojej aplikacji nie ma żadnych funkcji związanych ze zdrowiem
+## 🎨 5. AI Image Generation Prompts
+
+**⚠️ WAŻNE:** Zanim wkleisz poniższe prompty do generatora AI (np. Nano Banana, GPT, Midjourney), **MUSISZ ZAŁĄCZYĆ SCREENSHOT** ze swojej aplikacji! Oba prompty bezpośrednio się do niego odwołują jako do głównego źródła inspiracji.
+
+**Prompt 1: App Icon (Ikona Aplikacji)**
+"I have attached a screenshot of my mobile app to this message. Act as an expert graphic designer specializing in minimalist, flat-vector logos. Generate a single, perfectly square app icon based on the UI, style, and colors of the attached screenshot, combined with the specific concept below.
+CRITICAL RULES:
+1. STRICTLY SQUARE: 1:1 aspect ratio.
+2. NO ROUNDED CORNERS: Full-bleed background edge-to-edge.
+3. NO MARGINS/BORDERS.
+4. NO TEXT: Zero letters or numbers.
+5. STYLE MATCH: Extract the exact color palette, lighting, and visual vibe from the attached screenshot. Additionally, ensure these core brand colors are prominent: Citrus Lime (#C6FF00), Deep Black (#000000), and Pure White (#FFFFFF).
+6. MINIMALIST: Design only ONE central symbol.
+SYMBOL CONCEPT: A bold, minimalist navigation arrow pointing upwards, integrated into a thick-bordered location pin silhouette, symbolizing quick and precise destination access."
+
+**Prompt 2: Google Play Feature Graphic**
+"I have attached a screenshot of my mobile app to this message. Act as an expert mobile app store marketer and graphic designer. Generate a Google Play Feature Graphic based heavily on the visual style, vibe, and color palette of the attached screenshot.
+TECHNICAL REQUIREMENTS:
+- Dimensions: 1024x500px (Wide, horizontal format).
+- Clean, professional, and readable as a thumbnail.
+- Leave safe margins around the edges.
+- DO NOT add 'Download' buttons or store UI elements.
+DESIGN INSTRUCTIONS:
+1. VIBE & COLORS: Treat the attached screenshot as your primary inspiration. Harmonize the graphic with the screenshot's aesthetic. Incorporate the core brand colors: Citrus Lime (#C6FF00), Deep Black (#000000), and Pure White (#FFFFFF). Avoid generic stock aesthetics.
+2. TEXT OVERLAY: Place exactly this text on the graphic in a bold, highly legible modern font: "EasyNAVI: Work Route Planner". DO NOT add any other words.
+3. VISUAL CONCEPT: A dynamic, abstract background featuring blurred top-down city map lines and glowing traffic pathways in citrus lime and white, creating a sense of motion and clarity. Soft glassmorphism depth effects to make the text pop."
