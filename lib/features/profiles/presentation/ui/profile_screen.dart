@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../app/locale/presentation/cubit/app_locale_cubit.dart';
 import '../../../../app/developer/ui/developer_screen.dart';
-import '../../../../app/profile/presentation/cubit/account_actions_cubit.dart';
+
 import '../../../../app/appearance/presentation/cubit/app_appearance_cubit.dart';
 import '../../../../app/appearance/models/car_icon_model.dart';
 import '../../../../app/locale/models/app_locale_option_model.dart';
@@ -33,9 +33,6 @@ class ProfileScreen extends StatelessWidget {
         BlocProvider<SessionCubit>.value(value: getIt<SessionCubit>()),
         BlocProvider<ProfileCubit>(create: (_) => getIt<ProfileCubit>()),
         BlocProvider<SyncCubit>(create: (_) => getIt<SyncCubit>()),
-        BlocProvider<AccountActionsCubit>(
-          create: (_) => getIt<AccountActionsCubit>(),
-        ),
         BlocProvider<AppVoiceCubit>.value(value: getIt<AppVoiceCubit>()),
       ],
       child: const _ProfileView(),
@@ -140,7 +137,6 @@ class _ProfileView extends StatelessWidget {
         providers: [
           BlocProvider.value(value: context.read<SessionCubit>()),
           BlocProvider.value(value: context.read<ProfileCubit>()),
-          BlocProvider.value(value: context.read<AccountActionsCubit>()),
         ],
         child: _ModernSettingsPanel(title: context.l10n.settingsProfile),
       ),
@@ -416,7 +412,7 @@ class _ProfileSettingsContent extends StatelessWidget {
         _ActionTile(
           title: context.l10n.logoutTitle,
           icon: Icons.logout_rounded,
-          onTap: () => context.read<AccountActionsCubit>().signOut(),
+          onTap: () => context.read<ProfileCubit>().signOut(),
         ),
         const SizedBox(height: 12),
         _ActionTile(
@@ -454,7 +450,7 @@ class _ProfileSettingsContent extends StatelessWidget {
     );
 
     if (result == true && context.mounted) {
-      await context.read<AccountActionsCubit>().deleteAccount();
+      await context.read<ProfileCubit>().deleteAccount();
       if (context.mounted) {
         Navigator.of(context).pop(); // Close sheet
         showDialog(

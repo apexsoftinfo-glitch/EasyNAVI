@@ -23,7 +23,7 @@ class NavigationVoiceService {
     _voiceRepository.speechRateStream.listen((rate) => _tts.setSpeechRate(rate));
     _voiceRepository.speechPitchStream.listen((pitch) => _tts.setPitch(pitch));
     
-    // Zapobiega wyciszaniu mowy przez przełącznik boczny iPhone'a
+    // Prevents mute switch from silencing voice on iOS
     await _tts.setIosAudioCategory(
       IosTextToSpeechAudioCategory.playback,
       [

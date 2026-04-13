@@ -6,6 +6,8 @@ import 'package:injectable/injectable.dart';
 import '../../../../shared/error_messages.dart';
 import '../../data/repositories/shared_user_repository.dart';
 
+import '../../../auth/data/repositories/auth_repository.dart';
+
 part 'profile_cubit.freezed.dart';
 
 @freezed
@@ -19,10 +21,11 @@ sealed class ProfileState with _$ProfileState {
 
 @injectable
 class ProfileCubit extends Cubit<ProfileState> {
-  ProfileCubit(this._sharedUserRepository)
+  ProfileCubit(this._sharedUserRepository, this._authRepository)
     : super(const ProfileState.initial());
 
   final SharedUserRepository _sharedUserRepository;
+  final AuthRepository _authRepository;
 
   Future<void> saveFirstName({
     required String userId,
@@ -40,6 +43,30 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(state.copyWith(isSaving: false, successKey: 'profile_saved'));
     } catch (error) {
       debugPrint('❌ [ProfileCubit] saveFirstName error: $error');
+      emit(state.copyWith(isSaving: false, errorKey: mapErrorToKey(error)));
+    }
+  }
+
+  Future<void> signOut() async {
+    if (state.isSaving) return;
+    emit(state.copyWith(isSaving: true, errorKey: null, successKey: null));
+    try {
+      await _authRepository.signOut();
+      emit(state.copyWith(isSaving: false));
+    } catch (error) {
+      debugPrint('❌ [ProfileCubit] signOut error: $error');
+      emit(state.copyWith(isSaving: false, errorKey: mapErrorToKey(error)));
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    if (state.isSaving) return;
+    emit(state.copyWith(isSaving: true, errorKey: null, successKey: null));
+    try {
+      await _authRepository.deleteAccount();
+      emit(state.copyWith(isSaving: false, successKey: 'account_deleted'));
+    } catch (error) {
+      debugPrint('❌ [ProfileCubit] deleteAccount error: $error');
       emit(state.copyWith(isSaving: false, errorKey: mapErrorToKey(error)));
     }
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
 
-import '../../../../core/config/revenuecat_config.dart';
+
+
 import '../../../profiles/data/datasources/shared_user_apps_data_source.dart';
 import '../../models/auth_principal_model.dart';
 import '../datasources/auth_data_source.dart';
@@ -106,7 +106,6 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> deleteAccount() async {
     try {
       debugPrint('ℹ️ [AuthRepository] deleteAccount started');
-      await _logOutRevenueCat();
       await _authDataSource.deleteAccount();
       debugPrint('✅ [AuthRepository] deleteAccount succeeded');
     } catch (error) {
@@ -119,7 +118,6 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> signOut() async {
     try {
       debugPrint('ℹ️ [AuthRepository] signOut started');
-      await _logOutRevenueCat();
       await _authDataSource.signOut();
       debugPrint('✅ [AuthRepository] signOut succeeded');
     } catch (error) {
@@ -142,21 +140,6 @@ class AuthRepositoryImpl implements AuthRepository {
         '⚠️ [AuthRepository] registerCurrentApp error (non-blocking): $error',
       );
     });
-  }
-
-  /// Clears RevenueCat identity so the next session starts fresh.
-  /// Errors are logged but do not block the sign-out flow.
-  Future<void> _logOutRevenueCat() async {
-    if (!RevenueCatConfig.isEnabled) return;
-
-    try {
-      await Purchases.logOut();
-      debugPrint('ℹ️ [AuthRepository] RC logOut succeeded');
-    } catch (error) {
-      // logOutWithAnonymousUserError is expected if RC has no identified user.
-      // Non-blocking — RC cleanup failure must not prevent sign-out.
-      debugPrint('⚠️ [AuthRepository] RC logOut error (non-blocking): $error');
-    }
   }
 
   AuthPrincipalModel? _mapPrincipal(Map<String, dynamic>? raw) {

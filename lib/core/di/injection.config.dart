@@ -24,10 +24,6 @@ import 'package:myapp/app/locale/data/repositories/app_locale_repository.dart'
     as _i910;
 import 'package:myapp/app/locale/presentation/cubit/app_locale_cubit.dart'
     as _i686;
-import 'package:myapp/app/profile/presentation/cubit/account_actions_cubit.dart'
-    as _i639;
-import 'package:myapp/app/profile/presentation/cubit/delete_account_preflight_cubit.dart'
-    as _i833;
 import 'package:myapp/app/session/data/repositories/session_repository.dart'
     as _i526;
 import 'package:myapp/app/session/presentation/cubit/session_cubit.dart'
@@ -84,10 +80,6 @@ import 'package:myapp/features/profiles/presentation/cubit/profile_cubit.dart'
     as _i463;
 import 'package:myapp/features/profiles/presentation/cubit/sync_cubit.dart'
     as _i1065;
-import 'package:myapp/features/subscription/data/datasources/subscription_data_source.dart'
-    as _i138;
-import 'package:myapp/features/subscription/data/repositories/subscription_repository.dart'
-    as _i894;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 
@@ -107,9 +99,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i161.InternetConnection>(
       () => appModule.internetConnection,
     );
-    gh.lazySingleton<_i138.SubscriptionDataSource>(
-      () => appModule.subscriptionDataSource,
-    );
     gh.lazySingleton<_i361.Dio>(() => appModule.dio);
     gh.lazySingleton<_i174.AddressesDataSource>(
       () => _i174.AddressesDataSourceImpl(gh<_i454.SupabaseClient>()),
@@ -118,10 +107,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i675.DirectionsRepositoryImpl(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i665.LocationService>(() => _i665.LocationServiceImpl());
-    gh.lazySingleton<_i894.SubscriptionRepository>(
-      () =>
-          _i894.SubscriptionRepositoryImpl(gh<_i138.SubscriptionDataSource>()),
-    );
     gh.lazySingleton<_i524.DeviceService>(() => _i524.DeviceServiceImpl());
     gh.lazySingleton<_i906.MapsRepository>(
       () => _i906.MapsRepositoryImpl(gh<_i361.Dio>()),
@@ -175,9 +160,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i636.SharedUserRepository>(
       () => _i636.SharedUserRepositoryImpl(gh<_i381.SharedUserDataSource>()),
     );
-    gh.factory<_i463.ProfileCubit>(
-      () => _i463.ProfileCubit(gh<_i636.SharedUserRepository>()),
-    );
     gh.factory<_i1065.SyncCubit>(
       () => _i1065.SyncCubit(gh<_i19.AddressesRepository>()),
     );
@@ -210,11 +192,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i165.ConnectivityCubit>(
       () => _i165.ConnectivityCubit(gh<_i220.ConnectivityRepository>()),
     );
-    gh.factory<_i833.DeleteAccountPreflightCubit>(
-      () => _i833.DeleteAccountPreflightCubit(
-        gh<_i504.SharedUserAppsRepository>(),
-      ),
-    );
     gh.factory<_i918.LoginCubit>(
       () => _i918.LoginCubit(gh<_i37.AuthRepository>()),
     );
@@ -232,17 +209,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i524.DeviceService>(),
       ),
     );
-    gh.factory<_i639.AccountActionsCubit>(
-      () => _i639.AccountActionsCubit(
+    gh.factory<_i463.ProfileCubit>(
+      () => _i463.ProfileCubit(
+        gh<_i636.SharedUserRepository>(),
         gh<_i37.AuthRepository>(),
-        gh<_i894.SubscriptionRepository>(),
       ),
     );
     gh.lazySingleton<_i526.SessionRepository>(
       () => _i526.SessionRepositoryImpl(
         gh<_i37.AuthRepository>(),
         gh<_i636.SharedUserRepository>(),
-        gh<_i894.SubscriptionRepository>(),
       ),
     );
     gh.lazySingleton<_i934.SessionCubit>(

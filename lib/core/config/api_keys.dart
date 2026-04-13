@@ -12,16 +12,4 @@ class ApiKeys {
     'SUPABASE_ANON_KEY',
     defaultValue: 'sb_publishable_HMcf9Q70d3YJI8_jnloO_Q_Mc0UaRFO',
   );
-  static const revenueCatAppleApiKey = String.fromEnvironment(
-    'REVENUECAT_APPLE_API_KEY',
-  );
-  static const revenueCatGoogleApiKey = String.fromEnvironment(
-    'REVENUECAT_GOOGLE_API_KEY',
-  );
-  static const revenueCatEntitlementId = String.fromEnvironment(
-    'REVENUECAT_ENTITLEMENT_ID',
-  );
-  static const revenueCatTestStoreApiKey = String.fromEnvironment(
-    'REVENUECAT_TEST_STORE_API_KEY',
-  );
 }

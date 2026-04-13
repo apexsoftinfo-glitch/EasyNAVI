@@ -2,26 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/config/app_config.dart';
-import '../../../core/config/revenuecat_config.dart';
 import '../../../core/di/injection.dart';
 import '../../../features/connectivity/presentation/cubit/connectivity_cubit.dart';
 import '../../../l10n/l10n.dart';
-import '../../profile/presentation/cubit/account_actions_cubit.dart';
 import '../../session/presentation/cubit/session_cubit.dart';
-import '../../session/presentation/session_localizations.dart';
 
 class DeveloperScreen extends StatelessWidget {
   const DeveloperScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<SessionCubit>.value(value: getIt<SessionCubit>()),
-        BlocProvider<AccountActionsCubit>(
-          create: (_) => getIt<AccountActionsCubit>(),
-        ),
-      ],
+    return BlocProvider<SessionCubit>.value(
+      value: getIt<SessionCubit>(),
       child: const _DeveloperView(),
     );
   }
@@ -40,7 +32,6 @@ class _DeveloperView extends StatelessWidget {
       body: SafeArea(
         child: BlocBuilder<SessionCubit, SessionState>(
           builder: (context, session) {
-            final userId = session.userIdOrNull;
             return SingleChildScrollView(
               padding: const EdgeInsets.all(24),
               child: Center(
@@ -59,13 +50,6 @@ class _DeveloperView extends StatelessWidget {
                         style: theme.textTheme.bodyLarge,
                       ),
                       const SizedBox(height: 24),
-                      if (!AppConfig.hasRevenueCatKeys) ...[
-                        _WarningCard(
-                          title: l10n.revenueCatDisconnectedTitle,
-                          body: l10n.revenueCatDisconnectedBody,
-                        ),
-                        const SizedBox(height: 24),
-                      ],
                       _SectionCard(
                         title: l10n.sessionSectionTitle,
                         children: [
@@ -84,14 +68,6 @@ class _DeveloperView extends StatelessWidget {
                             value: context.booleanLabel(
                               session.isAnonymousUser,
                             ),
-                          ),
-                          _InfoRow(
-                            label: l10n.planLabel,
-                            value: context.tierLabel(session.tier),
-                          ),
-                          _InfoRow(
-                            label: l10n.proLabel,
-                            value: context.booleanLabel(session.isProUser),
                           ),
                           _SelectableInfoRow(
                             label: l10n.userIdLabel,
@@ -141,73 +117,6 @@ class _DeveloperView extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
-                      _SectionCard(
-                        title: l10n.revenueCatSectionTitle,
-                        children: [
-                          _InfoRow(
-                            label: l10n.supportedPlatformLabel,
-                            value: context.booleanLabel(
-                              AppConfig.isRevenueCatSupportedPlatform,
-                            ),
-                          ),
-                          _InfoRow(
-                            label: l10n.keysConfiguredLabel,
-                            value: context.booleanLabel(
-                              AppConfig.hasRevenueCatKeys,
-                            ),
-                          ),
-                          _InfoRow(
-                            label: l10n.sdkActiveLabel,
-                            value: context.booleanLabel(
-                              RevenueCatConfig.isEnabled,
-                            ),
-                          ),
-                          _SelectableInfoRow(
-                            label: l10n.currentKeySourceLabel,
-                            value: AppConfig.hasRevenueCatKeys
-                                ? AppConfig.maskedRevenueCatApiKey
-                                : l10n.missingValueLabel,
-                          ),
-                          _InfoRow(
-                            label: l10n.proSourceLabel,
-                            value: RevenueCatConfig.isEnabled
-                                ? l10n.proSourceRevenueCat
-                                : l10n.proSourceDeveloperOverride,
-                          ),
-                          if (!RevenueCatConfig.isEnabled &&
-                              session.isAuthenticated &&
-                              userId != null) ...[
-                            const SizedBox(height: 8),
-                            BlocBuilder<
-                              AccountActionsCubit,
-                              AccountActionsState
-                            >(
-                              builder: (context, accountState) {
-                                final isLoading =
-                                    accountState.activeAction ==
-                                    AccountAction.developerProOverride;
-
-                                return SwitchListTile(
-                                  value: session.isProUser,
-                                  onChanged: isLoading
-                                      ? null
-                                      : (value) {
-                                          context
-                                              .read<AccountActionsCubit>()
-                                              .setDeveloperProOverride(
-                                                userId: userId,
-                                                isPro: value,
-                                              );
-                                        },
-                                  title: Text(l10n.debugForceProTitle),
-                                  subtitle: Text(l10n.debugForceProSubtitle),
-                                );
-                              },
-                            ),
-                          ],
-                        ],
-                      ),
                     ],
                   ),
                 ),
@@ -248,44 +157,16 @@ class _SectionCard extends StatelessWidget {
   }
 }
 
-class _WarningCard extends StatelessWidget {
-  const _WarningCard({required this.title, required this.body});
+extension _DeveloperLocalizations on BuildContext {
+  String booleanLabel(bool value) =>
+      value ? l10n.connectivityStatusConnected : l10n.connectivityStatusDisconnected;
 
-  final String title;
-  final String body;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.errorContainer,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: theme.textTheme.titleLarge?.copyWith(
-                color: theme.colorScheme.onErrorContainer,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              body,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onErrorContainer,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  String sessionDisplayName(SessionState session) {
+    final sharedUser = session.sharedUserOrNull;
+    if (sharedUser != null && sharedUser.firstName != null) {
+      return sharedUser.firstName!;
+    }
+    return session.emailOrNull ?? '-';
   }
 }
 

@@ -37,7 +37,7 @@ class AddressesCubit extends Cubit<AddressesState> {
         return updated;
       }
     } catch (e) {
-      // Ignorujemy błędy, po prostu zwrócimy null lub oryginał
+      // We ignore errors, just return null or original
     }
     return null;
   }
@@ -76,7 +76,7 @@ class AddressesCubit extends Cubit<AddressesState> {
     try {
       await _repository.deleteAddress(id);
     } catch (e) {
-      // Błędy krytyczne obsłużone przez repository, ale możemy emitować state jeśli potrzeba
+      // Critical errors are handled by repository, but we can emit state if needed
     }
   }
 

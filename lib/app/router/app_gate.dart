@@ -9,7 +9,7 @@ import '../../features/home/ui/home_screen.dart';
 import '../../features/welcome/ui/welcome_screen.dart';
 import '../session/presentation/cubit/session_cubit.dart';
 
-/// AppGate decyduje który ekran pokazać na podstawie stanu sesji.
+/// AppGate decides which screen to show based on the session state.
 class AppGate extends StatefulWidget {
   const AppGate({super.key});
 

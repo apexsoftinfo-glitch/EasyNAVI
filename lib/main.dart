@@ -4,7 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app/app.dart';
 import 'core/config/api_keys.dart';
 import 'core/config/app_config.dart';
-import 'core/config/revenuecat_config.dart';
+
 import 'core/di/injection.dart';
 
 void main() async {
@@ -17,7 +17,6 @@ void main() async {
     );
   }
 
-  await configureRevenueCat();
   await configureDependencies();
   runApp(App(hasSupabaseKeys: AppConfig.hasSupabaseKeys));
 }
