@@ -69,6 +69,12 @@ dependencies:
   geolocator: ^14.0.2
   url_launcher: ^6.3.2
   flutter_polyline_points: ^3.1.0
+  share_plus: ^12.0.2
+  file_picker: ^11.0.2
+  path_provider: ^2.1.5
+  flutter_tts: ^4.2.5
+  wakelock_plus: ^1.5.1
+  screen_brightness: ^2.1.7
 
 dev_dependencies:
   flutter_test:
@@ -101,6 +107,7 @@ flutter:
   assets:
     - assets/images/icon/icon.png
     - assets/images/home_bg.png
+    - assets/images/cars/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

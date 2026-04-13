@@ -1,21 +1,26 @@
+import 'dart:ui';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../app/locale/models/app_locale_option_model.dart';
 import '../../../../app/locale/presentation/cubit/app_locale_cubit.dart';
 import '../../../../app/developer/ui/developer_screen.dart';
 import '../../../../app/profile/presentation/cubit/account_actions_cubit.dart';
+import '../../../../app/appearance/presentation/cubit/app_appearance_cubit.dart';
+import '../../../../app/appearance/models/car_icon_model.dart';
+import '../../../../app/locale/models/app_locale_option_model.dart';
 import '../../../../app/session/presentation/cubit/session_cubit.dart';
-import '../../../../app/session/presentation/session_localizations.dart';
-import '../../../../app/profile/presentation/ui/delete_account_confirmation_screen.dart';
+import '../../../../app/voice/presentation/cubit/app_voice_cubit.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/services/voice_navigation_service.dart';
 import '../../../../features/auth/presentation/ui/login_screen.dart';
 import '../../../../features/auth/presentation/ui/register_screen.dart';
-import '../../../../core/config/revenuecat_config.dart';
 import '../../../../l10n/l10n.dart';
-import '../../../../shared/error_messages.dart';
 import '../cubit/profile_cubit.dart';
+import '../cubit/sync_cubit.dart';
+import '../cubit/sync_state.dart' as sync;
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -27,403 +32,625 @@ class ProfileScreen extends StatelessWidget {
         BlocProvider<AppLocaleCubit>.value(value: getIt<AppLocaleCubit>()),
         BlocProvider<SessionCubit>.value(value: getIt<SessionCubit>()),
         BlocProvider<ProfileCubit>(create: (_) => getIt<ProfileCubit>()),
+        BlocProvider<SyncCubit>(create: (_) => getIt<SyncCubit>()),
         BlocProvider<AccountActionsCubit>(
           create: (_) => getIt<AccountActionsCubit>(),
         ),
+        BlocProvider<AppVoiceCubit>.value(value: getIt<AppVoiceCubit>()),
       ],
       child: const _ProfileView(),
     );
   }
 }
 
-class _ProfileView extends StatefulWidget {
+class _ProfileView extends StatelessWidget {
   const _ProfileView();
 
   @override
-  State<_ProfileView> createState() => _ProfileViewState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: Text(
+          context.l10n.profileTitle.toUpperCase(),
+          style: GoogleFonts.inter(
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: Stack(
+        children: [
+          // Background Road Image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/home_bg.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          // Dark Overlay & Blur
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+              child: Container(
+                color: Colors.black.withValues(alpha: 0.5),
+              ),
+            ),
+          ),
+          // Grid Content
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                      children: [
+                        _SettingsTile(
+                          title: 'Profil',
+                          icon: Icons.account_circle_outlined,
+                          onTap: () => _showProfileSettings(context),
+                        ),
+                        _SettingsTile(
+                          title: 'Wygląd',
+                          icon: Icons.palette_outlined,
+                          onTap: () => _showAppearanceSettings(context),
+                        ),
+                        _SettingsTile(
+                          title: 'Synchronizacja',
+                          icon: Icons.cloud_sync_outlined,
+                          onTap: () => _showSyncSettings(context),
+                        ),
+                        _SettingsTile(
+                          title: 'O programie',
+                          icon: Icons.info_outline_rounded,
+                          onTap: () => _showAboutSettings(context),
+                        ),
+                        _SettingsTile(
+                          title: 'Głos',
+                          icon: Icons.record_voice_over_outlined,
+                          onTap: () => _showVoiceSettings(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showProfileSettings(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: context.read<SessionCubit>()),
+          BlocProvider.value(value: context.read<ProfileCubit>()),
+          BlocProvider.value(value: context.read<AccountActionsCubit>()),
+        ],
+        child: const _ModernSettingsPanel(title: 'Profil'),
+      ),
+    );
+  }
+
+  void _showAppearanceSettings(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => BlocProvider.value(
+        value: context.read<AppAppearanceCubit>(),
+        child: const _ModernSettingsPanel(title: 'Wygląd'),
+      ),
+    );
+  }
+
+  void _showSyncSettings(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (modalContext) => BlocProvider<SyncCubit>(
+        create: (_) => getIt<SyncCubit>(),
+        child: const _ModernSettingsPanel(title: 'Synchronizacja'),
+      ),
+    );
+  }
+
+  void _showAboutSettings(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const _ModernSettingsPanel(title: 'O programie'),
+    );
+  }
+
+  void _showVoiceSettings(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => BlocProvider.value(
+        value: context.read<AppVoiceCubit>(),
+        child: const _ModernSettingsPanel(title: 'Głos'),
+      ),
+    );
+  }
 }
 
-class _ProfileViewState extends State<_ProfileView> {
-  late final TextEditingController _firstNameController;
-  late final FocusNode _firstNameFocusNode;
+class _SettingsTile extends StatelessWidget {
+  const _SettingsTile({
+    required this.title,
+    required this.icon,
+    required this.onTap,
+  });
 
-  @override
-  void initState() {
-    super.initState();
-    _firstNameController = TextEditingController();
-    _firstNameFocusNode = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    _firstNameController.dispose();
-    _firstNameFocusNode.dispose();
-    super.dispose();
-  }
+  final String title;
+  final IconData icon;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final session = context.watch<SessionCubit>().state;
-    final sharedUser = session.sharedUserOrNull;
-    final firstName = sharedUser?.firstName ?? '';
-    final l10n = context.l10n;
-
-    if (!_firstNameFocusNode.hasFocus &&
-        _firstNameController.text != firstName) {
-      _firstNameController.text = firstName;
-    }
-
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<ProfileCubit, ProfileState>(
-          listener: (context, state) {
-            if (state.successKey == 'profile_saved') {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.profileSavedSnackbar)),
-              );
-              context.read<ProfileCubit>().clearFeedback();
-            }
-          },
-        ),
-        BlocListener<AccountActionsCubit, AccountActionsState>(
-          listener: (context, state) {
-            if (state.successKey == 'pro_enabled') {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(l10n.proEnabledSnackbar)));
-              context.read<AccountActionsCubit>().clearFeedback();
-            }
-          },
-        ),
-      ],
-      child: PopScope(
-        canPop: !_hasUnsavedChanges(firstName),
-        onPopInvokedWithResult: (didPop, result) async {
-          if (didPop || !_hasUnsavedChanges(firstName)) return;
-
-          final shouldDiscard = await _confirmDiscardChanges(context);
-          if (!context.mounted || !shouldDiscard) return;
-          Navigator.of(context).pop();
-        },
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(24),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Scaffold(
-            appBar: AppBar(title: Text(l10n.profileTitle)),
-            body: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 520),
-                    child: BlocBuilder<ProfileCubit, ProfileState>(
-                      builder: (context, profileState) {
-                        return BlocBuilder<
-                          AccountActionsCubit,
-                          AccountActionsState
-                        >(
-                          builder: (context, accountState) {
-                            final isSavingName = profileState.isSaving;
-                            final activeAccountAction =
-                                accountState.activeAction;
-                            final isInteractionLocked =
-                                isSavingName || activeAccountAction != null;
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                if (session.shouldShowProtectProBanner) ...[
-                                  const _ProtectProBanner(),
-                                  const SizedBox(height: 24),
-                                ],
-                                TextField(
-                                  controller: _firstNameController,
-                                  focusNode: _firstNameFocusNode,
-                                  enabled: !isInteractionLocked,
-                                  keyboardType: TextInputType.name,
-                                  textCapitalization: TextCapitalization.words,
-                                  decoration: InputDecoration(
-                                    labelText: l10n.firstNameFieldLabel,
-                                  ),
-                                  textInputAction: TextInputAction.done,
-                                  onSubmitted: (_) =>
-                                      _saveFirstName(context, session),
-                                ),
-                                const SizedBox(height: 16),
-                                FilledButton(
-                                  onPressed: !isInteractionLocked
-                                      ? () => _saveFirstName(context, session)
-                                      : null,
-                                  child: isSavingName
-                                      ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                          ),
-                                        )
-                                      : Text(l10n.saveFirstNameButtonLabel),
-                                ),
-                                const SizedBox(height: 16),
-                                _AppLanguageDropdown(
-                                  isEnabled: !isInteractionLocked,
-                                ),
-                                if (profileState.errorKey != null) ...[
-                                  const SizedBox(height: 16),
-                                  SelectableText(
-                                    messageForErrorKey(
-                                      l10n,
-                                      profileState.errorKey,
-                                    ),
-                                    style: TextStyle(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.error,
-                                    ),
-                                  ),
-                                ],
-                                if (accountState.errorKey != null) ...[
-                                  const SizedBox(height: 16),
-                                  SelectableText(
-                                    messageForErrorKey(
-                                      l10n,
-                                      accountState.errorKey,
-                                    ),
-                                    style: TextStyle(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.error,
-                                    ),
-                                  ),
-                                ],
-                                const SizedBox(height: 32),
-                                if (session.isAnonymousUser) ...[
-                                  FilledButton.tonal(
-                                    onPressed: !isInteractionLocked
-                                        ? () async {
-                                            final result =
-                                                await Navigator.of(
-                                                  context,
-                                                ).push<bool>(
-                                                  MaterialPageRoute<bool>(
-                                                    builder: (_) =>
-                                                        const RegisterScreen(),
-                                                  ),
-                                                );
-                                            if (!context.mounted) return;
-                                            if (result == true) {
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                    l10n.accountSecuredSnackbar,
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                          }
-                                        : null,
-                                    child: Text(l10n.registerButtonLabel),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  OutlinedButton(
-                                    onPressed: !isInteractionLocked
-                                        ? () =>
-                                              Navigator.of(context).push<void>(
-                                                MaterialPageRoute<void>(
-                                                  builder: (_) =>
-                                                      const LoginScreen(),
-                                                ),
-                                              )
-                                        : null,
-                                    child: Text(l10n.loginButtonLabel),
-                                  ),
-                                  const SizedBox(height: 12),
-                                ],
-                                if (!session.isAnonymousUser) ...[
-                                  OutlinedButton(
-                                    onPressed: !isInteractionLocked
-                                        ? () => context
-                                              .read<AccountActionsCubit>()
-                                              .signOut()
-                                        : null,
-                                    child:
-                                        activeAccountAction ==
-                                            AccountAction.signOut
-                                        ? const SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                            ),
-                                          )
-                                        : Text(l10n.logoutButtonLabel),
-                                  ),
-                                  const SizedBox(height: 12),
-                                ],
-                                if (!session.isProUser &&
-                                    RevenueCatConfig.isEnabled) ...[
-                                  FilledButton(
-                                    onPressed:
-                                        !isInteractionLocked &&
-                                            session.userIdOrNull != null
-                                        ? () => context
-                                              .read<AccountActionsCubit>()
-                                              .buyPro(session.userIdOrNull!)
-                                        : null,
-                                    child:
-                                        activeAccountAction ==
-                                            AccountAction.buyPro
-                                        ? const SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                            ),
-                                          )
-                                        : Text(l10n.buyProButtonLabel),
-                                  ),
-                                  const SizedBox(height: 12),
-                                ],
-                                OutlinedButton(
-                                  onPressed: !isInteractionLocked
-                                      ? () => Navigator.of(context).push<void>(
-                                          MaterialPageRoute<void>(
-                                            builder: (_) =>
-                                                const DeleteAccountConfirmationScreen(),
-                                          ),
-                                        )
-                                      : null,
-                                  child: Text(l10n.deleteAccountButtonLabel),
-                                ),
-                                if (kDebugMode) ...[
-                                  const Divider(height: 48),
-                                  _ProfileSummary(session: session),
-                                  const SizedBox(height: 12),
-                                  OutlinedButton.icon(
-                                    onPressed: !isInteractionLocked
-                                        ? () =>
-                                              Navigator.of(context).push<void>(
-                                                MaterialPageRoute<void>(
-                                                  builder: (_) =>
-                                                      const DeveloperScreen(),
-                                                ),
-                                              )
-                                        : null,
-                                    icon: const Icon(Icons.developer_mode),
-                                    label: Text(l10n.developerToolsTitle),
-                                  ),
-                                ],
-                              ],
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ),
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.2),
+                width: 1.5,
               ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, color: Colors.white, size: 40),
+                const SizedBox(height: 12),
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ),
         ),
       ),
     );
   }
+}
 
-  bool _hasUnsavedChanges(String firstName) {
-    return _firstNameController.text.trim() != firstName.trim();
+class _ModernSettingsPanel extends StatelessWidget {
+  const _ModernSettingsPanel({required this.title});
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.75,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade900,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.white24,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.inter(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  if (title == 'Profil') 
+                    const _ProfileSettingsContent()
+                  else if (title == 'O programie')
+                    const _AboutSettingsContent()
+                  else if (title == 'Synchronizacja')
+                    const _SyncSettingsContent()
+                  else if (title == 'Wygląd')
+                    const _AppearanceSettingsContent()
+                  else if (title == 'Głos')
+                    const _VoiceSettingsContent()
+                  else
+                    const Center(
+                      child: Text(
+                        'Dostępne wkrótce...',
+                        style: TextStyle(color: Colors.white54),
+                      ),
+                    ),
+                  const SizedBox(height: 40),
+                ],
+              ),
+            ),
+          ),
+          if (kDebugMode && title == 'O programie')
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: OutlinedButton.icon(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const DeveloperScreen()),
+                ),
+                icon: const Icon(Icons.developer_mode),
+                label: const Text('Developer Tools'),
+                style: OutlinedButton.styleFrom(foregroundColor: Colors.white),
+              ),
+            ),
+        ],
+      ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileSettingsContent extends StatelessWidget {
+  const _ProfileSettingsContent();
+
+  @override
+  Widget build(BuildContext context) {
+    final session = context.watch<SessionCubit>().state;
+    final isGuest = session.isAnonymousUser;
+    final sharedUser = session.sharedUserOrNull;
+    
+    if (isGuest) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _InfoCard(
+            title: 'Zalogowany jako Gość',
+            subtitle: 'Twoje dane nie są jeszcze w pełni zabezpieczone.',
+            icon: Icons.no_accounts_rounded,
+            color: Colors.orange.shade800,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Zarejestruj się, aby zapisać swoje adresy w chmurze. Gwarantujemy brak reklam i 100% prywatności – nie przekazujemy Twojego e-maila nikomu.',
+            style: GoogleFonts.inter(color: Colors.white70, fontSize: 14, height: 1.5),
+          ),
+          const SizedBox(height: 32),
+          FilledButton(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const RegisterScreen()),
+            ),
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              minimumSize: const Size(double.infinity, 56),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            ),
+            child: const Text('ZAREJESTRUJ SIĘ', style: TextStyle(fontWeight: FontWeight.w800)),
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const LoginScreen()),
+            ),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.white,
+              side: const BorderSide(color: Colors.white24),
+              minimumSize: const Size(double.infinity, 56),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            ),
+            child: const Text('ZALOGUJ', style: TextStyle(fontWeight: FontWeight.w800)),
+          ),
+        ],
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.white10,
+              child: Icon(Icons.person_rounded, color: Colors.white, size: 30),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    sharedUser?.firstName ?? 'Użytkownik',
+                    style: GoogleFonts.inter(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
+                  ),
+                  Text(
+                    session.emailOrNull ?? '-',
+                    style: GoogleFonts.inter(color: Colors.white54, fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 40),
+        _ActionTile(
+          title: 'Wyloguj się',
+          icon: Icons.logout_rounded,
+          onTap: () => context.read<AccountActionsCubit>().signOut(),
+        ),
+        const SizedBox(height: 12),
+        _ActionTile(
+          title: 'Usuń konto',
+          icon: Icons.delete_forever_rounded,
+          color: Colors.red.shade400,
+          onTap: () => _confirmAccountDeletion(context),
+        ),
+      ],
+    );
   }
 
-  Future<bool> _confirmDiscardChanges(BuildContext context) async {
+  Future<void> _confirmAccountDeletion(BuildContext context) async {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(context.l10n.discardChangesTitle),
-        content: Text(context.l10n.discardChangesBody),
+        backgroundColor: Colors.grey.shade900,
+        title: const Text('Czy na pewno?', style: TextStyle(color: Colors.white)),
+        content: const Text(
+          'Twoje konto oraz WSZYSTKIE zapisane adresy zostaną nieodwracalnie usunięte. Czy chcesz kontynuować?',
+          style: TextStyle(color: Colors.white70),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(context.l10n.stayButtonLabel),
+            child: const Text('ANULUJ', style: TextStyle(color: Colors.white54)),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(context.l10n.discardButtonLabel),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('USUŃ WSZYSTKO'),
           ),
         ],
       ),
     );
 
-    return result ?? false;
+    if (result == true && context.mounted) {
+      await context.read<AccountActionsCubit>().deleteAccount();
+      if (context.mounted) {
+        Navigator.of(context).pop(); // Close sheet
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+            backgroundColor: Colors.grey.shade900,
+            title: const Text('Konto usunięte', style: TextStyle(color: Colors.white)),
+            content: const Text(
+              'Wszystkie Twoje dane zostały pomyślnie usunięte z naszego systemu.',
+              style: TextStyle(color: Colors.white70),
+            ),
+            actions: [
+              FilledButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close dialog
+                  // SessionCubit will automatically trigger screen change via session stream
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    }
   }
+}
 
-  void _saveFirstName(BuildContext context, SessionState session) {
-    final userId = session.userIdOrNull;
-    if (userId == null) return;
+class _InfoCard extends StatelessWidget {
+  const _InfoCard({required this.title, required this.subtitle, required this.icon, required this.color});
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
 
-    FocusScope.of(context).unfocus();
-    context.read<ProfileCubit>().saveFirstName(
-      userId: userId,
-      firstName: _firstNameController.text,
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 32),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: GoogleFonts.inter(color: color, fontWeight: FontWeight.w700)),
+                Text(subtitle, style: GoogleFonts.inter(color: color.withValues(alpha: 0.7), fontSize: 13)),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _AppLanguageDropdown extends StatelessWidget {
-  const _AppLanguageDropdown({required this.isEnabled});
-
-  final bool isEnabled;
+class _ActionTile extends StatelessWidget {
+  const _ActionTile({required this.title, required this.icon, required this.onTap, this.color});
+  final String title;
+  final IconData icon;
+  final VoidCallback onTap;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-
-    return BlocBuilder<AppLocaleCubit, AppLocaleState>(
-      builder: (context, state) {
-        final isSelectionEnabled = isEnabled && !state.isSaving;
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+    final effectiveColor = color ?? Colors.white;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: effectiveColor.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: effectiveColor.withValues(alpha: 0.1)),
+        ),
+        child: Row(
           children: [
-            DropdownButtonFormField<AppLocaleOptionModel>(
-              initialValue: state.selectedOption,
-              decoration: InputDecoration(
-                labelText: l10n.profileLanguageSectionTitle,
-                helperText: l10n.profileLanguageSectionDescription,
-              ),
-              items: [
-                DropdownMenuItem(
-                  value: AppLocaleOptionModel.system,
-                  child: Text(l10n.languageOptionSystem),
-                ),
-                DropdownMenuItem(
-                  value: AppLocaleOptionModel.polish,
-                  child: Text(l10n.languageOptionPolish),
-                ),
-                DropdownMenuItem(
-                  value: AppLocaleOptionModel.english,
-                  child: Text(l10n.languageOptionEnglish),
-                ),
-              ],
-              onChanged: isSelectionEnabled
-                  ? (option) {
-                      if (option == null) return;
-                      context.read<AppLocaleCubit>().selectLocale(option);
-                    }
-                  : null,
-            ),
-            if (state.selectedOption == AppLocaleOptionModel.system) ...[
-              const SizedBox(height: 4),
+            Icon(icon, color: effectiveColor, size: 24),
+            const SizedBox(width: 16),
+            Text(title, style: GoogleFonts.inter(color: effectiveColor, fontWeight: FontWeight.w600, fontSize: 15)),
+            const Spacer(),
+            Icon(Icons.chevron_right_rounded, color: effectiveColor.withValues(alpha: 0.3)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AboutSettingsContent extends StatelessWidget {
+  const _AboutSettingsContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'EasyNAVI to prosta aplikacja stworzona z myślą o osobach poruszających się służbowo po stałych punktach – klientach, serwisach czy adresach dostaw.',
+          style: GoogleFonts.inter(color: Colors.white, fontSize: 16, height: 1.6, fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Pozwala ona na błyskawiczne zapisanie własnej bazy adresów i natychmiastowe uruchomienie nawigacji z podglądem aktualnych utrudnień na drodze, bez konieczności każdorazowego wpisywania celu.',
+          style: GoogleFonts.inter(color: Colors.white70, fontSize: 14, height: 1.5),
+        ),
+        const SizedBox(height: 48),
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white10),
+          ),
+          child: Column(
+            children: [
               Text(
-                l10n.languageOptionSystemDescription,
-                style: Theme.of(context).textTheme.bodySmall,
+                'Program napisany przez',
+                style: GoogleFonts.inter(color: Colors.white54, fontSize: 13),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Apex Software',
+                style: GoogleFonts.inter(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900, letterSpacing: 1),
+              ),
+              const SizedBox(height: 24),
+              TextButton.icon(
+                onPressed: () => launchUrl(Uri.parse('https://apex-software.web.app'), mode: LaunchMode.externalApplication),
+                icon: const Icon(Icons.language_rounded, size: 20),
+                label: const Text('apex-software.web.app'),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.blue.shade400,
+                  textStyle: const TextStyle(fontWeight: FontWeight.w700),
+                ),
               ),
             ],
-            if (state.errorKey != null) ...[
-              const SizedBox(height: 8),
-              SelectableText(
-                messageForErrorKey(l10n, state.errorKey),
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SyncSettingsContent extends StatelessWidget {
+  const _SyncSettingsContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<SyncCubit, sync.SyncState>(
+      listener: (context, state) {
+        if (state is sync.Success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message), backgroundColor: Colors.green.shade700),
+          );
+          context.read<SyncCubit>().reset();
+        } else if (state is sync.Error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Błąd: ${state.errorKey}'), backgroundColor: Colors.red.shade700),
+          );
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state is sync.Loading;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _InfoCard(
+              title: 'Lokalna Kopia Zapasowa',
+              subtitle: 'Zapisz wszystkie adresy do jednego pliku lub wczytaj je z powrotem.',
+              icon: Icons.storage_rounded,
+              color: Colors.blue.shade400,
+            ),
+            const SizedBox(height: 32),
+            _ActionTile(
+              title: 'UTWÓRZ KOPIĘ PLIKOWĄ',
+              icon: Icons.save_alt_rounded,
+              onTap: isLoading ? () {} : () => context.read<SyncCubit>().exportBackup(),
+            ),
+            const SizedBox(height: 12),
+            _ActionTile(
+              title: 'WCZYTAJ Z PLIKU',
+              icon: Icons.file_open_rounded,
+              onTap: isLoading ? () {} : () => context.read<SyncCubit>().importBackup(),
+            ),
+            if (isLoading) ...[
+              const SizedBox(height: 32),
+              const Center(child: CircularProgressIndicator(color: Colors.white)),
             ],
           ],
         );
@@ -432,35 +659,178 @@ class _AppLanguageDropdown extends StatelessWidget {
   }
 }
 
-class _ProfileSummary extends StatelessWidget {
-  const _ProfileSummary({required this.session});
-
-  final SessionState session;
+class _AppearanceSettingsContent extends StatelessWidget {
+  const _AppearanceSettingsContent();
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
+    
+    return BlocBuilder<AppAppearanceCubit, AppAppearanceState>(
+      builder: (context, state) {
+        return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              context.sessionDisplayName(session),
-              style: Theme.of(context).textTheme.headlineSmall,
+            // Brightness Section
+            _InfoCard(
+              title: 'Jasność ekranu',
+              subtitle: 'Reguluj poziom podświetlenia, aby dopasować widoczność do warunków na drodze.',
+              icon: Icons.brightness_6_rounded,
+              color: Colors.orange.shade400,
             ),
-            const SizedBox(height: 12),
-            SelectableText(l10n.sessionUserId(session.userIdOrNull ?? '-')),
-            const SizedBox(height: 8),
-            SelectableText(l10n.sessionEmail(session.emailOrNull ?? '-')),
-            const SizedBox(height: 8),
-            SelectableText(l10n.sessionPlan(context.tierLabel(session.tier))),
+            const SizedBox(height: 16),
+            SliderTheme(
+              data: SliderTheme.of(context).copyWith(
+                activeTrackColor: Colors.orange.shade400,
+                inactiveTrackColor: Colors.white10,
+                thumbColor: Colors.white,
+                overlayColor: Colors.orange.withValues(alpha: 0.2),
+              ),
+              child: Slider(
+                value: state.brightness,
+                onChanged: (val) => context.read<AppAppearanceCubit>().setBrightness(val),
+              ),
+            ),
+            const SizedBox(height: 48),
+
+            // Car Icon Section
+            _InfoCard(
+              title: 'Twój pojazd',
+              subtitle: 'Wybierz model, który będzie Cię reprezentował podczas nawigacji.',
+              icon: Icons.directions_car_rounded,
+              color: Colors.blue.shade400,
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              height: 100,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemCount: CarIconType.values.length,
+                separatorBuilder: (_, _) => const SizedBox(width: 16),
+                itemBuilder: (context, index) {
+                  final type = CarIconType.values[index];
+                  final isSelected = state.carIcon == type;
+                  
+                  return GestureDetector(
+                    onTap: () => context.read<AppAppearanceCubit>().setCarIcon(type),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: isSelected ? Colors.blue.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isSelected ? Colors.blue.shade400 : Colors.white12,
+                          width: 2,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (type == CarIconType.classic)
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: const BoxDecoration(
+                                color: Colors.blue,
+                                shape: BoxShape.circle,
+                                boxShadow: [BoxShadow(color: Colors.blue, blurRadius: 10)],
+                              ),
+                            )
+                          else
+                            Image.asset(
+                              type.assetPath,
+                              height: 48,
+                              fit: BoxFit.contain,
+                            ),
+                          const SizedBox(height: 8),
+                          Text(
+                            type.name,
+                            style: GoogleFonts.inter(
+                              color: isSelected ? Colors.white : Colors.white54,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 48),
+            
+            // Language Section
+            _InfoCard(
+              title: l10n.profileLanguageSectionTitle,
+              subtitle: l10n.profileLanguageSectionDescription,
+              icon: Icons.translate_rounded,
+              color: Colors.teal.shade400,
+            ),
+            const SizedBox(height: 24),
+            ...AppLocaleOptionModel.values.map((option) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: _LanguageOptionTile(
+                option: option,
+                isSelected: state.selectedLocale == option,
+                onTap: () => context.read<AppAppearanceCubit>().setLocale(option),
+              ),
+            )),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _LanguageOptionTile extends StatelessWidget {
+  const _LanguageOptionTile({
+    required this.option,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final AppLocaleOptionModel option;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.teal.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected ? Colors.teal.shade400 : Colors.white12,
+          ),
+        ),
+        child: Row(
+          children: [
+            Text(
+              option == AppLocaleOptionModel.system ? '📱' : (option == AppLocaleOptionModel.polish ? '🇵🇱' : '🇺🇸'),
+              style: const TextStyle(fontSize: 20),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    option == AppLocaleOptionModel.system ? 'Automatyczny' : (option == AppLocaleOptionModel.polish ? 'Polski' : 'English'),
+                    style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 15),
+                  ),
+                ],
+              ),
+            ),
+            if (isSelected)
+              Icon(Icons.check_circle_rounded, color: Colors.teal.shade400),
           ],
         ),
       ),
@@ -468,41 +838,84 @@ class _ProfileSummary extends StatelessWidget {
   }
 }
 
-class _ProtectProBanner extends StatelessWidget {
-  const _ProtectProBanner();
+class _VoiceSettingsContent extends StatelessWidget {
+  const _VoiceSettingsContent();
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = context.l10n;
+    return BlocBuilder<AppVoiceCubit, AppVoiceState>(
+      builder: (context, state) {
+        if (state is! Loaded) return const SizedBox();
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.errorContainer,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
+        return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.protectProBannerTitle,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.onErrorContainer,
-                fontWeight: FontWeight.w700,
+            // Speech Rate
+            _InfoCard(
+              title: 'Szybkość mowy',
+              subtitle: 'Reguluj tempo, w jakim asystent podaje wskazówki nawigacyjne.',
+              icon: Icons.speed_rounded,
+              color: Colors.blue.shade400,
+            ),
+            const SizedBox(height: 16),
+            SliderTheme(
+              data: SliderTheme.of(context).copyWith(
+                activeTrackColor: Colors.blue.shade400,
+                inactiveTrackColor: Colors.white10,
+                thumbColor: Colors.white,
+                overlayColor: Colors.blue.withValues(alpha: 0.2),
+              ),
+              child: Slider(
+                value: state.speechRate,
+                min: 0.1,
+                max: 1.0,
+                onChanged: (val) => context.read<AppVoiceCubit>().setSpeechRate(val),
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.protectProBannerBody,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onErrorContainer,
+            const SizedBox(height: 48),
+
+            // Speech Pitch
+            _InfoCard(
+              title: 'Barwa głosu',
+              subtitle: 'Zmień ton mowy asystenta – od niskiego po wysoki.',
+              icon: Icons.graphic_eq_rounded,
+              color: Colors.purple.shade400,
+            ),
+            const SizedBox(height: 16),
+            SliderTheme(
+              data: SliderTheme.of(context).copyWith(
+                activeTrackColor: Colors.purple.shade400,
+                inactiveTrackColor: Colors.white10,
+                thumbColor: Colors.white,
+                overlayColor: Colors.purple.withValues(alpha: 0.2),
+              ),
+              child: Slider(
+                value: state.speechPitch,
+                min: 0.5,
+                max: 2.0,
+                onChanged: (val) => context.read<AppVoiceCubit>().setSpeechPitch(val),
+              ),
+            ),
+            const SizedBox(height: 48),
+
+            // Test Button
+            FilledButton.icon(
+              onPressed: () => getIt<NavigationVoiceService>().speak('Dzień dobry! Asystent EasyNAVI jest gotowy do drogi.'),
+              icon: const Icon(Icons.play_arrow_rounded),
+              label: const Text('TESTUJ USTAWIENIA'),
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.white10,
+                foregroundColor: Colors.white,
+                minimumSize: const Size(double.infinity, 56),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: const BorderSide(color: Colors.white24),
+                ),
               ),
             ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

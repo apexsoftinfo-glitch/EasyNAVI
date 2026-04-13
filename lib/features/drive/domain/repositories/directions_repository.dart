@@ -11,6 +11,8 @@ abstract class DirectionsRepository {
     required LatLng origin,
     required LatLng destination,
   });
+  Future<int?> getSpeedLimit(LatLng position);
+  Future<List<LatLng>> getNearbyRadars(LatLng position);
 }
 
 @LazySingleton(as: DirectionsRepository)
@@ -69,6 +71,8 @@ class DirectionsRepositoryImpl implements DirectionsRepository {
               .toList(),
           totalDistance: legs['distance']['text'] as String,
           totalDuration: legs['duration']['text'] as String,
+          totalDistanceValue: legs['distance']['value'] as int,
+          totalDurationValue: legs['duration']['value'] as int,
           steps: steps,
         );
       } else {
@@ -78,6 +82,54 @@ class DirectionsRepositoryImpl implements DirectionsRepository {
     } catch (e) {
       debugPrint('[DirectionsRepository] Exception: $e');
       throw const AppException('failed-to-fetch-directions');
+    }
+  }
+
+  @override
+  Future<int?> getSpeedLimit(LatLng position) async {
+    try {
+      final query = '[out:json];way(around:30,${position.latitude},${position.longitude})["maxspeed"];out;';
+      final response = await _dio.get(
+        'https://overpass-api.de/api/interpreter',
+        queryParameters: {'data': query},
+      );
+
+      if (response.data != null && response.data['elements'] != null) {
+        final elements = response.data['elements'] as List;
+        if (elements.isNotEmpty) {
+          final tags = elements[0]['tags'];
+          if (tags != null && tags['maxspeed'] != null) {
+            final maxSpeedStr = tags['maxspeed'] as String;
+            // Handle values like "50", "90", or "120 km/h"
+            final speed = int.tryParse(maxSpeedStr.replaceAll(RegExp(r'[^0-9]'), ''));
+            return speed;
+          }
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint('[DirectionsRepository] Speed Limit error: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<List<LatLng>> getNearbyRadars(LatLng position) async {
+    try {
+      final query = '[out:json];node(around:1000,${position.latitude},${position.longitude})["highway"="speed_camera"];out;';
+      final response = await _dio.get(
+        'https://overpass-api.de/api/interpreter',
+        queryParameters: {'data': query},
+      );
+
+      if (response.data != null && response.data['elements'] != null) {
+        final elements = response.data['elements'] as List;
+        return elements.map((e) => LatLng(e['lat'] as double, e['lon'] as double)).toList();
+      }
+      return [];
+    } catch (e) {
+      debugPrint('[DirectionsRepository] Radars error: $e');
+      return [];
     }
   }
 }

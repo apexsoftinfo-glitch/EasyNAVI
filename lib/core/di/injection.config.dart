@@ -14,6 +14,10 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart'
     as _i161;
+import 'package:myapp/app/appearance/data/repositories/app_appearance_repository.dart'
+    as _i109;
+import 'package:myapp/app/appearance/presentation/cubit/app_appearance_cubit.dart'
+    as _i789;
 import 'package:myapp/app/locale/data/datasources/app_locale_data_source.dart'
     as _i634;
 import 'package:myapp/app/locale/data/repositories/app_locale_repository.dart'
@@ -28,7 +32,14 @@ import 'package:myapp/app/session/data/repositories/session_repository.dart'
     as _i526;
 import 'package:myapp/app/session/presentation/cubit/session_cubit.dart'
     as _i934;
+import 'package:myapp/app/voice/data/repositories/app_voice_repository.dart'
+    as _i509;
+import 'package:myapp/app/voice/presentation/cubit/app_voice_cubit.dart'
+    as _i734;
 import 'package:myapp/core/di/app_module.dart' as _i832;
+import 'package:myapp/core/services/device_service.dart' as _i524;
+import 'package:myapp/core/services/location_service.dart' as _i665;
+import 'package:myapp/core/services/voice_navigation_service.dart' as _i359;
 import 'package:myapp/features/addresses/data/datasources/addresses_data_source.dart'
     as _i174;
 import 'package:myapp/features/addresses/domain/repositories/addresses_repository.dart'
@@ -71,6 +82,8 @@ import 'package:myapp/features/profiles/data/repositories/shared_user_repository
     as _i636;
 import 'package:myapp/features/profiles/presentation/cubit/profile_cubit.dart'
     as _i463;
+import 'package:myapp/features/profiles/presentation/cubit/sync_cubit.dart'
+    as _i1065;
 import 'package:myapp/features/subscription/data/datasources/subscription_data_source.dart'
     as _i138;
 import 'package:myapp/features/subscription/data/repositories/subscription_repository.dart'
@@ -104,10 +117,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i675.DirectionsRepository>(
       () => _i675.DirectionsRepositoryImpl(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i665.LocationService>(() => _i665.LocationServiceImpl());
     gh.lazySingleton<_i894.SubscriptionRepository>(
       () =>
           _i894.SubscriptionRepositoryImpl(gh<_i138.SubscriptionDataSource>()),
     );
+    gh.lazySingleton<_i524.DeviceService>(() => _i524.DeviceServiceImpl());
     gh.lazySingleton<_i906.MapsRepository>(
       () => _i906.MapsRepositoryImpl(gh<_i361.Dio>()),
     );
@@ -128,11 +143,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i910.AppLocaleRepository>(
       () => _i910.AppLocaleRepositoryImpl(gh<_i634.AppLocaleDataSource>()),
     );
+    gh.lazySingleton<_i509.AppVoiceRepository>(
+      () => _i509.AppVoiceRepositoryImpl(gh<_i460.SharedPreferences>()),
+    );
+    gh.lazySingleton<_i109.AppAppearanceRepository>(
+      () => _i109.AppAppearanceRepositoryImpl(gh<_i460.SharedPreferences>()),
+    );
     gh.lazySingleton<_i19.AddressesRepository>(
       () => _i19.AddressesRepositoryImpl(gh<_i174.AddressesDataSource>()),
-    );
-    gh.factory<_i636.DriveCubit>(
-      () => _i636.DriveCubit(gh<_i675.DirectionsRepository>()),
     );
     gh.lazySingleton<_i842.SharedUserAppsDataSource>(
       () => _i842.SupabaseSharedUserAppsDataSource(gh<_i454.SupabaseClient>()),
@@ -142,6 +160,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i19.AddressesRepository>(),
         gh<_i454.SupabaseClient>(),
       ),
+    );
+    gh.singleton<_i789.AppAppearanceCubit>(
+      () => _i789.AppAppearanceCubit(gh<_i109.AppAppearanceRepository>()),
+    );
+    gh.lazySingleton<_i734.AppVoiceCubit>(
+      () => _i734.AppVoiceCubit(gh<_i509.AppVoiceRepository>()),
     );
     gh.lazySingleton<_i220.ConnectivityRepository>(
       () =>
@@ -154,6 +178,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i463.ProfileCubit>(
       () => _i463.ProfileCubit(gh<_i636.SharedUserRepository>()),
     );
+    gh.factory<_i1065.SyncCubit>(
+      () => _i1065.SyncCubit(gh<_i19.AddressesRepository>()),
+    );
     gh.factory<_i435.MapsSearchCubit>(
       () => _i435.MapsSearchCubit(gh<_i906.MapsRepository>()),
     );
@@ -164,6 +191,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i504.SharedUserAppsRepositoryImpl(
         gh<_i842.SharedUserAppsDataSource>(),
       ),
+    );
+    gh.lazySingleton<_i359.NavigationVoiceService>(
+      () => _i359.NavigationVoiceService(gh<_i509.AppVoiceRepository>()),
     );
     gh.factory<_i1042.AddressesCubit>(
       () => _i1042.AddressesCubit(
@@ -193,6 +223,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i491.WelcomeCubit>(
       () => _i491.WelcomeCubit(gh<_i37.AuthRepository>()),
+    );
+    gh.factory<_i636.DriveCubit>(
+      () => _i636.DriveCubit(
+        gh<_i675.DirectionsRepository>(),
+        gh<_i359.NavigationVoiceService>(),
+        gh<_i665.LocationService>(),
+        gh<_i524.DeviceService>(),
+      ),
     );
     gh.factory<_i639.AccountActionsCubit>(
       () => _i639.AccountActionsCubit(

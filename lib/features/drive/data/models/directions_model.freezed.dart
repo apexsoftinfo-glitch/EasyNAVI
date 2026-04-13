@@ -284,7 +284,9 @@ as String,
 /// @nodoc
 mixin _$DirectionsModel {
 
- LatLng get boundsSw; LatLng get boundsNe; List<LatLng> get polylinePoints; String get totalDistance; String get totalDuration; List<RouteStepModel> get steps;
+ LatLng get boundsSw; LatLng get boundsNe; List<LatLng> get polylinePoints; String get totalDistance; String get totalDuration; int get totalDistanceValue;// In meters
+ int get totalDurationValue;// In seconds
+ List<RouteStepModel> get steps;
 /// Create a copy of DirectionsModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -295,16 +297,16 @@ $DirectionsModelCopyWith<DirectionsModel> get copyWith => _$DirectionsModelCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DirectionsModel&&(identical(other.boundsSw, boundsSw) || other.boundsSw == boundsSw)&&(identical(other.boundsNe, boundsNe) || other.boundsNe == boundsNe)&&const DeepCollectionEquality().equals(other.polylinePoints, polylinePoints)&&(identical(other.totalDistance, totalDistance) || other.totalDistance == totalDistance)&&(identical(other.totalDuration, totalDuration) || other.totalDuration == totalDuration)&&const DeepCollectionEquality().equals(other.steps, steps));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DirectionsModel&&(identical(other.boundsSw, boundsSw) || other.boundsSw == boundsSw)&&(identical(other.boundsNe, boundsNe) || other.boundsNe == boundsNe)&&const DeepCollectionEquality().equals(other.polylinePoints, polylinePoints)&&(identical(other.totalDistance, totalDistance) || other.totalDistance == totalDistance)&&(identical(other.totalDuration, totalDuration) || other.totalDuration == totalDuration)&&(identical(other.totalDistanceValue, totalDistanceValue) || other.totalDistanceValue == totalDistanceValue)&&(identical(other.totalDurationValue, totalDurationValue) || other.totalDurationValue == totalDurationValue)&&const DeepCollectionEquality().equals(other.steps, steps));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,boundsSw,boundsNe,const DeepCollectionEquality().hash(polylinePoints),totalDistance,totalDuration,const DeepCollectionEquality().hash(steps));
+int get hashCode => Object.hash(runtimeType,boundsSw,boundsNe,const DeepCollectionEquality().hash(polylinePoints),totalDistance,totalDuration,totalDistanceValue,totalDurationValue,const DeepCollectionEquality().hash(steps));
 
 @override
 String toString() {
-  return 'DirectionsModel(boundsSw: $boundsSw, boundsNe: $boundsNe, polylinePoints: $polylinePoints, totalDistance: $totalDistance, totalDuration: $totalDuration, steps: $steps)';
+  return 'DirectionsModel(boundsSw: $boundsSw, boundsNe: $boundsNe, polylinePoints: $polylinePoints, totalDistance: $totalDistance, totalDuration: $totalDuration, totalDistanceValue: $totalDistanceValue, totalDurationValue: $totalDurationValue, steps: $steps)';
 }
 
 
@@ -315,7 +317,7 @@ abstract mixin class $DirectionsModelCopyWith<$Res>  {
   factory $DirectionsModelCopyWith(DirectionsModel value, $Res Function(DirectionsModel) _then) = _$DirectionsModelCopyWithImpl;
 @useResult
 $Res call({
- LatLng boundsSw, LatLng boundsNe, List<LatLng> polylinePoints, String totalDistance, String totalDuration, List<RouteStepModel> steps
+ LatLng boundsSw, LatLng boundsNe, List<LatLng> polylinePoints, String totalDistance, String totalDuration, int totalDistanceValue, int totalDurationValue, List<RouteStepModel> steps
 });
 
 
@@ -332,14 +334,16 @@ class _$DirectionsModelCopyWithImpl<$Res>
 
 /// Create a copy of DirectionsModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? boundsSw = null,Object? boundsNe = null,Object? polylinePoints = null,Object? totalDistance = null,Object? totalDuration = null,Object? steps = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? boundsSw = null,Object? boundsNe = null,Object? polylinePoints = null,Object? totalDistance = null,Object? totalDuration = null,Object? totalDistanceValue = null,Object? totalDurationValue = null,Object? steps = null,}) {
   return _then(_self.copyWith(
 boundsSw: null == boundsSw ? _self.boundsSw : boundsSw // ignore: cast_nullable_to_non_nullable
 as LatLng,boundsNe: null == boundsNe ? _self.boundsNe : boundsNe // ignore: cast_nullable_to_non_nullable
 as LatLng,polylinePoints: null == polylinePoints ? _self.polylinePoints : polylinePoints // ignore: cast_nullable_to_non_nullable
 as List<LatLng>,totalDistance: null == totalDistance ? _self.totalDistance : totalDistance // ignore: cast_nullable_to_non_nullable
 as String,totalDuration: null == totalDuration ? _self.totalDuration : totalDuration // ignore: cast_nullable_to_non_nullable
-as String,steps: null == steps ? _self.steps : steps // ignore: cast_nullable_to_non_nullable
+as String,totalDistanceValue: null == totalDistanceValue ? _self.totalDistanceValue : totalDistanceValue // ignore: cast_nullable_to_non_nullable
+as int,totalDurationValue: null == totalDurationValue ? _self.totalDurationValue : totalDurationValue // ignore: cast_nullable_to_non_nullable
+as int,steps: null == steps ? _self.steps : steps // ignore: cast_nullable_to_non_nullable
 as List<RouteStepModel>,
   ));
 }
@@ -425,10 +429,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( LatLng boundsSw,  LatLng boundsNe,  List<LatLng> polylinePoints,  String totalDistance,  String totalDuration,  List<RouteStepModel> steps)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( LatLng boundsSw,  LatLng boundsNe,  List<LatLng> polylinePoints,  String totalDistance,  String totalDuration,  int totalDistanceValue,  int totalDurationValue,  List<RouteStepModel> steps)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DirectionsModel() when $default != null:
-return $default(_that.boundsSw,_that.boundsNe,_that.polylinePoints,_that.totalDistance,_that.totalDuration,_that.steps);case _:
+return $default(_that.boundsSw,_that.boundsNe,_that.polylinePoints,_that.totalDistance,_that.totalDuration,_that.totalDistanceValue,_that.totalDurationValue,_that.steps);case _:
   return orElse();
 
 }
@@ -446,10 +450,10 @@ return $default(_that.boundsSw,_that.boundsNe,_that.polylinePoints,_that.totalDi
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( LatLng boundsSw,  LatLng boundsNe,  List<LatLng> polylinePoints,  String totalDistance,  String totalDuration,  List<RouteStepModel> steps)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( LatLng boundsSw,  LatLng boundsNe,  List<LatLng> polylinePoints,  String totalDistance,  String totalDuration,  int totalDistanceValue,  int totalDurationValue,  List<RouteStepModel> steps)  $default,) {final _that = this;
 switch (_that) {
 case _DirectionsModel():
-return $default(_that.boundsSw,_that.boundsNe,_that.polylinePoints,_that.totalDistance,_that.totalDuration,_that.steps);case _:
+return $default(_that.boundsSw,_that.boundsNe,_that.polylinePoints,_that.totalDistance,_that.totalDuration,_that.totalDistanceValue,_that.totalDurationValue,_that.steps);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -466,10 +470,10 @@ return $default(_that.boundsSw,_that.boundsNe,_that.polylinePoints,_that.totalDi
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( LatLng boundsSw,  LatLng boundsNe,  List<LatLng> polylinePoints,  String totalDistance,  String totalDuration,  List<RouteStepModel> steps)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( LatLng boundsSw,  LatLng boundsNe,  List<LatLng> polylinePoints,  String totalDistance,  String totalDuration,  int totalDistanceValue,  int totalDurationValue,  List<RouteStepModel> steps)?  $default,) {final _that = this;
 switch (_that) {
 case _DirectionsModel() when $default != null:
-return $default(_that.boundsSw,_that.boundsNe,_that.polylinePoints,_that.totalDistance,_that.totalDuration,_that.steps);case _:
+return $default(_that.boundsSw,_that.boundsNe,_that.polylinePoints,_that.totalDistance,_that.totalDuration,_that.totalDistanceValue,_that.totalDurationValue,_that.steps);case _:
   return null;
 
 }
@@ -481,7 +485,7 @@ return $default(_that.boundsSw,_that.boundsNe,_that.polylinePoints,_that.totalDi
 
 
 class _DirectionsModel implements DirectionsModel {
-  const _DirectionsModel({required this.boundsSw, required this.boundsNe, required final  List<LatLng> polylinePoints, required this.totalDistance, required this.totalDuration, required final  List<RouteStepModel> steps}): _polylinePoints = polylinePoints,_steps = steps;
+  const _DirectionsModel({required this.boundsSw, required this.boundsNe, required final  List<LatLng> polylinePoints, required this.totalDistance, required this.totalDuration, required this.totalDistanceValue, required this.totalDurationValue, required final  List<RouteStepModel> steps}): _polylinePoints = polylinePoints,_steps = steps;
   
 
 @override final  LatLng boundsSw;
@@ -495,7 +499,12 @@ class _DirectionsModel implements DirectionsModel {
 
 @override final  String totalDistance;
 @override final  String totalDuration;
+@override final  int totalDistanceValue;
+// In meters
+@override final  int totalDurationValue;
+// In seconds
  final  List<RouteStepModel> _steps;
+// In seconds
 @override List<RouteStepModel> get steps {
   if (_steps is EqualUnmodifiableListView) return _steps;
   // ignore: implicit_dynamic_type
@@ -513,16 +522,16 @@ _$DirectionsModelCopyWith<_DirectionsModel> get copyWith => __$DirectionsModelCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DirectionsModel&&(identical(other.boundsSw, boundsSw) || other.boundsSw == boundsSw)&&(identical(other.boundsNe, boundsNe) || other.boundsNe == boundsNe)&&const DeepCollectionEquality().equals(other._polylinePoints, _polylinePoints)&&(identical(other.totalDistance, totalDistance) || other.totalDistance == totalDistance)&&(identical(other.totalDuration, totalDuration) || other.totalDuration == totalDuration)&&const DeepCollectionEquality().equals(other._steps, _steps));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DirectionsModel&&(identical(other.boundsSw, boundsSw) || other.boundsSw == boundsSw)&&(identical(other.boundsNe, boundsNe) || other.boundsNe == boundsNe)&&const DeepCollectionEquality().equals(other._polylinePoints, _polylinePoints)&&(identical(other.totalDistance, totalDistance) || other.totalDistance == totalDistance)&&(identical(other.totalDuration, totalDuration) || other.totalDuration == totalDuration)&&(identical(other.totalDistanceValue, totalDistanceValue) || other.totalDistanceValue == totalDistanceValue)&&(identical(other.totalDurationValue, totalDurationValue) || other.totalDurationValue == totalDurationValue)&&const DeepCollectionEquality().equals(other._steps, _steps));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,boundsSw,boundsNe,const DeepCollectionEquality().hash(_polylinePoints),totalDistance,totalDuration,const DeepCollectionEquality().hash(_steps));
+int get hashCode => Object.hash(runtimeType,boundsSw,boundsNe,const DeepCollectionEquality().hash(_polylinePoints),totalDistance,totalDuration,totalDistanceValue,totalDurationValue,const DeepCollectionEquality().hash(_steps));
 
 @override
 String toString() {
-  return 'DirectionsModel(boundsSw: $boundsSw, boundsNe: $boundsNe, polylinePoints: $polylinePoints, totalDistance: $totalDistance, totalDuration: $totalDuration, steps: $steps)';
+  return 'DirectionsModel(boundsSw: $boundsSw, boundsNe: $boundsNe, polylinePoints: $polylinePoints, totalDistance: $totalDistance, totalDuration: $totalDuration, totalDistanceValue: $totalDistanceValue, totalDurationValue: $totalDurationValue, steps: $steps)';
 }
 
 
@@ -533,7 +542,7 @@ abstract mixin class _$DirectionsModelCopyWith<$Res> implements $DirectionsModel
   factory _$DirectionsModelCopyWith(_DirectionsModel value, $Res Function(_DirectionsModel) _then) = __$DirectionsModelCopyWithImpl;
 @override @useResult
 $Res call({
- LatLng boundsSw, LatLng boundsNe, List<LatLng> polylinePoints, String totalDistance, String totalDuration, List<RouteStepModel> steps
+ LatLng boundsSw, LatLng boundsNe, List<LatLng> polylinePoints, String totalDistance, String totalDuration, int totalDistanceValue, int totalDurationValue, List<RouteStepModel> steps
 });
 
 
@@ -550,14 +559,16 @@ class __$DirectionsModelCopyWithImpl<$Res>
 
 /// Create a copy of DirectionsModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? boundsSw = null,Object? boundsNe = null,Object? polylinePoints = null,Object? totalDistance = null,Object? totalDuration = null,Object? steps = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? boundsSw = null,Object? boundsNe = null,Object? polylinePoints = null,Object? totalDistance = null,Object? totalDuration = null,Object? totalDistanceValue = null,Object? totalDurationValue = null,Object? steps = null,}) {
   return _then(_DirectionsModel(
 boundsSw: null == boundsSw ? _self.boundsSw : boundsSw // ignore: cast_nullable_to_non_nullable
 as LatLng,boundsNe: null == boundsNe ? _self.boundsNe : boundsNe // ignore: cast_nullable_to_non_nullable
 as LatLng,polylinePoints: null == polylinePoints ? _self._polylinePoints : polylinePoints // ignore: cast_nullable_to_non_nullable
 as List<LatLng>,totalDistance: null == totalDistance ? _self.totalDistance : totalDistance // ignore: cast_nullable_to_non_nullable
 as String,totalDuration: null == totalDuration ? _self.totalDuration : totalDuration // ignore: cast_nullable_to_non_nullable
-as String,steps: null == steps ? _self._steps : steps // ignore: cast_nullable_to_non_nullable
+as String,totalDistanceValue: null == totalDistanceValue ? _self.totalDistanceValue : totalDistanceValue // ignore: cast_nullable_to_non_nullable
+as int,totalDurationValue: null == totalDurationValue ? _self.totalDurationValue : totalDurationValue // ignore: cast_nullable_to_non_nullable
+as int,steps: null == steps ? _self._steps : steps // ignore: cast_nullable_to_non_nullable
 as List<RouteStepModel>,
   ));
 }

@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import '../features/connectivity/presentation/cubit/connectivity_cubit.dart';
 import '../features/connectivity/presentation/widgets/connectivity_banner.dart';
 import '../l10n/l10n.dart';
-import 'locale/presentation/cubit/app_locale_cubit.dart';
+import 'appearance/presentation/cubit/app_appearance_cubit.dart';
 import 'navigation/session_navigation_observer.dart';
 import 'router/app_gate.dart';
 import 'session/presentation/cubit/session_cubit.dart';
@@ -18,17 +18,16 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ConnectivityCubit is provided above MaterialApp so every screen in the
-    // app can read the current connectivity state and the ConnectivityBanner
-    // (placed inside MaterialApp) can show/hide the offline strip.
     return MultiBlocProvider(
       providers: [
-        BlocProvider<AppLocaleCubit>.value(value: GetIt.I<AppLocaleCubit>()),
+        BlocProvider<AppAppearanceCubit>.value(
+          value: GetIt.I<AppAppearanceCubit>(),
+        ),
         BlocProvider<ConnectivityCubit>.value(
           value: GetIt.I<ConnectivityCubit>(),
         ),
       ],
-      child: BlocBuilder<AppLocaleCubit, AppLocaleState>(
+      child: BlocBuilder<AppAppearanceCubit, AppAppearanceState>(
         builder: (context, state) {
           return MaterialApp(
             title: 'EasyNAVI',

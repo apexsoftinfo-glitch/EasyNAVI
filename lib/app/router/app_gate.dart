@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../l10n/l10n.dart';
 import '../ui/shared_users_setup_required_screen.dart';
@@ -9,8 +10,19 @@ import '../../features/welcome/ui/welcome_screen.dart';
 import '../session/presentation/cubit/session_cubit.dart';
 
 /// AppGate decyduje który ekran pokazać na podstawie stanu sesji.
-class AppGate extends StatelessWidget {
+class AppGate extends StatefulWidget {
   const AppGate({super.key});
+
+  @override
+  State<AppGate> createState() => _AppGateState();
+}
+
+class _AppGateState extends State<AppGate> {
+  @override
+  void initState() {
+    super.initState();
+    WakelockPlus.enable();
+  }
 
   @override
   Widget build(BuildContext context) {

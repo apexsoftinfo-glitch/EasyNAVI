@@ -21,6 +21,8 @@ abstract class DirectionsModel with _$DirectionsModel {
     required List<LatLng> polylinePoints,
     required String totalDistance,
     required String totalDuration,
+    required int totalDistanceValue, // In meters
+    required int totalDurationValue, // In seconds
     required List<RouteStepModel> steps,
   }) = _DirectionsModel;
 }

@@ -125,12 +125,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<AddressModel> addresses)?  loaded,TResult Function( String errorKey)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<AddressModel> addresses,  String searchQuery)?  loaded,TResult Function( String errorKey)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial();case Loading() when loading != null:
 return loading();case Loaded() when loaded != null:
-return loaded(_that.addresses);case Error() when error != null:
+return loaded(_that.addresses,_that.searchQuery);case Error() when error != null:
 return error(_that.errorKey);case _:
   return orElse();
 
@@ -149,12 +149,12 @@ return error(_that.errorKey);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<AddressModel> addresses)  loaded,required TResult Function( String errorKey)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<AddressModel> addresses,  String searchQuery)  loaded,required TResult Function( String errorKey)  error,}) {final _that = this;
 switch (_that) {
 case Initial():
 return initial();case Loading():
 return loading();case Loaded():
-return loaded(_that.addresses);case Error():
+return loaded(_that.addresses,_that.searchQuery);case Error():
 return error(_that.errorKey);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -169,12 +169,12 @@ return error(_that.errorKey);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<AddressModel> addresses)?  loaded,TResult? Function( String errorKey)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<AddressModel> addresses,  String searchQuery)?  loaded,TResult? Function( String errorKey)?  error,}) {final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial();case Loading() when loading != null:
 return loading();case Loaded() when loaded != null:
-return loaded(_that.addresses);case Error() when error != null:
+return loaded(_that.addresses,_that.searchQuery);case Error() when error != null:
 return error(_that.errorKey);case _:
   return null;
 
@@ -251,7 +251,7 @@ String toString() {
 
 
 class Loaded implements AddressesState {
-  const Loaded(final  List<AddressModel> addresses): _addresses = addresses;
+  const Loaded(final  List<AddressModel> addresses, {this.searchQuery = ''}): _addresses = addresses;
   
 
  final  List<AddressModel> _addresses;
@@ -261,6 +261,7 @@ class Loaded implements AddressesState {
   return EqualUnmodifiableListView(_addresses);
 }
 
+@JsonKey() final  String searchQuery;
 
 /// Create a copy of AddressesState
 /// with the given fields replaced by the non-null parameter values.
@@ -272,16 +273,16 @@ $LoadedCopyWith<Loaded> get copyWith => _$LoadedCopyWithImpl<Loaded>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Loaded&&const DeepCollectionEquality().equals(other._addresses, _addresses));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Loaded&&const DeepCollectionEquality().equals(other._addresses, _addresses)&&(identical(other.searchQuery, searchQuery) || other.searchQuery == searchQuery));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_addresses));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_addresses),searchQuery);
 
 @override
 String toString() {
-  return 'AddressesState.loaded(addresses: $addresses)';
+  return 'AddressesState.loaded(addresses: $addresses, searchQuery: $searchQuery)';
 }
 
 
@@ -292,7 +293,7 @@ abstract mixin class $LoadedCopyWith<$Res> implements $AddressesStateCopyWith<$R
   factory $LoadedCopyWith(Loaded value, $Res Function(Loaded) _then) = _$LoadedCopyWithImpl;
 @useResult
 $Res call({
- List<AddressModel> addresses
+ List<AddressModel> addresses, String searchQuery
 });
 
 
@@ -309,10 +310,11 @@ class _$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of AddressesState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? addresses = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? addresses = null,Object? searchQuery = null,}) {
   return _then(Loaded(
 null == addresses ? _self._addresses : addresses // ignore: cast_nullable_to_non_nullable
-as List<AddressModel>,
+as List<AddressModel>,searchQuery: null == searchQuery ? _self.searchQuery : searchQuery // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

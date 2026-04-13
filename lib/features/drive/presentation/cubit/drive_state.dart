@@ -11,6 +11,13 @@ sealed class DriveState with _$DriveState {
     @Default(false) bool isNavigating,
     @Default(0) int currentStepIndex,
     LatLng? userPosition,
+    @Default(0) double bearing,
+    DateTime? startTime,
+    @Default(0) double traveledDistance,
+    @Default(0) double currentSpeed,
+    int? currentSpeedLimit,
+    @Default([]) List<LatLng> nearbyRadars,
+    @Default([]) List<String> announcedRadarIds,
   }) = Loaded;
   const factory DriveState.error(String errorKey) = DriveError;
 }

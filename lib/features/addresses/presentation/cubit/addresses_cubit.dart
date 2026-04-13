@@ -42,11 +42,24 @@ class AddressesCubit extends Cubit<AddressesState> {
     return null;
   }
 
+  void setSearchQuery(String query) {
+    final currentState = state;
+    if (currentState is Loaded) {
+      emit(currentState.copyWith(searchQuery: query));
+    }
+  }
+
   void _init() {
     emit(const AddressesState.loading());
     _subscription = _repository.observeAddresses().listen(
       (addresses) {
-        emit(AddressesState.loaded(addresses));
+        if (isClosed) return;
+        final currentState = state;
+        if (currentState is Loaded) {
+          emit(currentState.copyWith(addresses: addresses));
+        } else {
+          emit(AddressesState.loaded(addresses));
+        }
       },
       onError: (error) {
         emit(const AddressesState.error('failed-to-load-addresses'));
