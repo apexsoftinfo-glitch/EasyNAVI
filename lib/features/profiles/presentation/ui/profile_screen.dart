@@ -310,7 +310,7 @@ class _ModernSettingsPanel extends StatelessWidget {
               ),
             ),
           ),
-          if (kDebugMode && title == 'O programie')
+          if (kDebugMode && title == context.l10n.settingsAbout)
             Padding(
               padding: const EdgeInsets.only(top: 16),
               child: OutlinedButton.icon(
@@ -318,7 +318,7 @@ class _ModernSettingsPanel extends StatelessWidget {
                   MaterialPageRoute(builder: (_) => const DeveloperScreen()),
                 ),
                 icon: const Icon(Icons.developer_mode),
-                label: const Text('Developer Tools'),
+                label: Text(context.l10n.developerToolsTitle),
                 style: OutlinedButton.styleFrom(foregroundColor: Colors.white),
               ),
             ),
