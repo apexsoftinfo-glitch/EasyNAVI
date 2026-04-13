@@ -4,12 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:myapp/core/services/location_service.dart';
-import 'package:myapp/core/services/voice_navigation_service.dart';
-import 'package:myapp/core/services/device_service.dart';
-import 'package:myapp/features/drive/data/models/directions_model.dart';
-import 'package:myapp/features/drive/domain/repositories/directions_repository.dart';
-import 'package:myapp/features/drive/presentation/cubit/drive_cubit.dart';
+import 'package:easynavi/core/services/location_service.dart';
+import 'package:easynavi/core/services/voice_navigation_service.dart';
+import 'package:easynavi/core/services/device_service.dart';
+import 'package:easynavi/features/drive/data/models/directions_model.dart';
+import 'package:easynavi/features/drive/domain/repositories/directions_repository.dart';
+import 'package:easynavi/features/drive/presentation/cubit/drive_cubit.dart';
 
 class MockDirectionsRepository extends Mock implements DirectionsRepository {}
 class MockNavigationVoiceService extends Mock implements NavigationVoiceService {}

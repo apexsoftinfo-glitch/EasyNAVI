@@ -1,10 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:myapp/app/appearance/data/repositories/app_appearance_repository.dart';
-import 'package:myapp/app/appearance/models/car_icon_model.dart';
-import 'package:myapp/app/appearance/presentation/cubit/app_appearance_cubit.dart';
-import 'package:myapp/app/locale/models/app_locale_option_model.dart';
+import 'package:easynavi/app/appearance/data/repositories/app_appearance_repository.dart';
+import 'package:easynavi/app/appearance/models/car_icon_model.dart';
+import 'package:easynavi/app/appearance/presentation/cubit/app_appearance_cubit.dart';
+import 'package:easynavi/app/locale/models/app_locale_option_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MockAppAppearanceRepository extends Mock implements AppAppearanceRepository {}

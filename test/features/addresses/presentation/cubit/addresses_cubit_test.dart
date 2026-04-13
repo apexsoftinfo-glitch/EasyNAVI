@@ -1,10 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:myapp/features/addresses/data/models/address_model.dart';
-import 'package:myapp/features/addresses/domain/repositories/addresses_repository.dart';
-import 'package:myapp/features/addresses/domain/repositories/maps_repository.dart';
-import 'package:myapp/features/addresses/presentation/cubit/addresses_cubit.dart';
+import 'package:easynavi/features/addresses/data/models/address_model.dart';
+import 'package:easynavi/features/addresses/domain/repositories/addresses_repository.dart';
+import 'package:easynavi/features/addresses/domain/repositories/maps_repository.dart';
+import 'package:easynavi/features/addresses/presentation/cubit/addresses_cubit.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MockAddressesRepository extends Mock implements AddressesRepository {}

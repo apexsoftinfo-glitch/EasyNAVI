@@ -1,10 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:myapp/app/session/data/repositories/session_repository.dart';
-import 'package:myapp/app/session/models/session_status_model.dart';
-import 'package:myapp/app/session/models/user_session_model.dart';
-import 'package:myapp/app/session/presentation/cubit/session_cubit.dart';
+import 'package:easynavi/app/session/data/repositories/session_repository.dart';
+import 'package:easynavi/app/session/models/session_status_model.dart';
+import 'package:easynavi/app/session/models/user_session_model.dart';
+import 'package:easynavi/app/session/presentation/cubit/session_cubit.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MockSessionRepository extends Mock implements SessionRepository {}
