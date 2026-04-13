@@ -153,7 +153,7 @@ void main() {
       },
       skip: 1, // skip navigation start state
       expect: () => [
-        isA<Loaded>().having((s) => (s.currentSpeed ?? 0).round(), 'speed', 54),
+        isA<Loaded>().having((s) => s.currentSpeed.round(), 'speed', 54),
         isA<Loaded>().having((s) => s.currentSpeedLimit, 'speedLimit', 50),
       ],
     );

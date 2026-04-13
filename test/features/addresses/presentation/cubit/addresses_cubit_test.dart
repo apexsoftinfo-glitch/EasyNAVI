@@ -60,7 +60,7 @@ void main() {
         cubit.setSearchQuery('test');
       },
       expect: () => [
-        const AddressesState.loaded(const []),
+        const AddressesState.loaded([]),
         isA<Loaded>().having((s) => s.searchQuery, 'searchQuery', 'test'),
       ],
     );
