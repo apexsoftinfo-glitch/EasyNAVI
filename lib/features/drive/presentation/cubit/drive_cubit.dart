@@ -308,10 +308,10 @@ class DriveCubit extends Cubit<DriveState> {
       );
       if (d < minDistance) minDistance = d;
       // If we are close enough to any point, we are on track
-      if (minDistance < 15) return;
+      if (minDistance < 50) return;
     }
 
-    // Off track! (> 15m from any point)
+    // Off track! (> 50m from any point)
     _isRerouting = true;
     debugPrint('[DriveCubit] User off track (dist: $minDistance). Rerouting...');
     
