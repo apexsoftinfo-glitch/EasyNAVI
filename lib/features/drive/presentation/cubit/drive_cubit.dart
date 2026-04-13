@@ -23,6 +23,8 @@ class DriveCubit extends Cubit<DriveState> {
   StreamSubscription<Position>? _positionSubscription;
   DateTime? _lastSpeedLimitUpdate;
   LatLng? _lastSpeedLimitPosition;
+  bool _isRerouting = false;
+  DateTime? _lastRerouteCheck;
 
   DriveCubit(
     this._repository, 
@@ -181,6 +183,17 @@ class DriveCubit extends Cubit<DriveState> {
       _updateEnvironmentalData(userLatLng);
     }
 
+    // Check for rerouting if navigating
+    if (currentState.isNavigating) {
+      final shouldCheckReroute = _lastRerouteCheck == null || 
+          now.difference(_lastRerouteCheck!).inSeconds > 5;
+      
+      if (shouldCheckReroute) {
+        _lastRerouteCheck = now;
+        _checkReroute(userLatLng, currentState);
+      }
+    }
+
     for (final radar in currentState.nearbyRadars) {
       final radarId = "${radar.latitude}_${radar.longitude}";
       if (currentState.announcedRadarIds.contains(radarId)) continue;
@@ -213,6 +226,51 @@ class DriveCubit extends Cubit<DriveState> {
         currentSpeedLimit: limit,
         nearbyRadars: radars,
       ));
+    }
+  }
+
+  Future<void> _checkReroute(LatLng userLatLng, Loaded currentState) async {
+    if (_isRerouting || !currentState.isNavigating) return;
+
+    // Check distance to polyline
+    double minDistance = double.infinity;
+    for (final point in currentState.directions.polylinePoints) {
+      final d = Geolocator.distanceBetween(
+        userLatLng.latitude,
+        userLatLng.longitude,
+        point.latitude,
+        point.longitude,
+      );
+      if (d < minDistance) minDistance = d;
+      // If we are close enough to any point, we are on track
+      if (minDistance < 60) return;
+    }
+
+    // Off track! (> 60m from any point)
+    _isRerouting = true;
+    debugPrint('[DriveCubit] User off track (dist: $minDistance). Rerouting...');
+    
+    try {
+      final directions = await _repository.getDirections(
+        origin: userLatLng,
+        destination: currentState.destination,
+      );
+
+      if (directions != null && !isClosed) {
+        _voiceService.speak("Przeliczam trasę");
+        emit(currentState.copyWith(
+          directions: directions,
+          currentStepIndex: 0,
+        ));
+        
+        if (directions.steps.isNotEmpty) {
+          _voiceService.speak(directions.steps[0].instruction);
+        }
+      }
+    } catch (e) {
+      debugPrint('[DriveCubit] Reroute failed: $e');
+    } finally {
+      _isRerouting = false;
     }
   }
 }
