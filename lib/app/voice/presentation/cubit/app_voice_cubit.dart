@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import '../../data/repositories/app_voice_repository.dart';
+import '../../../settings/data/repositories/user_settings_repository.dart';
 
 part 'app_voice_state.dart';
 part 'app_voice_cubit.freezed.dart';
@@ -10,10 +11,11 @@ part 'app_voice_cubit.freezed.dart';
 @lazySingleton
 class AppVoiceCubit extends Cubit<AppVoiceState> {
   final AppVoiceRepository _repository;
+  final UserSettingsRepository _settingsRepository;
   StreamSubscription? _rateSubscription;
   StreamSubscription? _pitchSubscription;
 
-  AppVoiceCubit(this._repository) : super(const AppVoiceState.initial()) {
+  AppVoiceCubit(this._repository, this._settingsRepository) : super(const AppVoiceState.initial()) {
     _init();
   }
 
@@ -40,10 +42,12 @@ class AppVoiceCubit extends Cubit<AppVoiceState> {
 
   Future<void> setSpeechRate(double rate) async {
     await _repository.setSpeechRate(rate);
+    await _settingsRepository.syncToCloud();
   }
 
   Future<void> setSpeechPitch(double pitch) async {
     await _repository.setSpeechPitch(pitch);
+    await _settingsRepository.syncToCloud();
   }
 
   @override

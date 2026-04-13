@@ -5,18 +5,22 @@ import 'package:easynavi/app/appearance/data/repositories/app_appearance_reposit
 import 'package:easynavi/app/appearance/models/car_icon_model.dart';
 import 'package:easynavi/app/appearance/presentation/cubit/app_appearance_cubit.dart';
 import 'package:easynavi/app/locale/models/app_locale_option_model.dart';
+import 'package:easynavi/app/settings/data/repositories/user_settings_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MockAppAppearanceRepository extends Mock implements AppAppearanceRepository {}
+class MockUserSettingsRepository extends Mock implements UserSettingsRepository {}
 
 void main() {
   late MockAppAppearanceRepository mockRepository;
+  late MockUserSettingsRepository mockSettingsRepository;
   late BehaviorSubject<AppLocaleOptionModel> localeController;
   late BehaviorSubject<double> brightnessController;
   late BehaviorSubject<CarIconType> carIconController;
 
   setUp(() {
     mockRepository = MockAppAppearanceRepository();
+    mockSettingsRepository = MockUserSettingsRepository();
     localeController = BehaviorSubject<AppLocaleOptionModel>.seeded(AppLocaleOptionModel.system);
     brightnessController = BehaviorSubject<double>.seeded(0.5);
     carIconController = BehaviorSubject<CarIconType>.seeded(CarIconType.classic);
@@ -30,6 +34,7 @@ void main() {
     when(() => mockRepository.carIconStream).thenAnswer((_) => carIconController.stream);
     
     when(() => mockRepository.init()).thenAnswer((_) async {});
+    when(() => mockSettingsRepository.syncToCloud()).thenAnswer((_) async {});
   });
 
   tearDown(() {
@@ -40,7 +45,7 @@ void main() {
 
   group('AppAppearanceCubit', () {
     test('initial state is correct based on repository', () {
-      final cubit = AppAppearanceCubit(mockRepository);
+      final cubit = AppAppearanceCubit(mockRepository, mockSettingsRepository);
       expect(cubit.state, const AppAppearanceState(
         selectedLocale: AppLocaleOptionModel.system,
         brightness: 0.5,
@@ -51,7 +56,7 @@ void main() {
 
     blocTest<AppAppearanceCubit, AppAppearanceState>(
       'setBrightness calls repository',
-      build: () => AppAppearanceCubit(mockRepository),
+      build: () => AppAppearanceCubit(mockRepository, mockSettingsRepository),
       act: (cubit) async {
         when(() => mockRepository.setBrightness(0.8)).thenAnswer((_) async {});
         await cubit.setBrightness(0.8);
@@ -63,7 +68,7 @@ void main() {
 
     blocTest<AppAppearanceCubit, AppAppearanceState>(
       'setCarIcon calls repository',
-      build: () => AppAppearanceCubit(mockRepository),
+      build: () => AppAppearanceCubit(mockRepository, mockSettingsRepository),
       act: (cubit) async {
         when(() => mockRepository.setCarIcon(CarIconType.truck)).thenAnswer((_) async {});
         await cubit.setCarIcon(CarIconType.truck);
@@ -75,7 +80,7 @@ void main() {
 
     blocTest<AppAppearanceCubit, AppAppearanceState>(
       'emits updated state when repository stream pushes new values',
-      build: () => AppAppearanceCubit(mockRepository),
+      build: () => AppAppearanceCubit(mockRepository, mockSettingsRepository),
       wait: const Duration(milliseconds: 100),
       act: (_) {
         // We push different values to trigger state changes

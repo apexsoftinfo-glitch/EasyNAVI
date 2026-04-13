@@ -7,6 +7,7 @@ import 'package:injectable/injectable.dart';
 import '../../../locale/models/app_locale_option_model.dart';
 import '../../models/car_icon_model.dart';
 import '../../data/repositories/app_appearance_repository.dart';
+import '../../../settings/data/repositories/user_settings_repository.dart';
 
 part 'app_appearance_cubit.freezed.dart';
 
@@ -26,7 +27,7 @@ abstract class AppAppearanceState with _$AppAppearanceState {
 
 @singleton // Singleton to ensure we initialize once and hold state
 class AppAppearanceCubit extends Cubit<AppAppearanceState> {
-  AppAppearanceCubit(this._repository)
+  AppAppearanceCubit(this._repository, this._settingsRepository)
     : super(AppAppearanceState(
         selectedLocale: _repository.currentLocale,
         brightness: _repository.currentBrightness,
@@ -36,6 +37,7 @@ class AppAppearanceCubit extends Cubit<AppAppearanceState> {
   }
 
   final AppAppearanceRepository _repository;
+  final UserSettingsRepository _settingsRepository;
   StreamSubscription? _localeSub;
   StreamSubscription? _brightnessSub;
   StreamSubscription? _carIconSub;
@@ -57,14 +59,17 @@ class AppAppearanceCubit extends Cubit<AppAppearanceState> {
 
   Future<void> setLocale(AppLocaleOptionModel locale) async {
     await _repository.setLocale(locale);
+    await _settingsRepository.syncToCloud();
   }
 
   Future<void> setBrightness(double value) async {
     await _repository.setBrightness(value);
+    await _settingsRepository.syncToCloud();
   }
 
   Future<void> setCarIcon(CarIconType type) async {
     await _repository.setCarIcon(type);
+    await _settingsRepository.syncToCloud();
   }
 
   @override

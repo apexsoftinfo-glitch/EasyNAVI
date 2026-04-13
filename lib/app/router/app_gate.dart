@@ -7,6 +7,8 @@ import '../../shared/error_messages.dart';
 import '../../features/home/ui/home_screen.dart';
 import '../../features/welcome/ui/welcome_screen.dart';
 import '../session/presentation/cubit/session_cubit.dart';
+import '../settings/data/repositories/user_settings_repository.dart';
+import '../../core/di/injection.dart';
 
 /// AppGate decides which screen to show based on the session state.
 class AppGate extends StatefulWidget {
@@ -47,6 +49,16 @@ class _AppGateState extends State<AppGate> {
           return _SessionErrorScreen(
             errorKey: session.errorKeyOrNull!,
             onRetry: () => context.read<SessionCubit>().refresh(),
+          );
+        }
+
+        if (session.isAuthenticated) {
+          return BlocListener<SessionCubit, SessionState>(
+            listenWhen: (previous, current) => previous.isUnauthenticated && current.isAuthenticated,
+            listener: (context, state) {
+              getIt<UserSettingsRepository>().syncFromCloud();
+            },
+            child: const HomeScreen(),
           );
         }
 

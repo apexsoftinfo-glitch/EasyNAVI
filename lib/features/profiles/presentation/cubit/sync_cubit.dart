@@ -7,13 +7,15 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../addresses/domain/repositories/addresses_repository.dart';
 import '../../../addresses/data/models/address_model.dart';
+import '../../../../app/settings/data/repositories/user_settings_repository.dart';
 import 'sync_state.dart';
 
 @injectable
 class SyncCubit extends Cubit<SyncState> {
   final AddressesRepository _addressesRepository;
+  final UserSettingsRepository _settingsRepository;
 
-  SyncCubit(this._addressesRepository) : super(const SyncState.initial());
+  SyncCubit(this._addressesRepository, this._settingsRepository) : super(const SyncState.initial());
 
   Future<void> exportBackup() async {
     emit(const SyncState.loading());
@@ -23,6 +25,7 @@ class SyncCubit extends Cubit<SyncState> {
         'version': 1,
         'exported_at': DateTime.now().toIso8601String(),
         'addresses': addresses.map((e) => e.toJson()).toList(),
+        'settings': _settingsRepository.getSettingsForBackup(),
       };
 
       final jsonString = jsonEncode(backupData);
@@ -64,6 +67,11 @@ class SyncCubit extends Cubit<SyncState> {
       if (!data.containsKey('addresses')) {
         emit(const SyncState.error('invalid-backup-file'));
         return;
+      }
+
+      // Restore settings if present
+      if (data.containsKey('settings')) {
+        await _settingsRepository.restoreFromBackup(data['settings'] as Map<String, dynamic>);
       }
 
       final List<dynamic> addressesJson = data['addresses'];

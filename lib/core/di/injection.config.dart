@@ -24,6 +24,10 @@ import 'package:easynavi/app/session/data/repositories/session_repository.dart'
     as _i913;
 import 'package:easynavi/app/session/presentation/cubit/session_cubit.dart'
     as _i825;
+import 'package:easynavi/app/settings/data/datasources/user_settings_data_source.dart'
+    as _i531;
+import 'package:easynavi/app/settings/data/repositories/user_settings_repository.dart'
+    as _i228;
 import 'package:easynavi/app/voice/data/repositories/app_voice_repository.dart'
     as _i1030;
 import 'package:easynavi/app/voice/presentation/cubit/app_voice_cubit.dart'
@@ -131,6 +135,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1030.AppVoiceRepository>(
       () => _i1030.AppVoiceRepositoryImpl(gh<_i460.SharedPreferences>()),
     );
+    gh.lazySingleton<_i531.UserSettingsDataSource>(
+      () => _i531.SupabaseUserSettingsDataSource(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i723.AuthRepository>(
       () => _i723.AuthRepositoryImpl(
         gh<_i873.AuthDataSource>(),
@@ -139,9 +146,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i362.MapsSearchCubit>(
       () => _i362.MapsSearchCubit(gh<_i578.MapsRepository>()),
-    );
-    gh.lazySingleton<_i516.AppVoiceCubit>(
-      () => _i516.AppVoiceCubit(gh<_i1030.AppVoiceRepository>()),
     );
     gh.lazySingleton<_i604.AppAppearanceRepository>(
       () => _i604.AppAppearanceRepositoryImpl(gh<_i460.SharedPreferences>()),
@@ -154,9 +158,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i47.AddressesRepository>(),
         gh<_i454.SupabaseClient>(),
       ),
-    );
-    gh.factory<_i129.SyncCubit>(
-      () => _i129.SyncCubit(gh<_i47.AddressesRepository>()),
     );
     gh.lazySingleton<_i459.ConnectivityRepository>(
       () =>
@@ -183,9 +184,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i244.NavigationVoiceService>(
       () => _i244.NavigationVoiceService(gh<_i1030.AppVoiceRepository>()),
     );
-    gh.singleton<_i635.AppAppearanceCubit>(
-      () => _i635.AppAppearanceCubit(gh<_i604.AppAppearanceRepository>()),
-    );
     gh.factory<_i394.LoginCubit>(
       () => _i394.LoginCubit(gh<_i723.AuthRepository>()),
     );
@@ -194,6 +192,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i644.WelcomeCubit>(
       () => _i644.WelcomeCubit(gh<_i723.AuthRepository>()),
+    );
+    gh.lazySingleton<_i228.UserSettingsRepository>(
+      () => _i228.UserSettingsRepositoryImpl(
+        gh<_i531.UserSettingsDataSource>(),
+        gh<_i454.SupabaseClient>(),
+        gh<_i604.AppAppearanceRepository>(),
+        gh<_i1030.AppVoiceRepository>(),
+      ),
     );
     gh.factory<_i105.AddressesCubit>(
       () => _i105.AddressesCubit(
@@ -215,6 +221,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1019.AppLocaleCubit>(
       () => _i1019.AppLocaleCubit(gh<_i1055.AppLocaleRepository>()),
     );
+    gh.factory<_i129.SyncCubit>(
+      () => _i129.SyncCubit(
+        gh<_i47.AddressesRepository>(),
+        gh<_i228.UserSettingsRepository>(),
+      ),
+    );
     gh.lazySingleton<_i570.ConnectivityCubit>(
       () => _i570.ConnectivityCubit(gh<_i459.ConnectivityRepository>()),
     );
@@ -222,6 +234,18 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i747.ProfileCubit(
         gh<_i677.SharedUserRepository>(),
         gh<_i723.AuthRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i516.AppVoiceCubit>(
+      () => _i516.AppVoiceCubit(
+        gh<_i1030.AppVoiceRepository>(),
+        gh<_i228.UserSettingsRepository>(),
+      ),
+    );
+    gh.singleton<_i635.AppAppearanceCubit>(
+      () => _i635.AppAppearanceCubit(
+        gh<_i604.AppAppearanceRepository>(),
+        gh<_i228.UserSettingsRepository>(),
       ),
     );
     return this;
