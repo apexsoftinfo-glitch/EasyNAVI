@@ -80,6 +80,12 @@ void main() {
     when(() => mockVoiceService.stop()).thenAnswer((_) async {});
     when(() => mockDeviceService.enableWakelock()).thenAnswer((_) async {});
     when(() => mockDeviceService.disableWakelock()).thenAnswer((_) async {});
+    when(() => mockRepository.getDirections(origin: any(named: 'origin'), destination: any(named: 'destination')))
+        .thenAnswer((_) async => testDirections);
+    when(() => mockLocationService.getPositionStream(locationSettings: any(named: 'locationSettings')))
+        .thenAnswer((_) => positionStreamController.stream);
+    when(() => mockRepository.getSpeedLimit(any())).thenAnswer((_) async => 50);
+    when(() => mockRepository.getNearbyRadars(any())).thenAnswer((_) async => []);
   });
 
   tearDown(() {
@@ -104,6 +110,14 @@ void main() {
           origin: testOrigin,
           destination: testDestination,
           directions: testDirections,
+          userPosition: testOrigin,
+        ),
+        DriveState.loaded(
+          origin: testOrigin,
+          destination: testDestination,
+          directions: testDirections,
+          userPosition: testOrigin,
+          currentSpeedLimit: 50,
         ),
       ],
     );
@@ -111,8 +125,6 @@ void main() {
     blocTest<DriveCubit, DriveState>(
       'startNavigation updates state and speaks first instruction',
       build: () {
-        when(() => mockLocationService.getPositionStream(locationSettings: any(named: 'locationSettings')))
-            .thenAnswer((_) => positionStreamController.stream);
         return DriveCubit(mockRepository, mockVoiceService, mockLocationService, mockDeviceService);
       },
       seed: () => DriveState.loaded(
@@ -133,10 +145,6 @@ void main() {
     blocTest<DriveCubit, DriveState>(
       'onPositionChanged updates current details and checks speed limit',
       build: () {
-        when(() => mockLocationService.getPositionStream(locationSettings: any(named: 'locationSettings')))
-            .thenAnswer((_) => positionStreamController.stream);
-        when(() => mockRepository.getSpeedLimit(any())).thenAnswer((_) async => 50);
-        when(() => mockRepository.getNearbyRadars(any())).thenAnswer((_) async => []);
         return DriveCubit(mockRepository, mockVoiceService, mockLocationService, mockDeviceService);
       },
       seed: () => DriveState.loaded(
@@ -148,7 +156,7 @@ void main() {
       act: (cubit) async {
         cubit.startNavigation();
         // Simulate movement
-        positionStreamController.add(createPosition(lat: 52.001, lng: 21.001, speed: 15.0)); // 15 m/s = 54 km/h
+        positionStreamController.add(createPosition(lat: 52.0001, lng: 21.0001, speed: 15.0)); // 15 m/s = 54 km/h
         await Future.delayed(Duration.zero);
       },
       skip: 1, // skip navigation start state

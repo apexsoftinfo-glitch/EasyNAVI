@@ -18,6 +18,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('🏗️ [App] building');
     return MultiBlocProvider(
       providers: [
         BlocProvider<AppAppearanceCubit>.value(
@@ -29,6 +30,7 @@ class App extends StatelessWidget {
       ],
       child: BlocBuilder<AppAppearanceCubit, AppAppearanceState>(
         builder: (context, state) {
+          debugPrint('🏗️ [App] MaterialApp building locale=${state.selectedLocale}');
           return MaterialApp(
             title: 'EasyNAVI',
             debugShowCheckedModeBanner: false,
@@ -39,9 +41,6 @@ class App extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
               useMaterial3: true,
             ),
-            // ConnectivityBanner sits between MaterialApp and the shell.
-            // It shows a red strip at the top when offline and hides it
-            // when the connection is restored. Does not block interaction.
             home: ConnectivityBanner(
               child: _AppShell(hasSupabaseKeys: hasSupabaseKeys),
             ),
@@ -59,6 +58,7 @@ class _AppShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('🏗️ [_AppShell] building hasSupabaseKeys=$hasSupabaseKeys');
     return hasSupabaseKeys
         ? BlocProvider<SessionCubit>.value(
             value: GetIt.I<SessionCubit>(),

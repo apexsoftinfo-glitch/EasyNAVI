@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../l10n/l10n.dart';
 import '../ui/shared_users_setup_required_screen.dart';
@@ -21,13 +20,15 @@ class _AppGateState extends State<AppGate> {
   @override
   void initState() {
     super.initState();
-    WakelockPlus.enable();
+    debugPrint('🚦 [AppGate] initState');
+    // WakelockPlus.enable();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SessionCubit, SessionState>(
       builder: (context, session) {
+        debugPrint('🚦 [AppGate] building state=${session.runtimeType}');
         if (session.isInitial) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
