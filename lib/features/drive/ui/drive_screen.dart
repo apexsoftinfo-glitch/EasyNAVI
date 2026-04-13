@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../../../core/di/injection.dart';
 import '../presentation/cubit/drive_cubit.dart';
 import '../../../app/appearance/presentation/cubit/app_appearance_cubit.dart';
@@ -46,6 +47,8 @@ class _DriveViewState extends State<DriveView> {
   BitmapDescriptor? _carIconDescriptor;
   CarIconType? _lastLoadedType;
   BitmapDescriptor? _radarIcon;
+  LatLng? _lastCameraTarget;
+  double? _lastCameraBearing;
 
   @override
   void initState() {
@@ -96,18 +99,45 @@ class _DriveViewState extends State<DriveView> {
           BlocConsumer<DriveCubit, DriveState>(
             listener: (context, state) {
               if (state is Loaded && state.isNavigating && state.userPosition != null && _mapController != null) {
-                // Determine bearing - this is a simplified calculation for follow-up
-                // Professional apps use historical position smoothing
-                _mapController!.animateCamera(
-                  CameraUpdate.newCameraPosition(
-                    CameraPosition(
-                      target: state.userPosition!,
-                      zoom: 18,
-                      tilt: 45,
-                      bearing: state.bearing,
+                // Throttle camera updates to avoid jittery "fighting" animations
+                final userPos = state.userPosition!;
+                final userBearing = state.bearing;
+
+                final lastPos = _lastCameraTarget;
+                final lastBearing = _lastCameraBearing;
+
+                double distMoved = 100.0;
+                if (lastPos != null) {
+                  distMoved = Geolocator.distanceBetween(
+                    lastPos.latitude,
+                    lastPos.longitude,
+                    userPos.latitude,
+                    userPos.longitude,
+                  );
+                }
+
+                double bearingDiff = 100.0;
+                if (lastBearing != null) {
+                  bearingDiff = (userBearing - lastBearing).abs() % 360;
+                  if (bearingDiff > 180) bearingDiff = 360 - bearingDiff;
+                }
+
+                // Only animate if we moved significantly or turned noticeably
+                if (distMoved > 2 || bearingDiff > 5) {
+                  _lastCameraTarget = userPos;
+                  _lastCameraBearing = userBearing;
+
+                  _mapController!.animateCamera(
+                    CameraUpdate.newCameraPosition(
+                      CameraPosition(
+                        target: userPos,
+                        zoom: 18,
+                        tilt: 45,
+                        bearing: userBearing,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               }
             },
             builder: (context, state) {

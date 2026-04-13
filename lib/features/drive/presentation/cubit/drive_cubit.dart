@@ -157,10 +157,29 @@ class DriveCubit extends Cubit<DriveState> {
       }
     }
 
+    double currentBearing = currentState.bearing;
+    double newBearing = position.heading;
+    
+    // Only update bearing if moving significantly (avoid jitter at standstill)
+    if (position.speed < 0.5) {
+      newBearing = currentBearing;
+    } else {
+      // Basic angular interpolation/smoothing
+      // To handle 359 -> 1 transition correctly:
+      double diff = newBearing - currentBearing;
+      while (diff < -180) {
+        diff += 360;
+      }
+      while (diff > 180) {
+        diff -= 360;
+      }
+      newBearing = currentBearing + (diff * 0.3); // 0.3 smoothing factor
+    }
+
     emit(currentState.copyWith(
       userPosition: userLatLng,
       currentStepIndex: nextStepIndex,
-      bearing: position.heading,
+      bearing: newBearing,
       traveledDistance: currentState.traveledDistance + additionalDistance,
       currentSpeed: position.speed * 3.6, // Convert m/s to km/h
     ));
