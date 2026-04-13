@@ -262,7 +262,7 @@ class _DriveViewState extends State<DriveView> {
                 right: 16,
                 child: _InstructionCard(
                   instruction: _stripHtml(step.instruction),
-                  distance: step.distance,
+                  distance: _formatDistance(state.distanceToNextStep),
                 ),
               );
             },

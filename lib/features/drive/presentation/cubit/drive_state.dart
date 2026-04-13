@@ -15,6 +15,7 @@ sealed class DriveState with _$DriveState {
     DateTime? startTime,
     @Default(0) double traveledDistance,
     @Default(0) double currentSpeed,
+    @Default(0) double distanceToNextStep,
     int? currentSpeedLimit,
     @Default([]) List<LatLng> nearbyRadars,
     @Default([]) List<String> announcedRadarIds,

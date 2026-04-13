@@ -91,10 +91,27 @@ class DriveCubit extends Cubit<DriveState> {
     final currentState = state;
     if (currentState is! Loaded) return;
 
+    double initialDistance = 0;
+    if (currentState.userPosition != null && currentState.directions.steps.isNotEmpty) {
+      if (currentState.directions.steps.length > 1) {
+        final nextStep = currentState.directions.steps[1];
+        initialDistance = Geolocator.distanceBetween(
+          currentState.userPosition!.latitude, currentState.userPosition!.longitude,
+          nextStep.startLocation.latitude, nextStep.startLocation.longitude,
+        );
+      } else {
+        initialDistance = Geolocator.distanceBetween(
+          currentState.userPosition!.latitude, currentState.userPosition!.longitude,
+          currentState.destination.latitude, currentState.destination.longitude,
+        );
+      }
+    }
+
     emit(currentState.copyWith(
       isNavigating: true,
       startTime: DateTime.now(),
       traveledDistance: 0,
+      distanceToNextStep: initialDistance,
     ));
     
     // Speak first instruction
@@ -132,20 +149,42 @@ class DriveCubit extends Cubit<DriveState> {
     final userLatLng = LatLng(position.latitude, position.longitude);
     
     int nextStepIndex = currentState.currentStepIndex;
-    if (nextStepIndex < currentState.directions.steps.length) {
-      final step = currentState.directions.steps[nextStepIndex];
-      final distance = Geolocator.distanceBetween(
+    double distanceToNextStep = 0;
+
+    if (nextStepIndex < currentState.directions.steps.length - 1) {
+      final nextStep = currentState.directions.steps[nextStepIndex + 1];
+      distanceToNextStep = Geolocator.distanceBetween(
         userLatLng.latitude, userLatLng.longitude,
-        step.startLocation.latitude, step.startLocation.longitude,
+        nextStep.startLocation.latitude, nextStep.startLocation.longitude,
       );
-      
-      if (distance < 20) {
+
+      // If we are within 30m of the next turn, increment index
+      if (distanceToNextStep < 30) {
         nextStepIndex++;
-        
         if (nextStepIndex < currentState.directions.steps.length) {
           _voiceService.speak(currentState.directions.steps[nextStepIndex].instruction);
         }
+        
+        // Recalculate distance for the new current step's end
+        if (nextStepIndex < currentState.directions.steps.length - 1) {
+          final newerNextStep = currentState.directions.steps[nextStepIndex + 1];
+          distanceToNextStep = Geolocator.distanceBetween(
+            userLatLng.latitude, userLatLng.longitude,
+            newerNextStep.startLocation.latitude, newerNextStep.startLocation.longitude,
+          );
+        } else {
+          distanceToNextStep = Geolocator.distanceBetween(
+            userLatLng.latitude, userLatLng.longitude,
+            currentState.destination.latitude, currentState.destination.longitude,
+          );
+        }
       }
+    } else if (nextStepIndex == currentState.directions.steps.length - 1) {
+      // Last step: distance to destination
+      distanceToNextStep = Geolocator.distanceBetween(
+        userLatLng.latitude, userLatLng.longitude,
+        currentState.destination.latitude, currentState.destination.longitude,
+      );
     }
 
     double additionalDistance = 0;
@@ -182,6 +221,7 @@ class DriveCubit extends Cubit<DriveState> {
     emit(currentState.copyWith(
       userPosition: userLatLng,
       currentStepIndex: nextStepIndex,
+      distanceToNextStep: distanceToNextStep,
       bearing: newBearing,
       traveledDistance: currentState.traveledDistance + additionalDistance,
       currentSpeed: position.speed * 3.6, // Convert m/s to km/h

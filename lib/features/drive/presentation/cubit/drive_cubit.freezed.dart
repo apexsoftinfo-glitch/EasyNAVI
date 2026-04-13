@@ -131,12 +131,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( LatLng origin,  LatLng destination,  DirectionsModel directions,  bool isNavigating,  int currentStepIndex,  LatLng? userPosition,  double bearing,  DateTime? startTime,  double traveledDistance,  double currentSpeed,  int? currentSpeedLimit,  List<LatLng> nearbyRadars,  List<String> announcedRadarIds)?  loaded,TResult Function( String errorKey)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( LatLng origin,  LatLng destination,  DirectionsModel directions,  bool isNavigating,  int currentStepIndex,  LatLng? userPosition,  double bearing,  DateTime? startTime,  double traveledDistance,  double currentSpeed,  double distanceToNextStep,  int? currentSpeedLimit,  List<LatLng> nearbyRadars,  List<String> announcedRadarIds)?  loaded,TResult Function( String errorKey)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial();case Loading() when loading != null:
 return loading();case Loaded() when loaded != null:
-return loaded(_that.origin,_that.destination,_that.directions,_that.isNavigating,_that.currentStepIndex,_that.userPosition,_that.bearing,_that.startTime,_that.traveledDistance,_that.currentSpeed,_that.currentSpeedLimit,_that.nearbyRadars,_that.announcedRadarIds);case DriveError() when error != null:
+return loaded(_that.origin,_that.destination,_that.directions,_that.isNavigating,_that.currentStepIndex,_that.userPosition,_that.bearing,_that.startTime,_that.traveledDistance,_that.currentSpeed,_that.distanceToNextStep,_that.currentSpeedLimit,_that.nearbyRadars,_that.announcedRadarIds);case DriveError() when error != null:
 return error(_that.errorKey);case _:
   return orElse();
 
@@ -155,12 +155,12 @@ return error(_that.errorKey);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( LatLng origin,  LatLng destination,  DirectionsModel directions,  bool isNavigating,  int currentStepIndex,  LatLng? userPosition,  double bearing,  DateTime? startTime,  double traveledDistance,  double currentSpeed,  int? currentSpeedLimit,  List<LatLng> nearbyRadars,  List<String> announcedRadarIds)  loaded,required TResult Function( String errorKey)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( LatLng origin,  LatLng destination,  DirectionsModel directions,  bool isNavigating,  int currentStepIndex,  LatLng? userPosition,  double bearing,  DateTime? startTime,  double traveledDistance,  double currentSpeed,  double distanceToNextStep,  int? currentSpeedLimit,  List<LatLng> nearbyRadars,  List<String> announcedRadarIds)  loaded,required TResult Function( String errorKey)  error,}) {final _that = this;
 switch (_that) {
 case Initial():
 return initial();case Loading():
 return loading();case Loaded():
-return loaded(_that.origin,_that.destination,_that.directions,_that.isNavigating,_that.currentStepIndex,_that.userPosition,_that.bearing,_that.startTime,_that.traveledDistance,_that.currentSpeed,_that.currentSpeedLimit,_that.nearbyRadars,_that.announcedRadarIds);case DriveError():
+return loaded(_that.origin,_that.destination,_that.directions,_that.isNavigating,_that.currentStepIndex,_that.userPosition,_that.bearing,_that.startTime,_that.traveledDistance,_that.currentSpeed,_that.distanceToNextStep,_that.currentSpeedLimit,_that.nearbyRadars,_that.announcedRadarIds);case DriveError():
 return error(_that.errorKey);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -175,12 +175,12 @@ return error(_that.errorKey);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( LatLng origin,  LatLng destination,  DirectionsModel directions,  bool isNavigating,  int currentStepIndex,  LatLng? userPosition,  double bearing,  DateTime? startTime,  double traveledDistance,  double currentSpeed,  int? currentSpeedLimit,  List<LatLng> nearbyRadars,  List<String> announcedRadarIds)?  loaded,TResult? Function( String errorKey)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( LatLng origin,  LatLng destination,  DirectionsModel directions,  bool isNavigating,  int currentStepIndex,  LatLng? userPosition,  double bearing,  DateTime? startTime,  double traveledDistance,  double currentSpeed,  double distanceToNextStep,  int? currentSpeedLimit,  List<LatLng> nearbyRadars,  List<String> announcedRadarIds)?  loaded,TResult? Function( String errorKey)?  error,}) {final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial();case Loading() when loading != null:
 return loading();case Loaded() when loaded != null:
-return loaded(_that.origin,_that.destination,_that.directions,_that.isNavigating,_that.currentStepIndex,_that.userPosition,_that.bearing,_that.startTime,_that.traveledDistance,_that.currentSpeed,_that.currentSpeedLimit,_that.nearbyRadars,_that.announcedRadarIds);case DriveError() when error != null:
+return loaded(_that.origin,_that.destination,_that.directions,_that.isNavigating,_that.currentStepIndex,_that.userPosition,_that.bearing,_that.startTime,_that.traveledDistance,_that.currentSpeed,_that.distanceToNextStep,_that.currentSpeedLimit,_that.nearbyRadars,_that.announcedRadarIds);case DriveError() when error != null:
 return error(_that.errorKey);case _:
   return null;
 
@@ -269,7 +269,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 
 
 class Loaded with DiagnosticableTreeMixin implements DriveState {
-  const Loaded({required this.origin, required this.destination, required this.directions, this.isNavigating = false, this.currentStepIndex = 0, this.userPosition, this.bearing = 0, this.startTime, this.traveledDistance = 0, this.currentSpeed = 0, this.currentSpeedLimit, final  List<LatLng> nearbyRadars = const [], final  List<String> announcedRadarIds = const []}): _nearbyRadars = nearbyRadars,_announcedRadarIds = announcedRadarIds;
+  const Loaded({required this.origin, required this.destination, required this.directions, this.isNavigating = false, this.currentStepIndex = 0, this.userPosition, this.bearing = 0, this.startTime, this.traveledDistance = 0, this.currentSpeed = 0, this.distanceToNextStep = 0, this.currentSpeedLimit, final  List<LatLng> nearbyRadars = const [], final  List<String> announcedRadarIds = const []}): _nearbyRadars = nearbyRadars,_announcedRadarIds = announcedRadarIds;
   
 
  final  LatLng origin;
@@ -282,6 +282,7 @@ class Loaded with DiagnosticableTreeMixin implements DriveState {
  final  DateTime? startTime;
 @JsonKey() final  double traveledDistance;
 @JsonKey() final  double currentSpeed;
+@JsonKey() final  double distanceToNextStep;
  final  int? currentSpeedLimit;
  final  List<LatLng> _nearbyRadars;
 @JsonKey() List<LatLng> get nearbyRadars {
@@ -309,21 +310,21 @@ $LoadedCopyWith<Loaded> get copyWith => _$LoadedCopyWithImpl<Loaded>(this, _$ide
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'DriveState.loaded'))
-    ..add(DiagnosticsProperty('origin', origin))..add(DiagnosticsProperty('destination', destination))..add(DiagnosticsProperty('directions', directions))..add(DiagnosticsProperty('isNavigating', isNavigating))..add(DiagnosticsProperty('currentStepIndex', currentStepIndex))..add(DiagnosticsProperty('userPosition', userPosition))..add(DiagnosticsProperty('bearing', bearing))..add(DiagnosticsProperty('startTime', startTime))..add(DiagnosticsProperty('traveledDistance', traveledDistance))..add(DiagnosticsProperty('currentSpeed', currentSpeed))..add(DiagnosticsProperty('currentSpeedLimit', currentSpeedLimit))..add(DiagnosticsProperty('nearbyRadars', nearbyRadars))..add(DiagnosticsProperty('announcedRadarIds', announcedRadarIds));
+    ..add(DiagnosticsProperty('origin', origin))..add(DiagnosticsProperty('destination', destination))..add(DiagnosticsProperty('directions', directions))..add(DiagnosticsProperty('isNavigating', isNavigating))..add(DiagnosticsProperty('currentStepIndex', currentStepIndex))..add(DiagnosticsProperty('userPosition', userPosition))..add(DiagnosticsProperty('bearing', bearing))..add(DiagnosticsProperty('startTime', startTime))..add(DiagnosticsProperty('traveledDistance', traveledDistance))..add(DiagnosticsProperty('currentSpeed', currentSpeed))..add(DiagnosticsProperty('distanceToNextStep', distanceToNextStep))..add(DiagnosticsProperty('currentSpeedLimit', currentSpeedLimit))..add(DiagnosticsProperty('nearbyRadars', nearbyRadars))..add(DiagnosticsProperty('announcedRadarIds', announcedRadarIds));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Loaded&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.destination, destination) || other.destination == destination)&&(identical(other.directions, directions) || other.directions == directions)&&(identical(other.isNavigating, isNavigating) || other.isNavigating == isNavigating)&&(identical(other.currentStepIndex, currentStepIndex) || other.currentStepIndex == currentStepIndex)&&(identical(other.userPosition, userPosition) || other.userPosition == userPosition)&&(identical(other.bearing, bearing) || other.bearing == bearing)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.traveledDistance, traveledDistance) || other.traveledDistance == traveledDistance)&&(identical(other.currentSpeed, currentSpeed) || other.currentSpeed == currentSpeed)&&(identical(other.currentSpeedLimit, currentSpeedLimit) || other.currentSpeedLimit == currentSpeedLimit)&&const DeepCollectionEquality().equals(other._nearbyRadars, _nearbyRadars)&&const DeepCollectionEquality().equals(other._announcedRadarIds, _announcedRadarIds));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Loaded&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.destination, destination) || other.destination == destination)&&(identical(other.directions, directions) || other.directions == directions)&&(identical(other.isNavigating, isNavigating) || other.isNavigating == isNavigating)&&(identical(other.currentStepIndex, currentStepIndex) || other.currentStepIndex == currentStepIndex)&&(identical(other.userPosition, userPosition) || other.userPosition == userPosition)&&(identical(other.bearing, bearing) || other.bearing == bearing)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.traveledDistance, traveledDistance) || other.traveledDistance == traveledDistance)&&(identical(other.currentSpeed, currentSpeed) || other.currentSpeed == currentSpeed)&&(identical(other.distanceToNextStep, distanceToNextStep) || other.distanceToNextStep == distanceToNextStep)&&(identical(other.currentSpeedLimit, currentSpeedLimit) || other.currentSpeedLimit == currentSpeedLimit)&&const DeepCollectionEquality().equals(other._nearbyRadars, _nearbyRadars)&&const DeepCollectionEquality().equals(other._announcedRadarIds, _announcedRadarIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,origin,destination,directions,isNavigating,currentStepIndex,userPosition,bearing,startTime,traveledDistance,currentSpeed,currentSpeedLimit,const DeepCollectionEquality().hash(_nearbyRadars),const DeepCollectionEquality().hash(_announcedRadarIds));
+int get hashCode => Object.hash(runtimeType,origin,destination,directions,isNavigating,currentStepIndex,userPosition,bearing,startTime,traveledDistance,currentSpeed,distanceToNextStep,currentSpeedLimit,const DeepCollectionEquality().hash(_nearbyRadars),const DeepCollectionEquality().hash(_announcedRadarIds));
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'DriveState.loaded(origin: $origin, destination: $destination, directions: $directions, isNavigating: $isNavigating, currentStepIndex: $currentStepIndex, userPosition: $userPosition, bearing: $bearing, startTime: $startTime, traveledDistance: $traveledDistance, currentSpeed: $currentSpeed, currentSpeedLimit: $currentSpeedLimit, nearbyRadars: $nearbyRadars, announcedRadarIds: $announcedRadarIds)';
+  return 'DriveState.loaded(origin: $origin, destination: $destination, directions: $directions, isNavigating: $isNavigating, currentStepIndex: $currentStepIndex, userPosition: $userPosition, bearing: $bearing, startTime: $startTime, traveledDistance: $traveledDistance, currentSpeed: $currentSpeed, distanceToNextStep: $distanceToNextStep, currentSpeedLimit: $currentSpeedLimit, nearbyRadars: $nearbyRadars, announcedRadarIds: $announcedRadarIds)';
 }
 
 
@@ -334,7 +335,7 @@ abstract mixin class $LoadedCopyWith<$Res> implements $DriveStateCopyWith<$Res> 
   factory $LoadedCopyWith(Loaded value, $Res Function(Loaded) _then) = _$LoadedCopyWithImpl;
 @useResult
 $Res call({
- LatLng origin, LatLng destination, DirectionsModel directions, bool isNavigating, int currentStepIndex, LatLng? userPosition, double bearing, DateTime? startTime, double traveledDistance, double currentSpeed, int? currentSpeedLimit, List<LatLng> nearbyRadars, List<String> announcedRadarIds
+ LatLng origin, LatLng destination, DirectionsModel directions, bool isNavigating, int currentStepIndex, LatLng? userPosition, double bearing, DateTime? startTime, double traveledDistance, double currentSpeed, double distanceToNextStep, int? currentSpeedLimit, List<LatLng> nearbyRadars, List<String> announcedRadarIds
 });
 
 
@@ -351,7 +352,7 @@ class _$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of DriveState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? origin = null,Object? destination = null,Object? directions = null,Object? isNavigating = null,Object? currentStepIndex = null,Object? userPosition = freezed,Object? bearing = null,Object? startTime = freezed,Object? traveledDistance = null,Object? currentSpeed = null,Object? currentSpeedLimit = freezed,Object? nearbyRadars = null,Object? announcedRadarIds = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? origin = null,Object? destination = null,Object? directions = null,Object? isNavigating = null,Object? currentStepIndex = null,Object? userPosition = freezed,Object? bearing = null,Object? startTime = freezed,Object? traveledDistance = null,Object? currentSpeed = null,Object? distanceToNextStep = null,Object? currentSpeedLimit = freezed,Object? nearbyRadars = null,Object? announcedRadarIds = null,}) {
   return _then(Loaded(
 origin: null == origin ? _self.origin : origin // ignore: cast_nullable_to_non_nullable
 as LatLng,destination: null == destination ? _self.destination : destination // ignore: cast_nullable_to_non_nullable
@@ -363,6 +364,7 @@ as LatLng?,bearing: null == bearing ? _self.bearing : bearing // ignore: cast_nu
 as double,startTime: freezed == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
 as DateTime?,traveledDistance: null == traveledDistance ? _self.traveledDistance : traveledDistance // ignore: cast_nullable_to_non_nullable
 as double,currentSpeed: null == currentSpeed ? _self.currentSpeed : currentSpeed // ignore: cast_nullable_to_non_nullable
+as double,distanceToNextStep: null == distanceToNextStep ? _self.distanceToNextStep : distanceToNextStep // ignore: cast_nullable_to_non_nullable
 as double,currentSpeedLimit: freezed == currentSpeedLimit ? _self.currentSpeedLimit : currentSpeedLimit // ignore: cast_nullable_to_non_nullable
 as int?,nearbyRadars: null == nearbyRadars ? _self._nearbyRadars : nearbyRadars // ignore: cast_nullable_to_non_nullable
 as List<LatLng>,announcedRadarIds: null == announcedRadarIds ? _self._announcedRadarIds : announcedRadarIds // ignore: cast_nullable_to_non_nullable
