@@ -76,7 +76,12 @@ class DriveCubit extends Cubit<DriveState> {
           origin: origin,
           destination: destination,
           directions: directions,
+          userPosition: origin,
         ));
+        
+        // Start tracking position even before "Go" to show speed limits in preview
+        _startTracking();
+        _updateEnvironmentalData(origin);
       } else {
         emit(const DriveState.error('failed-to-calculate-route'));
       }
@@ -113,6 +118,9 @@ class DriveCubit extends Cubit<DriveState> {
       traveledDistance: 0,
       distanceToNextStep: initialDistance,
     ));
+
+    // Ensure tracking is active
+    _startTracking();
     
     // Speak first instruction
     if (currentState.directions.steps.isNotEmpty) {
@@ -121,7 +129,9 @@ class DriveCubit extends Cubit<DriveState> {
     
     // Keep screen on during navigation
     _deviceService.enableWakelock();
+  }
 
+  void _startTracking() {
     _positionSubscription?.cancel();
     _positionSubscription = _locationService.getPositionStream(
       locationSettings: const LocationSettings(

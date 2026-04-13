@@ -90,7 +90,7 @@ class DirectionsRepositoryImpl implements DirectionsRepository {
   @override
   Future<int?> getSpeedLimit(LatLng position) async {
     try {
-      final query = '[out:json];way(around:30,${position.latitude},${position.longitude})["maxspeed"];out;';
+      final query = '[out:json];way(around:60,${position.latitude},${position.longitude})["maxspeed"];out;';
       final response = await _dio.get(
         'https://overpass-api.de/api/interpreter',
         queryParameters: {'data': query},
@@ -98,6 +98,7 @@ class DirectionsRepositoryImpl implements DirectionsRepository {
 
       if (response.data != null && response.data['elements'] != null) {
         final elements = response.data['elements'] as List;
+        debugPrint('[DirectionsRepository] Speed limit elements found: ${elements.length}');
         if (elements.isNotEmpty) {
           final tags = elements[0]['tags'];
           if (tags != null && tags['maxspeed'] != null) {
