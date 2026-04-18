@@ -139,16 +139,20 @@ class _PlanningViewState extends State<PlanningView> {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        Text(
-                          l10n.addressesSelected.toUpperCase(),
-                          style: GoogleFonts.inter(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 1,
+                        Expanded(
+                          child: Text(
+                            l10n.addressesSelected.toUpperCase(),
+                            style: GoogleFonts.inter(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const Spacer(),
+                        const SizedBox(width: 8),
                         ElevatedButton(
                           onPressed: () => _showPlanningOptions(context),
                           style: ElevatedButton.styleFrom(
