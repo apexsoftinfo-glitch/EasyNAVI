@@ -34,7 +34,11 @@ String mapErrorToKey(Object error) {
   if ((message.contains('shared_users') || message.contains('profiles')) &&
       (message.contains('schema cache') ||
           message.contains('column') ||
-          message.contains('relation'))) {
+          message.contains('relation') ||
+          message.contains('security policy') ||
+          message.contains('rls') ||
+          message.contains('403') ||
+          message.contains('forbidden'))) {
     return 'shared_users_setup_required';
   }
 

@@ -69,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                     
                     // Bento Grid - Adjusted for Right Hand Ergonomics
                     SizedBox(
-                      height: 380,
+                      height: 440,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -271,12 +271,11 @@ class _BentoTileState extends State<_BentoTile> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Column(
-              mainAxisAlignment: widget.isLarge ? MainAxisAlignment.center : MainAxisAlignment.start,
-              crossAxisAlignment: widget.isLarge ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (!widget.isLarge) const SizedBox(height: 24),
                 Padding(
-                  padding: EdgeInsets.all(widget.isLarge ? 0 : 24.0),
+                  padding: EdgeInsets.all(widget.isLarge ? 0 : 12.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
