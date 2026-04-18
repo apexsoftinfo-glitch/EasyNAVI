@@ -237,6 +237,12 @@ class DriveCubit extends Cubit<DriveState> {
       newBearing = currentBearing + (diff * 0.3); // 0.3 smoothing factor
     }
 
+    final isArrived = nextStepIndex >= currentState.directions.steps.length - 1 && distanceToNextStep < 50;
+
+    if (isArrived && !currentState.isArrived) {
+      _voiceService.speak(_language == 'pl' ? "Osiągnięto cel" : "Destination reached");
+    }
+
     emit(currentState.copyWith(
       userPosition: userLatLng,
       currentStepIndex: nextStepIndex,
@@ -244,6 +250,7 @@ class DriveCubit extends Cubit<DriveState> {
       bearing: newBearing,
       traveledDistance: currentState.traveledDistance + additionalDistance,
       currentSpeed: position.speed * 3.6, // Convert m/s to km/h
+      isArrived: isArrived,
     ));
 
     final now = DateTime.now();

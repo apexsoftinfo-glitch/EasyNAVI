@@ -239,5 +239,16 @@
     }
   },
   "syncExportSuccess": "Backup saved successfully",
-  "appearanceLocaleSystem": "System"
+  "appearanceLocaleSystem": "System",
+  "homePlanningTile": "PLANNING",
+  "planningTitle": "Route Planning",
+  "planRouteButton": "PLAN ROUTE",
+  "planningModeTitle": "Choose planning mode",
+  "planningModeSequence": "By selection order",
+  "planningModeClosest": "Closest from current",
+  "planningModeFarthest": "Starting from farthest",
+  "nextDestinationButton": "NEXT ADDRESS",
+  "routeFinished": "Route Finished",
+  "addressesSelected": "addresses selected",
+  "planNow": "PLAN"
 }

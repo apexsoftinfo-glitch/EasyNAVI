@@ -239,5 +239,16 @@
     }
   },
   "syncExportSuccess": "Pomyślnie utworzono kopię zapasową",
-  "appearanceLocaleSystem": "Automatyczny"
+  "appearanceLocaleSystem": "Automatyczny",
+  "homePlanningTile": "PLANOWANIE",
+  "planningTitle": "Planowanie Trasy",
+  "planRouteButton": "ZAPLANUJ TRASĘ",
+  "planningModeTitle": "Wybierz tryb planowania",
+  "planningModeSequence": "Według kolejnosci wyboru",
+  "planningModeClosest": "Według najblizszej odległosci",
+  "planningModeFarthest": "Od najdalszego punktu",
+  "nextDestinationButton": "NASTĘPNY ADRES",
+  "routeFinished": "Trasa zakończona",
+  "addressesSelected": "wybranych adresów",
+  "planNow": "ZAPLANUJ"
 }

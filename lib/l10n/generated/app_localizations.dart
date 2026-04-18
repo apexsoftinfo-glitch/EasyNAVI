@@ -1213,6 +1213,72 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Automatyczny'**
   String get appearanceLocaleSystem;
+
+  /// No description provided for @homePlanningTile.
+  ///
+  /// In pl, this message translates to:
+  /// **'PLANOWANIE'**
+  String get homePlanningTile;
+
+  /// No description provided for @planningTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowanie Trasy'**
+  String get planningTitle;
+
+  /// No description provided for @planRouteButton.
+  ///
+  /// In pl, this message translates to:
+  /// **'ZAPLANUJ TRASĘ'**
+  String get planRouteButton;
+
+  /// No description provided for @planningModeTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz tryb planowania'**
+  String get planningModeTitle;
+
+  /// No description provided for @planningModeSequence.
+  ///
+  /// In pl, this message translates to:
+  /// **'Według kolejnosci wyboru'**
+  String get planningModeSequence;
+
+  /// No description provided for @planningModeClosest.
+  ///
+  /// In pl, this message translates to:
+  /// **'Według najblizszej odległosci'**
+  String get planningModeClosest;
+
+  /// No description provided for @planningModeFarthest.
+  ///
+  /// In pl, this message translates to:
+  /// **'Od najdalszego punktu'**
+  String get planningModeFarthest;
+
+  /// No description provided for @nextDestinationButton.
+  ///
+  /// In pl, this message translates to:
+  /// **'NASTĘPNY ADRES'**
+  String get nextDestinationButton;
+
+  /// No description provided for @routeFinished.
+  ///
+  /// In pl, this message translates to:
+  /// **'Trasa zakończona'**
+  String get routeFinished;
+
+  /// No description provided for @addressesSelected.
+  ///
+  /// In pl, this message translates to:
+  /// **'wybranych adresów'**
+  String get addressesSelected;
+
+  /// No description provided for @planNow.
+  ///
+  /// In pl, this message translates to:
+  /// **'ZAPLANUJ'**
+  String get planNow;
 }
 
 class _AppLocalizationsDelegate

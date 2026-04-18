@@ -19,6 +19,7 @@ sealed class DriveState with _$DriveState {
     int? currentSpeedLimit,
     @Default([]) List<LatLng> nearbyRadars,
     @Default([]) List<String> announcedRadarIds,
+    @Default(false) bool isArrived,
   }) = Loaded;
   const factory DriveState.error(String errorKey) = DriveError;
 }

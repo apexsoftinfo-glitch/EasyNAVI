@@ -7,6 +7,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../app/developer/ui/developer_screen.dart';
 import '../../../l10n/l10n.dart';
 import '../../addresses/ui/addresses_screen.dart';
+import '../../planning/presentation/ui/planning_screen.dart';
 import '../../profiles/presentation/ui/profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -89,6 +90,20 @@ class HomeScreen extends StatelessWidget {
                                       );
                                     },
                                   ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.2),
+                                ),
+                                const SizedBox(height: 16),
+                                Expanded(
+                                  child: _BentoTile(
+                                    label: context.l10n.homePlanningTile,
+                                    icon: Icons.alt_route_rounded,
+                                    color: Colors.white.withValues(alpha: 0.15),
+                                    onTap: () {
+                                      HapticFeedback.selectionClick();
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (_) => const PlanningScreen()),
+                                      );
+                                    },
+                                  ).animate().fadeIn(delay: 250.ms).slideX(begin: -0.2),
                                 ),
                                 const SizedBox(height: 16),
                                 Expanded(

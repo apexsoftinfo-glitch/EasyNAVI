@@ -11,9 +11,15 @@ import '../../../app/appearance/presentation/cubit/app_appearance_cubit.dart';
 import '../../../app/appearance/models/car_icon_model.dart';
 
 class DriveScreen extends StatelessWidget {
-  const DriveScreen({super.key, required this.destination, required this.destinationName});
+  const DriveScreen({
+    super.key, 
+    required this.destination, 
+    required this.destinationName,
+    this.onArrivedNext,
+  });
   final LatLng destination;
   final String destinationName;
+  final VoidCallback? onArrivedNext;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +31,7 @@ class DriveScreen extends StatelessWidget {
       child: DriveView(
         destination: destination,
         destinationName: destinationName,
+        onArrivedNext: onArrivedNext,
       ),
     );
   }
@@ -35,9 +42,11 @@ class DriveView extends StatefulWidget {
     super.key,
     required this.destination,
     required this.destinationName,
+    this.onArrivedNext,
   });
   final LatLng destination;
   final String destinationName;
+  final VoidCallback? onArrivedNext;
 
   @override
   State<DriveView> createState() => _DriveViewState();
@@ -520,6 +529,82 @@ class _DriveViewState extends State<DriveView> {
                     ),
                   ),
                 ],
+              );
+            },
+          ),
+          
+          // Arrival Panel (Shown only when isArrived is true)
+          BlocBuilder<DriveCubit, DriveState>(
+            builder: (context, state) {
+              if (state is! Loaded || !state.isArrived) return const SizedBox.shrink();
+              
+              return Positioned.fill(
+                child: Container(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Container(
+                        padding: const EdgeInsets.all(32),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(32),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26, 
+                              blurRadius: 30, 
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.check_circle_rounded, color: Colors.green, size: 80),
+                            const SizedBox(height: 24),
+                            Text(
+                              context.l10n.destinationReached,
+                              style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w900, color: Colors.black),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 32),
+                            if (widget.onArrivedNext != null)
+                              SizedBox(
+                                width: double.infinity,
+                                height: 60,
+                                child: ElevatedButton(
+                                  onPressed: widget.onArrivedNext,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFFC6FF00),
+                                    foregroundColor: Colors.black,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                    elevation: 0,
+                                  ),
+                                  child: Text(
+                                    context.l10n.nextDestinationButton.toUpperCase(),
+                                    style: const TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1),
+                                  ),
+                                ),
+                              ),
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 56,
+                              child: TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                style: TextButton.styleFrom(foregroundColor: Colors.grey.shade600),
+                                child: Text(
+                                  context.l10n.closeButtonLabel.toUpperCase(),
+                                  style: const TextStyle(fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               );
             },
           ),

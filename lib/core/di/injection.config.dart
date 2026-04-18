@@ -68,6 +68,8 @@ import 'package:easynavi/features/drive/domain/repositories/directions_repositor
     as _i807;
 import 'package:easynavi/features/drive/presentation/cubit/drive_cubit.dart'
     as _i181;
+import 'package:easynavi/features/planning/presentation/cubit/planning_cubit.dart'
+    as _i879;
 import 'package:easynavi/features/profiles/data/datasources/shared_user_apps_data_source.dart'
     as _i977;
 import 'package:easynavi/features/profiles/data/datasources/shared_user_data_source.dart'
@@ -158,6 +160,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i47.AddressesRepository>(),
         gh<_i454.SupabaseClient>(),
       ),
+    );
+    gh.factory<_i879.PlanningCubit>(
+      () => _i879.PlanningCubit(gh<_i47.AddressesRepository>()),
     );
     gh.lazySingleton<_i459.ConnectivityRepository>(
       () =>

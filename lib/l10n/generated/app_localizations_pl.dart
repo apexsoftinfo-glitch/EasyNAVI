@@ -625,4 +625,37 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get appearanceLocaleSystem => 'Automatyczny';
+
+  @override
+  String get homePlanningTile => 'PLANOWANIE';
+
+  @override
+  String get planningTitle => 'Planowanie Trasy';
+
+  @override
+  String get planRouteButton => 'ZAPLANUJ TRASĘ';
+
+  @override
+  String get planningModeTitle => 'Wybierz tryb planowania';
+
+  @override
+  String get planningModeSequence => 'Według kolejnosci wyboru';
+
+  @override
+  String get planningModeClosest => 'Według najblizszej odległosci';
+
+  @override
+  String get planningModeFarthest => 'Od najdalszego punktu';
+
+  @override
+  String get nextDestinationButton => 'NASTĘPNY ADRES';
+
+  @override
+  String get routeFinished => 'Trasa zakończona';
+
+  @override
+  String get addressesSelected => 'wybranych adresów';
+
+  @override
+  String get planNow => 'ZAPLANUJ';
 }

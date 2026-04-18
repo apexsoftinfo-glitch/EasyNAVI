@@ -624,4 +624,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appearanceLocaleSystem => 'System';
+
+  @override
+  String get homePlanningTile => 'PLANNING';
+
+  @override
+  String get planningTitle => 'Route Planning';
+
+  @override
+  String get planRouteButton => 'PLAN ROUTE';
+
+  @override
+  String get planningModeTitle => 'Choose planning mode';
+
+  @override
+  String get planningModeSequence => 'By selection order';
+
+  @override
+  String get planningModeClosest => 'Closest from current';
+
+  @override
+  String get planningModeFarthest => 'Starting from farthest';
+
+  @override
+  String get nextDestinationButton => 'NEXT ADDRESS';
+
+  @override
+  String get routeFinished => 'Route Finished';
+
+  @override
+  String get addressesSelected => 'addresses selected';
+
+  @override
+  String get planNow => 'PLAN';
 }
