@@ -23,10 +23,12 @@ class DriveScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final language = Localizations.localeOf(context).languageCode;
+
     return BlocProvider(
       create: (context) => getIt<DriveCubit>()..initDrive(
         destination: destination,
-        language: Localizations.localeOf(context).languageCode,
+        language: language,
       ),
       child: DriveView(
         destination: destination,
