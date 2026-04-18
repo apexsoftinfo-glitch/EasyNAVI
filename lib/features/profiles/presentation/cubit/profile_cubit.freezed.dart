@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProfileState implements DiagnosticableTreeMixin {
 
- bool get isSaving; String? get errorKey; String? get successKey;
+ bool get isSaving; String? get errorKey; String? get successKey; String? get appVersion;
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,21 +26,21 @@ $ProfileStateCopyWith<ProfileState> get copyWith => _$ProfileStateCopyWithImpl<P
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'ProfileState'))
-    ..add(DiagnosticsProperty('isSaving', isSaving))..add(DiagnosticsProperty('errorKey', errorKey))..add(DiagnosticsProperty('successKey', successKey));
+    ..add(DiagnosticsProperty('isSaving', isSaving))..add(DiagnosticsProperty('errorKey', errorKey))..add(DiagnosticsProperty('successKey', successKey))..add(DiagnosticsProperty('appVersion', appVersion));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileState&&(identical(other.isSaving, isSaving) || other.isSaving == isSaving)&&(identical(other.errorKey, errorKey) || other.errorKey == errorKey)&&(identical(other.successKey, successKey) || other.successKey == successKey));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileState&&(identical(other.isSaving, isSaving) || other.isSaving == isSaving)&&(identical(other.errorKey, errorKey) || other.errorKey == errorKey)&&(identical(other.successKey, successKey) || other.successKey == successKey)&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isSaving,errorKey,successKey);
+int get hashCode => Object.hash(runtimeType,isSaving,errorKey,successKey,appVersion);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'ProfileState(isSaving: $isSaving, errorKey: $errorKey, successKey: $successKey)';
+  return 'ProfileState(isSaving: $isSaving, errorKey: $errorKey, successKey: $successKey, appVersion: $appVersion)';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $ProfileStateCopyWith<$Res>  {
   factory $ProfileStateCopyWith(ProfileState value, $Res Function(ProfileState) _then) = _$ProfileStateCopyWithImpl;
 @useResult
 $Res call({
- bool isSaving, String? errorKey, String? successKey
+ bool isSaving, String? errorKey, String? successKey, String? appVersion
 });
 
 
@@ -68,11 +68,12 @@ class _$ProfileStateCopyWithImpl<$Res>
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isSaving = null,Object? errorKey = freezed,Object? successKey = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isSaving = null,Object? errorKey = freezed,Object? successKey = freezed,Object? appVersion = freezed,}) {
   return _then(_self.copyWith(
 isSaving: null == isSaving ? _self.isSaving : isSaving // ignore: cast_nullable_to_non_nullable
 as bool,errorKey: freezed == errorKey ? _self.errorKey : errorKey // ignore: cast_nullable_to_non_nullable
 as String?,successKey: freezed == successKey ? _self.successKey : successKey // ignore: cast_nullable_to_non_nullable
+as String?,appVersion: freezed == appVersion ? _self.appVersion : appVersion // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -155,10 +156,10 @@ return initial(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool isSaving,  String? errorKey,  String? successKey)?  initial,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool isSaving,  String? errorKey,  String? successKey,  String? appVersion)?  initial,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ProfileStateData() when initial != null:
-return initial(_that.isSaving,_that.errorKey,_that.successKey);case _:
+return initial(_that.isSaving,_that.errorKey,_that.successKey,_that.appVersion);case _:
   return orElse();
 
 }
@@ -176,10 +177,10 @@ return initial(_that.isSaving,_that.errorKey,_that.successKey);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool isSaving,  String? errorKey,  String? successKey)  initial,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool isSaving,  String? errorKey,  String? successKey,  String? appVersion)  initial,}) {final _that = this;
 switch (_that) {
 case ProfileStateData():
-return initial(_that.isSaving,_that.errorKey,_that.successKey);}
+return initial(_that.isSaving,_that.errorKey,_that.successKey,_that.appVersion);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -193,10 +194,10 @@ return initial(_that.isSaving,_that.errorKey,_that.successKey);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool isSaving,  String? errorKey,  String? successKey)?  initial,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool isSaving,  String? errorKey,  String? successKey,  String? appVersion)?  initial,}) {final _that = this;
 switch (_that) {
 case ProfileStateData() when initial != null:
-return initial(_that.isSaving,_that.errorKey,_that.successKey);case _:
+return initial(_that.isSaving,_that.errorKey,_that.successKey,_that.appVersion);case _:
   return null;
 
 }
@@ -208,12 +209,13 @@ return initial(_that.isSaving,_that.errorKey,_that.successKey);case _:
 
 
 class ProfileStateData with DiagnosticableTreeMixin implements ProfileState {
-  const ProfileStateData({this.isSaving = false, this.errorKey, this.successKey});
+  const ProfileStateData({this.isSaving = false, this.errorKey, this.successKey, this.appVersion});
   
 
 @override@JsonKey() final  bool isSaving;
 @override final  String? errorKey;
 @override final  String? successKey;
+@override final  String? appVersion;
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
@@ -226,21 +228,21 @@ $ProfileStateDataCopyWith<ProfileStateData> get copyWith => _$ProfileStateDataCo
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'ProfileState.initial'))
-    ..add(DiagnosticsProperty('isSaving', isSaving))..add(DiagnosticsProperty('errorKey', errorKey))..add(DiagnosticsProperty('successKey', successKey));
+    ..add(DiagnosticsProperty('isSaving', isSaving))..add(DiagnosticsProperty('errorKey', errorKey))..add(DiagnosticsProperty('successKey', successKey))..add(DiagnosticsProperty('appVersion', appVersion));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileStateData&&(identical(other.isSaving, isSaving) || other.isSaving == isSaving)&&(identical(other.errorKey, errorKey) || other.errorKey == errorKey)&&(identical(other.successKey, successKey) || other.successKey == successKey));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileStateData&&(identical(other.isSaving, isSaving) || other.isSaving == isSaving)&&(identical(other.errorKey, errorKey) || other.errorKey == errorKey)&&(identical(other.successKey, successKey) || other.successKey == successKey)&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isSaving,errorKey,successKey);
+int get hashCode => Object.hash(runtimeType,isSaving,errorKey,successKey,appVersion);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'ProfileState.initial(isSaving: $isSaving, errorKey: $errorKey, successKey: $successKey)';
+  return 'ProfileState.initial(isSaving: $isSaving, errorKey: $errorKey, successKey: $successKey, appVersion: $appVersion)';
 }
 
 
@@ -251,7 +253,7 @@ abstract mixin class $ProfileStateDataCopyWith<$Res> implements $ProfileStateCop
   factory $ProfileStateDataCopyWith(ProfileStateData value, $Res Function(ProfileStateData) _then) = _$ProfileStateDataCopyWithImpl;
 @override @useResult
 $Res call({
- bool isSaving, String? errorKey, String? successKey
+ bool isSaving, String? errorKey, String? successKey, String? appVersion
 });
 
 
@@ -268,11 +270,12 @@ class _$ProfileStateDataCopyWithImpl<$Res>
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isSaving = null,Object? errorKey = freezed,Object? successKey = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isSaving = null,Object? errorKey = freezed,Object? successKey = freezed,Object? appVersion = freezed,}) {
   return _then(ProfileStateData(
 isSaving: null == isSaving ? _self.isSaving : isSaving // ignore: cast_nullable_to_non_nullable
 as bool,errorKey: freezed == errorKey ? _self.errorKey : errorKey // ignore: cast_nullable_to_non_nullable
 as String?,successKey: freezed == successKey ? _self.successKey : successKey // ignore: cast_nullable_to_non_nullable
+as String?,appVersion: freezed == appVersion ? _self.appVersion : appVersion // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

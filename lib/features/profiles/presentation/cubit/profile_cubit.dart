@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:package_info_plus/package_info_plus.dart';
+
 import '../../../../shared/error_messages.dart';
 import '../../data/repositories/shared_user_repository.dart';
 
@@ -16,16 +18,28 @@ sealed class ProfileState with _$ProfileState {
     @Default(false) bool isSaving,
     String? errorKey,
     String? successKey,
+    String? appVersion,
   }) = ProfileStateData;
 }
 
 @injectable
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit(this._sharedUserRepository, this._authRepository)
-    : super(const ProfileState.initial());
+    : super(const ProfileState.initial()) {
+    _loadAppInfo();
+  }
 
   final SharedUserRepository _sharedUserRepository;
   final AuthRepository _authRepository;
+
+  Future<void> _loadAppInfo() async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      emit(state.copyWith(appVersion: '${packageInfo.version}+${packageInfo.buildNumber}'));
+    } catch (e) {
+      debugPrint('❌ [ProfileCubit] _loadAppInfo error: $e');
+    }
+  }
 
   Future<void> saveFirstName({
     required String userId,

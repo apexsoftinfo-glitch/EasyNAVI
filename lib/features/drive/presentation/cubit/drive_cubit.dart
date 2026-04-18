@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -25,6 +26,8 @@ class DriveCubit extends Cubit<DriveState> {
   LatLng? _lastSpeedLimitPosition;
   bool _isRerouting = false;
   DateTime? _lastRerouteCheck;
+  DateTime? _lastRerouteAnnouncement;
+  int _offRouteDetectionCount = 0;
   String _language = 'en';
 
   DriveCubit(
@@ -112,6 +115,10 @@ class DriveCubit extends Cubit<DriveState> {
       }
     }
 
+    _offRouteDetectionCount = 0;
+    _lastRerouteCheck = null;
+    _lastRerouteAnnouncement = null;
+
     emit(currentState.copyWith(
       isNavigating: true,
       startTime: DateTime.now(),
@@ -136,7 +143,7 @@ class DriveCubit extends Cubit<DriveState> {
     _positionSubscription = _locationService.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
-        distanceFilter: 5,
+        distanceFilter: 1,
       ),
     ).listen(_onPositionChanged);
   }
@@ -148,6 +155,8 @@ class DriveCubit extends Cubit<DriveState> {
     _positionSubscription?.cancel();
     _voiceService.stop();
     _deviceService.disableWakelock();
+    _offRouteDetectionCount = 0;
+    _lastRerouteCheck = null;
     emit(currentState.copyWith(isNavigating: false));
   }
 
@@ -262,7 +271,11 @@ class DriveCubit extends Cubit<DriveState> {
       
       if (shouldCheckReroute) {
         _lastRerouteCheck = now;
-        _checkReroute(userLatLng, currentState);
+        _checkReroute(
+          userLatLng,
+          currentState,
+          horizontalAccuracy: position.accuracy,
+        );
       }
     }
 
@@ -304,26 +317,40 @@ class DriveCubit extends Cubit<DriveState> {
     }
   }
 
-  Future<void> _checkReroute(LatLng userLatLng, Loaded currentState) async {
+  Future<void> _checkReroute(
+    LatLng userLatLng,
+    Loaded currentState, {
+    required double horizontalAccuracy,
+  }) async {
     if (_isRerouting || !currentState.isNavigating) return;
 
-    // Check distance to polyline
-    double minDistance = double.infinity;
-    for (final point in currentState.directions.polylinePoints) {
-      final d = Geolocator.distanceBetween(
-        userLatLng.latitude,
-        userLatLng.longitude,
-        point.latitude,
-        point.longitude,
-      );
-      if (d < minDistance) minDistance = d;
-      // If we are close enough to any point, we are on track
-      if (minDistance < 50) return;
+    final minDistance = _distanceToPolylineMeters(
+      userLatLng,
+      currentState.directions.polylinePoints,
+    );
+    final offRouteThreshold = math.max(
+      60.0,
+      math.min(120.0, horizontalAccuracy * 3),
+    );
+
+    if (minDistance <= offRouteThreshold) {
+      _offRouteDetectionCount = 0;
+      return;
     }
 
-    // Off track! (> 50m from any point)
+    _offRouteDetectionCount++;
+    if (_offRouteDetectionCount < 2) {
+      debugPrint(
+        '[DriveCubit] Possible off-route detected (dist: $minDistance, accuracy: $horizontalAccuracy). Waiting for confirmation...',
+      );
+      return;
+    }
+
+    _offRouteDetectionCount = 0;
     _isRerouting = true;
-    debugPrint('[DriveCubit] User off track (dist: $minDistance). Rerouting...');
+    debugPrint(
+      '[DriveCubit] User off track confirmed (dist: $minDistance, threshold: $offRouteThreshold). Rerouting...',
+    );
     
     try {
       final directions = await _repository.getDirections(
@@ -333,8 +360,19 @@ class DriveCubit extends Cubit<DriveState> {
       );
 
       if (directions != null && !isClosed) {
-        final alert = _language == 'pl' ? "Przeliczam trasę" : "Recalculating route";
-        _voiceService.speak(alert);
+        final now = DateTime.now();
+        final shouldAnnounceReroute =
+            _lastRerouteAnnouncement == null ||
+            now.difference(_lastRerouteAnnouncement!).inSeconds >= 25;
+
+        if (shouldAnnounceReroute) {
+          _lastRerouteAnnouncement = now;
+          final alert = _language == 'pl'
+              ? "Przeliczam trasę"
+              : "Recalculating route";
+          _voiceService.speak(alert);
+        }
+
         emit(currentState.copyWith(
           directions: directions,
           currentStepIndex: 0,
@@ -350,4 +388,79 @@ class DriveCubit extends Cubit<DriveState> {
       _isRerouting = false;
     }
   }
+
+  double _distanceToPolylineMeters(
+    LatLng point,
+    List<LatLng> polylinePoints,
+  ) {
+    if (polylinePoints.isEmpty) return double.infinity;
+    if (polylinePoints.length == 1) {
+      return Geolocator.distanceBetween(
+        point.latitude,
+        point.longitude,
+        polylinePoints.first.latitude,
+        polylinePoints.first.longitude,
+      );
+    }
+
+    var minDistance = double.infinity;
+    for (var i = 0; i < polylinePoints.length - 1; i++) {
+      final distance = _distanceToSegmentMeters(
+        point,
+        polylinePoints[i],
+        polylinePoints[i + 1],
+      );
+      if (distance < minDistance) {
+        minDistance = distance;
+      }
+    }
+    return minDistance;
+  }
+
+  double _distanceToSegmentMeters(
+    LatLng point,
+    LatLng start,
+    LatLng end,
+  ) {
+    final referenceLatRad = _toRadians(point.latitude);
+    final startX = _longitudeToMeters(start.longitude, referenceLatRad);
+    final startY = _latitudeToMeters(start.latitude);
+    final endX = _longitudeToMeters(end.longitude, referenceLatRad);
+    final endY = _latitudeToMeters(end.latitude);
+    final pointX = _longitudeToMeters(point.longitude, referenceLatRad);
+    final pointY = _latitudeToMeters(point.latitude);
+
+    final segmentDx = endX - startX;
+    final segmentDy = endY - startY;
+    final segmentLengthSquared = (segmentDx * segmentDx) + (segmentDy * segmentDy);
+
+    if (segmentLengthSquared == 0) {
+      return math.sqrt(
+        math.pow(pointX - startX, 2) + math.pow(pointY - startY, 2),
+      );
+    }
+
+    final projection = ((pointX - startX) * segmentDx + (pointY - startY) * segmentDy) /
+        segmentLengthSquared;
+    final clampedProjection = projection.clamp(0.0, 1.0);
+
+    final projectedX = startX + (segmentDx * clampedProjection);
+    final projectedY = startY + (segmentDy * clampedProjection);
+
+    return math.sqrt(
+      math.pow(pointX - projectedX, 2) + math.pow(pointY - projectedY, 2),
+    );
+  }
+
+  double _latitudeToMeters(double latitude) {
+    const earthRadius = 6371000.0;
+    return _toRadians(latitude) * earthRadius;
+  }
+
+  double _longitudeToMeters(double longitude, double referenceLatRad) {
+    const earthRadius = 6371000.0;
+    return _toRadians(longitude) * earthRadius * math.cos(referenceLatRad);
+  }
+
+  double _toRadians(double degrees) => degrees * math.pi / 180.0;
 }

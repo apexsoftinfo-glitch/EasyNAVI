@@ -44,9 +44,6 @@ class DriveView extends StatefulWidget {
 }
 
 class _DriveViewState extends State<DriveView> {
-
-
-
   GoogleMapController? _mapController;
   BitmapDescriptor? _carIconDescriptor;
   CarIconType? _lastLoadedType;
@@ -103,7 +100,6 @@ class _DriveViewState extends State<DriveView> {
           BlocConsumer<DriveCubit, DriveState>(
             listener: (context, state) {
               if (state is Loaded && state.isNavigating && state.userPosition != null && _mapController != null) {
-                // Throttle camera updates to avoid jittery "fighting" animations
                 final userPos = state.userPosition!;
                 final userBearing = state.bearing;
 
@@ -126,18 +122,25 @@ class _DriveViewState extends State<DriveView> {
                   if (bearingDiff > 180) bearingDiff = 360 - bearingDiff;
                 }
 
-                // Only animate if we moved significantly or turned noticeably
-                if (distMoved > 2 || bearingDiff > 5) {
-                  _lastCameraTarget = userPos;
-                  _lastCameraBearing = userBearing;
+                // Update camera more aggressively so navigation feels continuous
+                if (distMoved > 0.8 || bearingDiff > 1.5 || lastPos == null || lastBearing == null) {
+                  final smoothedTarget = lastPos == null
+                      ? userPos
+                      : _interpolateLatLng(lastPos, userPos, 0.7);
+                  final smoothedBearing = lastBearing == null
+                      ? userBearing
+                      : _interpolateBearing(lastBearing, userBearing, 0.5);
+
+                  _lastCameraTarget = smoothedTarget;
+                  _lastCameraBearing = smoothedBearing;
 
                   _mapController!.animateCamera(
                     CameraUpdate.newCameraPosition(
                       CameraPosition(
-                        target: userPos,
+                        target: smoothedTarget,
                         zoom: 18,
                         tilt: 45,
-                        bearing: userBearing,
+                        bearing: smoothedBearing,
                       ),
                     ),
                   );
@@ -550,6 +553,20 @@ class _DriveViewState extends State<DriveView> {
       return '${hours}h ${remainingMinutes}m';
     }
     return '$minutes min';
+  }
+
+  LatLng _interpolateLatLng(LatLng from, LatLng to, double factor) {
+    return LatLng(
+      from.latitude + ((to.latitude - from.latitude) * factor),
+      from.longitude + ((to.longitude - from.longitude) * factor),
+    );
+  }
+
+  double _interpolateBearing(double from, double to, double factor) {
+    var diff = (to - from) % 360;
+    if (diff > 180) diff -= 360;
+    if (diff < -180) diff += 360;
+    return (from + (diff * factor) + 360) % 360;
   }
 }
 

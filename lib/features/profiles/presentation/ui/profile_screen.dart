@@ -119,6 +119,23 @@ class _ProfileView extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 8),
+                  BlocBuilder<ProfileCubit, ProfileState>(
+                    builder: (context, state) {
+                      final version = state.appVersion;
+                      if (version == null) return const SizedBox.shrink();
+                      return Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'v$version',
+                          style: GoogleFonts.inter(
+                            color: Colors.white.withValues(alpha: 0.3),
+                            fontSize: 10,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
