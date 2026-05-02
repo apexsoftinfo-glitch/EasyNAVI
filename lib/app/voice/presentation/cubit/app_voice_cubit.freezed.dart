@@ -213,7 +213,7 @@ String toString() {
 
 
 class Loaded implements AppVoiceState {
-  const Loaded({this.speechRate = 1.0, this.speechPitch = 1.0});
+  const Loaded({this.speechRate = AppVoiceRepository.defaultSpeechRate, this.speechPitch = AppVoiceRepository.defaultSpeechPitch});
   
 
 @JsonKey() final  double speechRate;
